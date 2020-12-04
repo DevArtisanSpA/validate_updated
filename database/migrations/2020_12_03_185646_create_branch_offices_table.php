@@ -15,6 +15,9 @@ class CreateBranchOfficesTable extends Migration
     {
         Schema::create('branch_offices', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('company_id')->constrained();
+            $table->foreignId('commune_id')->constrained();
+            $table->string('name', 64);
             $table->timestamps();
         });
     }

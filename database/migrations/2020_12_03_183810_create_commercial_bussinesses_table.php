@@ -15,6 +15,7 @@ class CreateCommercialBussinessesTable extends Migration
     {
         Schema::create('commercial_bussinesses', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 64);
             $table->timestamps();
         });
     }
