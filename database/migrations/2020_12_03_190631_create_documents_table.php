@@ -15,6 +15,15 @@ class CreateDocumentsTable extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('document_type_id')->constrained();
+            $table->foreignId('validation_state_id')->constrained();
+            $table->foreignId('service_id')->constrained();
+            $table->foreignId('employee_id')->nullable()->constrained();
+            $table->date('start');
+            $table->date('finished')->nullable();
+            $table->string('month_year_registry',7)->nullable();
+            $table->string('path_data')->nullable();
+            $table->text('observations')->nullable();
             $table->timestamps();
         });
     }

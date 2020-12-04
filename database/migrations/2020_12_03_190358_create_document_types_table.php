@@ -15,6 +15,10 @@ class CreateDocumentTypesTable extends Migration
     {
         Schema::create('document_types', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('area_id')->constrained();
+            $table->foreignId('temporality_id')->constrained();
+            $table->string('name', 64);
+            $table->string('mandatory', 32)->default("");
             $table->timestamps();
         });
     }

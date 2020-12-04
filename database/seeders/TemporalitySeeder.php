@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TemporalitySeeder extends Seeder
 {
@@ -13,6 +14,12 @@ class TemporalitySeeder extends Seeder
      */
     public function run()
     {
-        //
+        $temporalities = ["Base", "Mensual"];
+        foreach($temporalities as $index => $temporality) {
+            DB::table('temporalities')->insert([
+                'id' => $index + 1,
+                'name' => $temporality
+            ]);
+        }
     }
 }

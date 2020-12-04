@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\CommercialBussiness;
+use App\Models\CommercialBusiness;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CommercialBussinessFactory extends Factory
+class CommercialBusinessFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CommercialBussiness::class;
+    protected $model = CommercialBusiness::class;
 
     /**
      * Define the model's default state.

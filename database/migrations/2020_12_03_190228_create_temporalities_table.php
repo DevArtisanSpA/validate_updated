@@ -15,6 +15,7 @@ class CreateTemporalitiesTable extends Migration
     {
         Schema::create('temporalities', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 32);
             $table->timestamps();
         });
     }

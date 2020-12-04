@@ -15,6 +15,7 @@ class CreateValidationStatesTable extends Migration
     {
         Schema::create('validation_states', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 32);
             $table->timestamps();
         });
     }
