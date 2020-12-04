@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CommercialBusinessSeeder extends Seeder
 {
@@ -29,7 +30,7 @@ class CommercialBusinessSeeder extends Seeder
         ];
         foreach ($businesses as $index => $business) {
             DB::table('commercial_businesses')->insert([
-                'id' => $key + 1,
+                'id' => $index + 1,
                 'name' => $business,
             ]);
         }

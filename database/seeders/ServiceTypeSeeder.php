@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ServiceTypeSeeder extends Seeder
 {
@@ -13,6 +14,12 @@ class ServiceTypeSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $types = ["Fijo", "Eventual", "Mantenimiento"];
+        foreach($types as $index => $type) {
+            DB::table('service_types')->insert([
+                'id' => $index + 1,
+                'name' => $type
+            ]);
+        }
     }
 }
