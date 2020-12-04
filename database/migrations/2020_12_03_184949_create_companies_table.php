@@ -15,7 +15,7 @@ class CreateCompaniesTable extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('commercial_bussiness_id')->constrained();
+            $table->foreignId('commercial_business_id')->constrained();
             $table->string('rut', 16);
             $table->string('bussiness_name', 128);
             $table->string('contact_name', 64);
