@@ -1,0 +1,78 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('Roboto/Roboto-Regular.ttf');
+    src: url('Roboto/Roboto-Bold.ttf');
+    src: url('Roboto/Roboto-Light.ttf');
+    src: url('Roboto/Roboto-Medium.ttf');
+    font-weight: normal;
+    font-style: normal;    
+}
+
+$roboto-regular: 'Roboto Regular', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$roboto-bold: 'Roboto Bold', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$roboto-salightns: 'Roboto Light', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+$roboto-medium: 'Roboto Medium', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $roboto-regular;
+  color: #212529;
+  font-size: $font-size-base;
+  text-transform: none !important;
+}
+h1 {
+  font-family: $roboto-bold;
+  font-weight: 700;
+  font-size: 2em;
+  line-height: 45px;
+  padding-top: 10px;
+}
+h2 {
+  font-family: $roboto-bold;
+  font-weight: 700;
+  font-size: 1.8em;
+  line-height: 36px;
+  text-transform: uppercase;
+  margin: 0;
+  padding-top: 10px;
+}
+h3 {
+  font-family: $roboto-bold;
+  font-weight: 700;
+  font-size: 1.7em;
+  line-height: 29px;
+  margin: 0;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+h4 {
+  font-family: $roboto-bold;
+  font-weight: 700;
+  font-size: 1.65em;
+  line-height: 29px;
+  padding-top: 10px;
+}
+h5 {
+  font-family: $roboto-bold;
+  font-weight: 500;
+  font-size: 1.2em;
+  line-height: 22px;
+  padding-top: 10px;
+}
+h6 {
+  font-family: $roboto-bold;
+  font-weight: 400;
+  font-size: 1em;
+  letter-spacing: 2px;
+  line-height: initial;
+}
+p{
+  line-height: 1.5;
+  color: $text-color-default;
+}
+

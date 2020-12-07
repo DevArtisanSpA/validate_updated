@@ -1,0 +1,170 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import 'base/reset';
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Variables
+@import 'variables';
+
+// Fonts
+@import 'base/typography';
+
+// Components
+@import 'components/buttons';
+@import 'components/inputs';
+
+// styles
+footer{
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    padding: .5rem;
+    text-align: center;
+    background-color: $footer-bg;
+    font-weight: 300;
+    span{
+        color: $text-color-white;
+    }
+    a {
+      font-weight: 400;
+      color: $text-color-white;
+      &:hover{
+          color: $text-color-white;
+      }
+    }
+}
+@media(max-width: 767px){
+  footer{
+    .col-sm-6{
+        text-align: center !important;
+    }
+    .link-varti{
+      font-size: .8rem;
+    }
+  }
+}
+label {
+    margin-top: 0.5rem;
+}
+.radio-document-type{
+    .custom-control-label{
+        margin-top: 0;
+    }
+}
+.input-obs-rest { // para las respuestas de las observaciones en los documentos
+    display: block !important;
+    padding: 0.2rem !important;
+    margin-bottom: 0 !important;
+    font-size: 1rem !important;
+    line-height: 1.1 !important;
+    color: #212529 !important;
+    background-color: #e9ecef !important;
+    border: solid transparent !important;
+    border-width: 1px 0 !important;
+    position: relative !important;
+    overflow-y: auto !important;
+    height: 6rem !important;
+  }
+
+  //tag del input emrpesa principal al crear o editar empresas
+  .el-input__inner {
+    display: block !important;
+    width: 100% !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: rgb(73, 80, 87) !important;
+    background-color: rgb(255, 255, 255) !important;
+    background-clip: padding-box !important;
+    border: 1px solid rgb(206, 212, 218) !important;
+    border-radius: 0.25rem !important;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s !important;
+  }
+  .el-select__tags-text {
+    color: white !important;
+  }
+  .el-tag.el-tag--info {
+    background-color: #409eff !important;
+    color: white !important;
+  }
+  // END
+
+  // Para los input para cargar archivos
+  .icon-load {
+    font-size: 36px !important;
+    margin: unset !important;
+    line-height: unset !important;
+    height: 0px !important;
+  }
+  .el-upload-dragger {
+    border-radius: unset !important;
+    height: unset !important;
+    padding: 6px !important;
+    width: 100% !important;
+  }
+  .error {
+    border-color: #dc3545 !important;
+  }
+  .el-upload-dragger:hover {
+    border-color: #409eff !important;
+  }
+  .el-upload--picture {
+    width: 100% !important;
+    height: fit-content !important;
+  }
+  .el-upload-list__item {
+    margin-top: unset !important;
+    padding: 6px !important;
+  }
+  .el-upload-list--picture .el-upload-list__item-name i {
+    font-size: 36px !important;
+    position: unset !important;
+  }
+  .el-upload-list__item-name{
+    margin-right: 25px !important;
+  }
+  .text-load {
+    font-size: 13px !important;
+  }
+  .content-a {
+    padding: 12px 6px 12px 6px !important;
+    border: 1px solid #c0ccda !important;
+    border-radius: 6px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+  }
+  .icon-doc {
+    font-size: 36px !important;
+  }
+  .corner {
+    position: absolute !important;
+    top: -26px !important;
+    right: -26px !important;
+    width: 50px !important;
+    height: 50px !important;
+    transform: rotate(45deg) !important;
+  }
+  .icon-corner {
+    transform: rotate(-45deg) !important;
+  }
+  .text-prev {
+    cursor: pointer !important;
+  }
+
+  //END
+
+  .row {
+    margin-bottom: 15px;
+  }
+  .col-doc {
+    margin: auto;
+  }
+  form {
+    margin-bottom: 30px;
+  }
+  .size {
+    font-size: 25px;
+  }
