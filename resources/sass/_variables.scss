@@ -1,10 +1,6 @@
-// Body
+// background
 $body-bg: #f8fafc;
-
-// Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
-$font-size-base: 0.9rem;
-$line-height-base: 1.6;
+$footer-bg: #324f85;
 
 // Colors
 $blue: #3490dc;
@@ -17,3 +13,17 @@ $yellow: #ffed4a;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+
+
+$body-bg: #f8fafc;
+$text-color-default: #212529;
+$text-color-white: #f8fafc;
+$hover-opacity: .75;
+$inactive: #b3b3b3;
+
+// Typography
+$font-size-base: 1rem;
+
+//buttons
+$btn-height: 40px;
+$btn-font-size: .9rem;
