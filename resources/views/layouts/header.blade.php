@@ -37,6 +37,9 @@
                           <a class="dropdown-item" href="{{ url('/companies/create') }}">
                               {{ __('Agregar empresa') }}
                           </a>
+                          <a class="dropdown-item" href="{{ url('/services/associate') }}">
+                            {{ __('Asociar servicio') }}
+                        </a>
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/branch_offices') }}">
                               {{ __('Lista de sucursales') }}

@@ -25,6 +25,21 @@ Vue.component(
   "company-form",
   require("./components/company/form.vue").default
 );
+Vue.component(
+  "company-search",
+  require("./components/company/search.vue").default
+);
+
+//Service
+Vue.component(
+  "associate-service",
+  require("./components/service/associate.vue").default
+);
+
+Vue.component(
+  "service-form",
+  require("./components/service/form.vue").default
+);
 
 Vue.prototype.$truthty = function (data) {
   if (

@@ -171,7 +171,7 @@
         </label>
         <b-form-select
           id="input-region"
-          v-model="formData.region_id"
+          v-model="formData.branchOffice.region_id"
           @input="loadCommunes(formData.branchOffice.region_id, !disabled)"
           :disabled="isDisabled() || disabled"
           :state="this.states.region_id"
@@ -307,11 +307,12 @@ const labels = {
 };
 
 export default {
-  props: ["company", "dataList", "is_update", "auth"],
+  props: ["company", "dataList", "is_update", "auth", "rut", "is_for_service"],
   data() {
     const {
       company,
       dataList: { documentTypes },
+      rut
     } = this.$props;
     const truthty = this.$truthty;
     return {
@@ -325,7 +326,7 @@ export default {
       formData: {
         company: {
           id: !truthty(company) ? null : company.id,
-          rut: !truthty(company) ? null : company.rut,
+          rut: !truthty(company) ? truthty(rut) ? rut : null : company.rut,
           business_name: !truthty(company) ? null : company.business_name,
           commercial_business_id: !truthty(company)
             ? null
@@ -450,6 +451,7 @@ export default {
       }
     },
     loadCommunes($region_id, reset = true) {
+      console.log($region_id)
       if (this.$truthty($region_id)) {
         let regions = this.$props.dataList.regions;
         let communesLocal = regions.find((region) => {
@@ -488,7 +490,8 @@ export default {
       this.error = 1;
     },
     submit() {
-      this.send = true;
+      console.log(this.formData);
+      /*this.send = true;
       if (this.disabled) {
         const url = `${window.location.origin}/companies/rut/${this.formData.company.rut}`;
         axios
@@ -540,7 +543,7 @@ export default {
             this.errors.push({ message: err.response.data.message });
           });
       }
-    },
+    */},
     hideModal() {
       this.$refs["modal-confirm"].hide();
     },
@@ -681,6 +684,9 @@ export default {
   },
   mounted() {
     console.log(this.$props);
+    if (this.$props.setStage) {
+      alert("Aaaaa")
+    }
     this.init();
   },
 };
