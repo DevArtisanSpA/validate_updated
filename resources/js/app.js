@@ -1,1 +1,76 @@
 require('./bootstrap');
+
+window.Vue = require("vue");
+import ElementUI from "element-ui";
+import { BootstrapVue, BIconCheckCircleFill, BIconExclamationCircle } from "bootstrap-vue";
+import locale from "element-ui/lib/locale/lang/es";
+
+import "element-ui/lib/theme-chalk/index.css";
+
+import "bootstrap-vue/dist/bootstrap-vue.css";
+
+import "element-ui/lib/theme-chalk/index.css";
+
+Vue.use(ElementUI, { locale });
+Vue.use(BootstrapVue);
+Vue.component('BIconCheckCircleFill', BIconCheckCircleFill);
+Vue.component('BIconExclamationCircle', BIconExclamationCircle);
+
+//Company
+/*Vue.component(
+  "company-table",
+  require("./components/company/company-table.vue").default
+);*/
+Vue.component(
+  "company-form",
+  require("./components/company/form.vue").default
+);
+
+Vue.prototype.$truthty = function (data) {
+  if (
+      data === undefined ||
+      data === null ||
+      (!data && data !== 0) ||
+      data === ""
+  ) {
+      return false;
+  }
+  if (Array.isArray(data)) {
+      return data.length !== 0;
+  }
+  if (typeof data !== "string" && typeof data !== "number") {
+      if (typeof data === "object") {
+          return Object.keys(data).length !== 0;
+      }
+  }
+  return true;
+};
+String.prototype.toCamelCase = function () {
+  let regex = /[A-Z\xC0-\xD6\xD8-\xDE]?[a-z\xDF-\xF6\xF8-\xFF]+|[A-Z\xC0-\xD6\xD8-\xDE]+(?![a-z\xDF-\xF6\xF8-\xFF])|\d+/g;
+
+  let inputArray = this.match(regex);
+  if (inputArray == null) {
+      return '';
+  }
+  let result = "";
+  for (let i = 0; i < inputArray.length; i++) {
+      let str = inputArray[i];
+      let tempStr = str.toLowerCase();
+      tempStr = tempStr.substr(0, 1).toUpperCase() + tempStr.substr(1);
+
+      result += tempStr + " ";
+  }
+  return result;
+};
+
+Vue.prototype.$csrf_token = $('meta[name="csrf-token"]').attr("content");
+
+Array.prototype.unique = function (a) {
+  return function () { return this.filter(a) }
+}(function (a, b, c) {
+  return c.indexOf(a, b + 1) < 0
+});
+const app = new Vue({
+  el: "#app",
+  components: {}
+});
