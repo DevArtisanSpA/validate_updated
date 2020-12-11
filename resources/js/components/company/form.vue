@@ -471,6 +471,15 @@ export default {
         }
         return String(value).substring(0, 10);
       }
+      else {
+        if (value.length < 3) {
+          this.states[label] = false;
+          this.message[label] = labels[label] + " debe ser informado.";
+        } else {
+          this.states[label] = true;
+        }
+        return value;
+      }
     },
     errorAPI(err) {
       this.send = false;
@@ -577,72 +586,80 @@ export default {
           .get(`${window.location.origin}/companies/rut/${value}`)
           .then((response) => {
             if(response.status==200){
-            const { company } = response.data;
-            if (this.is_update && this.$truthty(company)) {
-              document.getElementById("input-rut").focus();
-              if (company.id != this.$props.company.id) {
-                this.error = 1;
-                this.errorRutDuplicate = 1;
-                this.states.rut = false;
-                this.message.rut = "El RUT corresponde a otra empresa.";
-                //rut ya existe, no puede ser utilizado.
+              const { company } = response.data;
+              if (this.is_update && this.$truthty(company)) {
+                document.getElementById("input-rut").focus();
+                if (company.id != this.$props.company.id) {
+                  this.error = 1;
+                  this.errorRutDuplicate = 1;
+                  this.states.rut = false;
+                  this.message.rut = "El RUT corresponde a otra empresa.";
+                  //rut ya existe, no puede ser utilizado.
+                }
+              } else if (this.$truthty(company)) {
+                this.errorRutDuplicate = 0;
+                this.loadCommunes(company.commune.region_id, false);
+                this.formData = {
+                  ...this.formData,
+                  company: {
+                    ...this.formData.company,
+                    id: company.id,
+                    rut: company.rut,
+                    business_name: company.business_name,
+                    commercial_business_id: company.commercial_business_id,
+                    contact: company.contact,
+                    email: company.email,
+                    affiliation: company.affiliation,
+                    affiliation_date: company.affiliation_date
+                  },
+                  branchOffice: {
+                    ...this.formData.branchOffice,
+                    commune_id: company.commune_id,
+                    region_id: company.commune.region_id,
+                    address: company.address,
+                    phone1: company.phone1,
+                    phone2: company.phone2,
+                  }
+                };
+                this.disabled = true;
+                this.business_name = company.business_name;
+                this.states = {
+                  rut: null,
+                  business_name: null,
+                  commercial_business_id: null,
+                  commune_id: null,
+                  region_id: null,
+                  address: null,
+                  phone1: null,
+                  phone2: null,
+                  contact: null,
+                  email: null,
+                  affiliation: null,
+                  affiliation_date: null,
+                };
+                this.message = {
+                  rut: "",
+                  business_name: "",
+                  commercial_business_id: "",
+                  commune_id: "",
+                  region_id: "",
+                  address: "",
+                  phone1: "",
+                  phone2: "",
+                  contact: "",
+                  email: "",
+                  affiliation: "",
+                  affiliation_date: "",
+                };
+                this.error = 0;
+                this.errors = [];
+              } else {
+                this.disabled = false;
+                this.errorRutDuplicate = 0;
               }
-            } else if (this.$truthty(company)) {
-              this.errorRutDuplicate = 0;
-              this.loadCommunes(company.commune.region_id, false);
-              this.formData = {
-                ...this.formData,
-                id: company.id,
-                rut: company.rut,
-                business_name: company.business_name,
-                commercial_business_id: company.commercial_business_id,
-                commune_id: company.commune_id,
-                region_id: company.commune.region_id,
-                address: company.address,
-                phone1: company.phone1,
-                phone2: company.phone2,
-                contact: company.contact,
-                email: company.email,
-                affiliation: company.affiliation,
-                affiliation_date: company.affiliation_date,
-              };
-              this.disabled = true;
-              this.business_name = company.business_name;
-              this.states = {
-                rut: null,
-                business_name: null,
-                commercial_business_id: null,
-                commune_id: null,
-                region_id: null,
-                address: null,
-                phone1: null,
-                phone2: null,
-                contact: null,
-                email: null,
-                affiliation: null,
-                affiliation_date: null,
-              };
-              this.message = {
-                rut: "",
-                business_name: "",
-                commercial_business_id: "",
-                commune_id: "",
-                region_id: "",
-                address: "",
-                phone1: "",
-                phone2: "",
-                contact: "",
-                email: "",
-                affiliation: "",
-                affiliation_date: "",
-              };
-              this.error = 0;
-              this.errors = [];
-            } else {
+            }
+            else {
               this.disabled = false;
-              this.errorRutDuplicate = 0;
-            }}else{
-               this.disabled = false;
               this.errorRutDuplicate = 0;
             }
           });

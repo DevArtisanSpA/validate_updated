@@ -22,6 +22,7 @@ Route::get('/', function () {
 Auth::routes(["register" => false]);
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('companies', CompanyController::class);
+    Route::get('companies/rut/{rut}', [CompanyController::class, 'getRut']);
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
