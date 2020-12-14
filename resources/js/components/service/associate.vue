@@ -1,7 +1,7 @@
 <template>
   <div>
     <company-search v-if="stage == 1" :auth="auth" @setStage="setStage" @setCompanyData="setCompanyData" />
-    <company-form v-if="stage == 2" :auth="auth" :data-list="dataList" :rut="company.rut" is_update="0" @setStage="setStage" @setCompanyData="setCompanyData" />
+    <company-form v-if="stage == 2" :auth="auth" :data-list="dataList" :rut="company.rut" is_for_service="1" @setStage="setStage" @setCompanyData="setCompanyData" />
     <service-form v-if="stage == 3" :auth="auth" :rut_company="company.rut" :company_id="company.id" :branch_offices="branchOffices" :service_types="serviceTypes" />
   </div>
 </template>

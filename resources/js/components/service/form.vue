@@ -77,8 +77,8 @@ export default {
         service_type_id: "",
       },
       states: {
-        branch_office_id: true,
-        service_type_id: true,
+        branch_office_id: null,
+        service_type_id: null,
       },
       rut_company: rut_company,
       serviceTypes: service_types,

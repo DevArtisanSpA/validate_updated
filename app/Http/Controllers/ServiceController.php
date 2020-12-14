@@ -37,7 +37,7 @@ class ServiceController extends Controller
     {
         $regions = Region::with('communes')->get();
         $commercialBusinesses = CommercialBusiness::all();
-        $companies = Company::with('branchOffice')->where("active", true)->orderBy('business_name')->get();
+        $companies = Company::with('branchOffices')->where("active", true)->orderBy('business_name')->get();
         $documentTypes = new stdClass();
         $authData = Auth::user();
         $authData->isAdmin = Auth::user()->user_type_id == 1;

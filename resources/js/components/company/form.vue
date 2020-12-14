@@ -14,7 +14,7 @@
       <div slot="modal-title">
         <span
           >Se
-          {{ disabled ? "asociará" : !is_update ? "creará" : "modificará" }} un
+          {{ !is_update ? "creará" : "modificará" }} un
           registro de empresa</span
         >
       </div>
@@ -45,7 +45,7 @@
           id="input-rut"
           type="text"
           v-model="formData.company.rut"
-          :disabled="isDisabled()"
+          :disabled="isDisabled() || this.$props.is_for_service"
           :state="this.states.rut"
           :formatter="(e) => formatter('rut', e)"
           @change="getCompany"
@@ -108,13 +108,13 @@
         <b-form-input
           id="input-contact"
           type="text"
-          v-model="formData.company.contact"
+          v-model="formData.company.contact_name"
           :disabled="isDisabled() || disabled"
-          :state="this.states.contact"
-          :formatter="(e) => formatter('contact', e)"
+          :state="this.states.contact_name"
+          :formatter="(e) => formatter('contact_name', e)"
         />
         <b-form-invalid-feedback id="input-live-feedback">{{
-          this.message.contact
+          this.message.contact_name
         }}</b-form-invalid-feedback>
       </b-col>
       <b-col md="6">
@@ -124,13 +124,13 @@
         <b-form-input
           id="input-email"
           type="email"
-          v-model="formData.company.email"
+          v-model="formData.company.contact_email"
           :disabled="isDisabled() || disabled"
-          :state="this.states.email"
-          :formatter="(e) => formatter('email', e)"
+          :state="this.states.contact_email"
+          :formatter="(e) => formatter('contact_email', e)"
         />
         <b-form-invalid-feedback id="input-live-feedback">{{
-          this.message.email
+          this.message.contact_email
         }}</b-form-invalid-feedback>
       </b-col>
     </b-row>
@@ -283,7 +283,7 @@
       "
     >
       <b-button class="m-3" type="submit" variant="success">{{
-        disabled ? "Asociar" : !is_update ? "Crear" : "Actualizar"
+        !is_update ? "Crear" : "Actualizar"
       }}</b-button>
     </b-row>
   </form>
@@ -300,8 +300,8 @@ const labels = {
   region_id: "Región",
   address: "Dirección",
   phone1: "Teléfono",
-  contact: "Nombre de contacto",
-  email: "Email de contacto",
+  contact_name: "Nombre de contacto",
+  contact_email: "Email de contacto",
   affiliation: "Afiliación",
   affiliation_date: "Fecha de afiliación",
 };
@@ -331,8 +331,8 @@ export default {
           commercial_business_id: !truthty(company)
             ? null
             : company.commercial_business_id,
-          contact: !truthty(company) ? null : company.contact,
-          email: !truthty(company) ? null : company.email,
+          contact_name: !truthty(company) ? null : company.contact_name,
+          contact_email: !truthty(company) ? null : company.contact_email,
           affiliation: !truthty(company) ? null : company.affiliation,
           affiliation_date: !truthty(company) ? null : company.affiliation_date,
         },
@@ -353,8 +353,8 @@ export default {
         address: null,
         phone1: null,
         phone2: null,
-        contact: null,
-        email: null,
+        contact_name: null,
+        contact_email: null,
         affiliation: null,
         affiliation_date: null,
       },
@@ -367,8 +367,8 @@ export default {
         address: "",
         phone1: "",
         phone2: "",
-        contact: "",
-        email: "",
+        contact_name: "",
+        contact_email: "",
         affiliation: "",
         affiliation_date: "",
       },
@@ -420,15 +420,15 @@ export default {
           this.message.phone1 =
             "Se debe informar al menos un teléfono de contacto.";
         }
-        if (!this.$truthty(this.formData.company.contact)) {
+        if (!this.$truthty(this.formData.company.contact_name)) {
           this.error = 1;
-          this.states.contact = false;
-          this.message.contact = "Nombre de contacto requerido.";
+          this.states.contact_name = false;
+          this.message.contact_name = "Nombre de contacto requerido.";
         }
-        if (!this.$truthty(this.formData.company.email)) {
+        if (!this.$truthty(this.formData.company.contact_email)) {
           this.error = 1;
-          this.states.email = false;
-          this.message.email = "Email de contacto requerido.";
+          this.states.contact_email = false;
+          this.message.contact_email = "Email de contacto requerido.";
         }
         if (!this.$truthty(this.formData.company.affiliation)) {
           this.error = 1;
@@ -491,24 +491,8 @@ export default {
     },
     submit() {
       console.log(this.formData);
-      /*this.send = true;
-      if (this.disabled) {
-        const url = `${window.location.origin}/companies/rut/${this.formData.company.rut}`;
-        axios
-          .post(url, this.formData)
-          .then((res) => {
-            if (res.status === 200) {
-              window.location.href = window.location.origin + "/companies";
-            } else {
-              this.errorAPI(err);
-              res.data.forEach((row) => this.errors.push({ message: row }));
-            }
-          })
-          .catch((err) => {
-            this.errorAPI(err);
-            this.errors.push({ message: err.response.data.message });
-          });
-      } else if (this.$props.is_update) {
+      this.send = true;
+      if (this.$props.is_update) {
         const url = `${window.location.origin}/companies/${this.formData.company.id}`;
         axios
           .patch(url, this.formData)
@@ -530,8 +514,26 @@ export default {
           .post(url, this.formData)
           .then((res) => {
             if (res.status === 200) {
-              if (this.$truthty(res.data.id)) {
-                window.location.href = window.location.origin + "/companies";
+              if (this.$truthty(res.data.company)) {
+                const {
+                  data: {
+                    company: {
+                      id,
+                      rut
+                    }
+                  }
+                } = res
+                if (this.$props.is_for_service) {
+                  const companyData = {
+                    id: id,
+                    rut: rut
+                  }
+                  this.$emit("setCompanyData", companyData)
+                  this.$emit("setStage", 3)
+                }
+                else {
+                  window.location.href = window.location.origin + "/companies";
+                }
               }
             } else {
               this.errorAPI(err);
@@ -543,7 +545,7 @@ export default {
             this.errors.push({ message: err.response.data.message });
           });
       }
-    */},
+    },
     hideModal() {
       this.$refs["modal-confirm"].hide();
     },
@@ -579,8 +581,8 @@ export default {
         address: "",
         phone1: "",
         phone2: "",
-        contact: "",
-        email: "",
+        contact_name: "",
+        contact_email: "",
         affiliation: "",
         affiliation_date: "",
       };
@@ -610,8 +612,8 @@ export default {
                     rut: company.rut,
                     business_name: company.business_name,
                     commercial_business_id: company.commercial_business_id,
-                    contact: company.contact,
-                    email: company.email,
+                    contact_name: company.contact_name,
+                    contact_email: company.contact_email,
                     affiliation: company.affiliation,
                     affiliation_date: company.affiliation_date
                   },
@@ -635,8 +637,8 @@ export default {
                   address: null,
                   phone1: null,
                   phone2: null,
-                  contact: null,
-                  email: null,
+                  contact_name: null,
+                  contact_email: null,
                   affiliation: null,
                   affiliation_date: null,
                 };
@@ -649,8 +651,8 @@ export default {
                   address: "",
                   phone1: "",
                   phone2: "",
-                  contact: "",
-                  email: "",
+                  contact_name: "",
+                  contact_email: "",
                   affiliation: "",
                   affiliation_date: "",
                 };
