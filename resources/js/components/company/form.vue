@@ -47,9 +47,10 @@
           v-model="formData.company.rut"
           :disabled="isDisabled() || this.$props.is_for_service"
           :state="this.states.rut"
-          :formatter="(e) => formatter('rut', e)"
           @change="getCompany"
-        />
+        >
+        <b-spinner small></b-spinner>
+        </b-form-input>
         <b-form-invalid-feedback id="input-live-feedback">{{
           this.message.rut
         }}</b-form-invalid-feedback>
@@ -571,106 +572,35 @@ export default {
       }
     },
     getCompany(value) {
-      const clean = {
-        ...this.formData,
-        id: "",
-        business_name: "",
-        commercial_business_id: null,
-        commune_id: null,
-        region_id: null,
-        address: "",
-        phone1: "",
-        phone2: "",
-        contact_name: "",
-        contact_email: "",
-        affiliation: "",
-        affiliation_date: "",
-      };
       if (value.length >= 8) {
         axios
           .get(`${window.location.origin}/companies/rut/${value}`)
           .then((response) => {
             if(response.status==200){
               const { company } = response.data;
-              if (this.is_update && this.$truthty(company)) {
-                document.getElementById("input-rut").focus();
-                if (company.id != this.$props.company.id) {
+              if (this.$truthty(company)) {
+                //document.getElementById("input-rut").focus();
+                if (!(this.is_update && company.id == this.$props.company.id)) {
                   this.error = 1;
                   this.errorRutDuplicate = 1;
                   this.states.rut = false;
                   this.message.rut = "El RUT corresponde a otra empresa.";
                   //rut ya existe, no puede ser utilizado.
                 }
-              } else if (this.$truthty(company)) {
-                this.errorRutDuplicate = 0;
-                this.loadCommunes(company.commune.region_id, false);
-                this.formData = {
-                  ...this.formData,
-                  company: {
-                    ...this.formData.company,
-                    id: company.id,
-                    rut: company.rut,
-                    business_name: company.business_name,
-                    commercial_business_id: company.commercial_business_id,
-                    contact_name: company.contact_name,
-                    contact_email: company.contact_email,
-                    affiliation: company.affiliation,
-                    affiliation_date: company.affiliation_date
-                  },
-                  branchOffice: {
-                    ...this.formData.branchOffice,
-                    commune_id: company.commune_id,
-                    region_id: company.commune.region_id,
-                    address: company.address,
-                    phone1: company.phone1,
-                    phone2: company.phone2,
-                  }
-                };
-                this.disabled = true;
-                this.business_name = company.business_name;
-                this.states = {
-                  rut: null,
-                  business_name: null,
-                  commercial_business_id: null,
-                  commune_id: null,
-                  region_id: null,
-                  address: null,
-                  phone1: null,
-                  phone2: null,
-                  contact_name: null,
-                  contact_email: null,
-                  affiliation: null,
-                  affiliation_date: null,
-                };
-                this.message = {
-                  rut: "",
-                  business_name: "",
-                  commercial_business_id: "",
-                  commune_id: "",
-                  region_id: "",
-                  address: "",
-                  phone1: "",
-                  phone2: "",
-                  contact_name: "",
-                  contact_email: "",
-                  affiliation: "",
-                  affiliation_date: "",
-                };
-                this.error = 0;
-                this.errors = [];
-              } else {
-                this.disabled = false;
-                this.errorRutDuplicate = 0;
               }
             }
             else {
-              this.disabled = false;
+              this.error = 0;
               this.errorRutDuplicate = 0;
+              this.states.rut = true;
+              this.message.rut = "";
             }
           });
       } else {
+        this.error = 0;
         this.errorRutDuplicate = 0;
-        this.disabled = false;
+        this.states.rut = true;
+        this.message.rut = "";
       }
     },
     init() {

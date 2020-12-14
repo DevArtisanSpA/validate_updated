@@ -34,9 +34,11 @@
                           <a class="dropdown-item" href="{{ url('/companies') }}">
                               {{ __('Lista de empresas') }}
                           </a>
+                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
                           <a class="dropdown-item" href="{{ url('/companies/create') }}">
                               {{ __('Agregar empresa') }}
                           </a>
+                          @endif
                           <a class="dropdown-item" href="{{ url('/services/associate') }}">
                             {{ __('Asociar servicio') }}
                         </a>
