@@ -49,7 +49,6 @@
           :state="this.states.rut"
           @change="getCompany"
         >
-        <b-spinner small></b-spinner>
         </b-form-input>
         <b-form-invalid-feedback id="input-live-feedback">{{
           this.message.rut
