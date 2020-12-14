@@ -25,9 +25,9 @@ Route::get('/', function () {
 
 Auth::routes(["/register" => false]);
 Route::group(['middleware' => ['auth']], function () {
-    Route::resource('/companies', "CompanyController");
-    Route::get('/companies/rut/{rut}', "CompanyController@getCompanyByRut");
-    Route::get('/services/associate', 'ServiceController@create');
+    Route::resource('companies', 'CompanyController');
+    Route::get('companies/rut/{rut}', 'CompanyController@getCompanyByRut');
+    Route::get('services/associate', 'ServiceController@create');
 });
 
 Route::get('/home', "HomeController@index")->name('home');
