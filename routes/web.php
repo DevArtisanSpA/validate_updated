@@ -17,16 +17,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::user()) {
+        return redirect('home');
+    }
+    return view('auth/login');
 });
 
-Auth::routes(["register" => false]);
+Auth::routes(["/register" => false]);
 Route::group(['middleware' => ['auth']], function () {
-    Route::resource('companies', CompanyController::class);
-    Route::get('companies/rut/{rut}', [CompanyController::class, 'getCompanyByRut']);
-    Route::get('services/associate', [ServiceController::class, 'create']);
+    Route::resource('/companies', "CompanyController");
+    Route::get('/companies/rut/{rut}', "CompanyController@getCompanyByRut");
+    Route::get('/services/associate', 'ServiceController@create');
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', "HomeController@index')->name('home');
 
 
