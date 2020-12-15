@@ -34,7 +34,7 @@
                           <a class="dropdown-item" href="{{ url('/companies') }}">
                               {{ __('Lista de empresas') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->id_company != null)
                           <a class="dropdown-item" href="{{ url('/companies/create') }}">
                               {{ __('Agregar empresa') }}
                           </a>
@@ -51,20 +51,20 @@
                           </a>
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/documents/company/fixed') }}">
-                              {{ __('Lista documentos empresa fijo') }}
+                              {{ __('Lista documentos bases de empresa') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->id_company != null)
                           <a class="dropdown-item" href="{{ url('/documents/company/create/fixed') }}">
-                              {{ __('Agregar documentos empresa fijo') }}
+                              {{ __('Agregar documentos bases de empresa') }}
                           </a>
                           @endif
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/documents/company/monthly') }}">
-                              {{ __('Lista documentos empresa mensual') }}
+                              {{ __('Lista documentos mensuales de empresa') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->id_company != null)
                           <a class="dropdown-item" href="{{ url('/documents/company/create/monthly') }}">
-                              {{ __('Agregar documentos empresa mensual') }}
+                              {{ __('Agregar documentos mensuales empresa') }}
                           </a>
                           @endif
                       </div>
@@ -85,26 +85,26 @@
                           </a>
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/documents/employee/fixed') }}">
-                              {{ __('Lista documentos empleado fijo') }}
+                              {{ __('Lista documentos bases de empleado') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->id_company != null)
                           <a class="dropdown-item" href="{{ url('/documents/employee/create/fixed') }}">
-                              {{ __('Agregar documentos empleado fijo') }}
+                              {{ __('Agregar documentos bases de empleado') }}
                           </a>
                           @endif
                           <hr class="line">
 
                           <a class="dropdown-item" href="{{ url('/documents/employee/monthly') }}">
-                              {{ __('Lista documentos empleado mensual') }}
+                              {{ __('Lista documentos mensuales de empleado') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->id_company != null)
                           <a class="dropdown-item" href="{{ url('/documents/employee/create/monthly') }}">
-                              {{ __('Agregar documentos empleado mensual') }}
+                              {{ __('Agregar documentos mensuales de empleado') }}
                           </a>
                           @endif
                       </div>
                   </li>
-                  @if (Auth::user()->id_type == 1)
+                  @if (Auth::user()->user_type_id == 1)
                   <li class="nav-item dropdown">
                       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                           {{ __('Revisión') }} <span class="caret"></span>
@@ -136,14 +136,14 @@
                           <a class="dropdown-item" href="{{ url('/reports') }}">
                               {{ __('Reportes empresas') }}
                           </a>
-                          @if (Auth::user()->id_type == 1)
+                          @if (Auth::user()->user_type_id == 1)
                           <a class="dropdown-item" href="{{ url('/certificate') }}">
                               {{ __('Generar certificado') }}
                           </a>
                           @endif
                       </div>
                   </li>
-                  @if (Auth::user()->id_type == 1)
+                  @if (Auth::user()->user_type_id == 1)
                   <li class="nav-item dropdown">
                       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                           {{ __('Usuarios') }} <span class="caret"></span>
@@ -164,7 +164,7 @@
                           {{ Auth::user()->name }} <span class="caret"></span>
                       </a>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                          @if (Auth::user()->id_type > 1 && Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id > 1 && Auth::user()->id_company != null)
                           <a class="dropdown-item" href="{{ url('/companies/' . Auth::user()->id_company . '/edit') }}">
                               Detalle empresa
                           </a>
