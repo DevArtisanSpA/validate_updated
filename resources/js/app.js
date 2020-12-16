@@ -103,6 +103,18 @@ Vue.component(
   require("./components/report/pie-chart.vue").default
 );
 
+//Branch_offices
+Vue.component(
+  "branch-office-table",
+  require("./components/branchOffice/branch-office-table.vue").default
+);
+Vue.component(
+  "branch-office-new-edit",
+  require("./components/branchOffice/branch-office-new-edit.vue").default
+);
+
+
+
 const app = new Vue({
   el: "#app",
   components: {}
