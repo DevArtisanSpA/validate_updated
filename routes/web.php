@@ -3,6 +3,7 @@
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HomeController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -18,18 +19,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::user()) {
+        return redirect('home');
+    }
+    return view('auth/login');
 });
 
 Auth::routes(["register" => false]);
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('users', UserController::class);
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('companies', CompanyController::class);
     Route::get('companies/rut/{rut}', [CompanyController::class, 'getCompanyByRut']);
     Route::get('services/associate', [ServiceController::class, 'create']);
     Route::post('services/associate', [ServiceController::class, 'store']);
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 

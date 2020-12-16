@@ -51,20 +51,20 @@
                           </a>
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/documents/company/fixed') }}">
-                              {{ __('Lista documentos empresa fijo') }}
+                              {{ __('Lista documentos bases de empresa') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/company/create/fixed') }}">
-                              {{ __('Agregar documentos empresa fijo') }}
+                              {{ __('Agregar documentos bases de empresa') }}
                           </a>
                           @endif
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/documents/company/monthly') }}">
-                              {{ __('Lista documentos empresa mensual') }}
+                              {{ __('Lista documentos mensuales de empresa') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/company/create/monthly') }}">
-                              {{ __('Agregar documentos empresa mensual') }}
+                              {{ __('Agregar documentos mensuales empresa') }}
                           </a>
                           @endif
                       </div>
@@ -85,21 +85,21 @@
                           </a>
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/documents/employee/fixed') }}">
-                              {{ __('Lista documentos empleado fijo') }}
+                              {{ __('Lista documentos bases de empleado') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/employee/create/fixed') }}">
-                              {{ __('Agregar documentos empleado fijo') }}
+                              {{ __('Agregar documentos bases de empleado') }}
                           </a>
                           @endif
                           <hr class="line">
 
                           <a class="dropdown-item" href="{{ url('/documents/employee/monthly') }}">
-                              {{ __('Lista documentos empleado mensual') }}
+                              {{ __('Lista documentos mensuales de empleado') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/employee/create/monthly') }}">
-                              {{ __('Agregar documentos empleado mensual') }}
+                              {{ __('Agregar documentos mensuales de empleado') }}
                           </a>
                           @endif
                       </div>
