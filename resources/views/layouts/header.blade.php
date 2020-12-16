@@ -34,7 +34,7 @@
                           <a class="dropdown-item" href="{{ url('/companies') }}">
                               {{ __('Lista de empresas') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/companies/create') }}">
                               {{ __('Agregar empresa') }}
                           </a>
@@ -53,7 +53,7 @@
                           <a class="dropdown-item" href="{{ url('/documents/company/fixed') }}">
                               {{ __('Lista documentos empresa fijo') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/company/create/fixed') }}">
                               {{ __('Agregar documentos empresa fijo') }}
                           </a>
@@ -62,7 +62,7 @@
                           <a class="dropdown-item" href="{{ url('/documents/company/monthly') }}">
                               {{ __('Lista documentos empresa mensual') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/company/create/monthly') }}">
                               {{ __('Agregar documentos empresa mensual') }}
                           </a>
@@ -87,7 +87,7 @@
                           <a class="dropdown-item" href="{{ url('/documents/employee/fixed') }}">
                               {{ __('Lista documentos empleado fijo') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/employee/create/fixed') }}">
                               {{ __('Agregar documentos empleado fijo') }}
                           </a>
@@ -97,14 +97,14 @@
                           <a class="dropdown-item" href="{{ url('/documents/employee/monthly') }}">
                               {{ __('Lista documentos empleado mensual') }}
                           </a>
-                          @if (Auth::user()->id_type == 1 || Auth::user()->id_company != null)
+                          @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
                           <a class="dropdown-item" href="{{ url('/documents/employee/create/monthly') }}">
                               {{ __('Agregar documentos empleado mensual') }}
                           </a>
                           @endif
                       </div>
                   </li>
-                  @if (Auth::user()->id_type == 1)
+                  @if (Auth::user()->user_type_id == 1)
                   <li class="nav-item dropdown">
                       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                           {{ __('Revisión') }} <span class="caret"></span>
@@ -136,14 +136,14 @@
                           <a class="dropdown-item" href="{{ url('/reports') }}">
                               {{ __('Reportes empresas') }}
                           </a>
-                          @if (Auth::user()->id_type == 1)
+                          @if (Auth::user()->user_type_id == 1)
                           <a class="dropdown-item" href="{{ url('/certificate') }}">
                               {{ __('Generar certificado') }}
                           </a>
                           @endif
                       </div>
                   </li>
-                  @if (Auth::user()->id_type == 1)
+                  @if (Auth::user()->user_type_id == 1)
                   <li class="nav-item dropdown">
                       <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                           {{ __('Usuarios') }} <span class="caret"></span>
@@ -164,8 +164,8 @@
                           {{ Auth::user()->name }} <span class="caret"></span>
                       </a>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                          @if (Auth::user()->id_type > 1 && Auth::user()->id_company != null)
-                          <a class="dropdown-item" href="{{ url('/companies/' . Auth::user()->id_company . '/edit') }}">
+                          @if (Auth::user()->user_type_id > 1 && Auth::user()->company_id != null)
+                          <a class="dropdown-item" href="{{ url('/companies/' . Auth::user()->company_id . '/edit') }}">
                               Detalle empresa
                           </a>
                           @endif
