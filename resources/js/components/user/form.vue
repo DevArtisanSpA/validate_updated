@@ -62,7 +62,7 @@
         <b-form-select
           id="input-company"
           type="text"
-          v-model="formdata.id_company"
+          v-model="formdata.company_id"
           :state="company_state"
           @input="checkCompany"
         >
@@ -101,7 +101,8 @@ export default {
         id: this.$props.user === undefined ? null : this.$props.user.id,
         name: this.$props.user === undefined ? null : this.$props.user.name,
         email: this.$props.user === undefined ? null : this.$props.user.email,
-        id_company: this.$props.user === undefined ? null : this.$props.user.id_company,
+        company_id: this.$props.user === undefined ? null : this.$props.user.company_id,
+        user_type_id: 2
       },
     };
   },
@@ -121,7 +122,7 @@ export default {
       }
     },
     checkCompany() {
-      if (this.formdata.id_company === null) {
+      if (this.formdata.company_id === null) {
         this.user_type_state = false;
       } else {
         this.user_type_state = true;
@@ -142,7 +143,7 @@ export default {
         this.email_state = false;
       }
 
-      if (this.formdata.id_company === null) {
+      if (this.formdata.company_id === null) {
         this.errors.push({ message: "Empresa asociada requerida." });
         this.error = 1;
         this.user_type_state = false;
@@ -182,7 +183,7 @@ export default {
           .post(url, this.formdata )
           .then((res) => {
             if(res.status === 200){
-              window.location.href = window.location.origin + '/users';
+              window.location.href = window.location.origin + '/home';
             } else {
               this.$refs["modal-confirm"].hide();
               this.errors = [];
@@ -191,7 +192,8 @@ export default {
             }
           })
           .catch((err) => {
-            // catch error
+            this.errors = [{message: "Ha ocurrido un error creando el usuario. Inténtelo más tarde."}];
+            this.error = 1;
           });
       }
     },
