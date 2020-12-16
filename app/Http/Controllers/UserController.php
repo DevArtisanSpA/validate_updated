@@ -66,8 +66,8 @@ class UserController extends Controller
             if($result){
                 $user = User::find($result->id);
 
-                //$token = app('auth.password.broker')->createToken($user);
-                //Mail::to($user->email)->send(new MailWelcome($token, $user));
+                $token = app('auth.password.broker')->createToken($user);
+                Mail::to($user->email)->send(new MailWelcome($token, $user));
                 return response()->json(["message" => "Usuario creado exitosamente"], 200);
             }
             else
