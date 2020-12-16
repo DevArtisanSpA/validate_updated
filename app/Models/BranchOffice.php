@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class BranchOffice extends Model
 {
@@ -12,14 +13,28 @@ class BranchOffice extends Model
     protected $fillable = ["company_id", "commune_id", "name", "address", "phone1", "phone2"];
 
     public function company() {
-        $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function commune() {
-        $this->belongsTo(Commune::class);
+        return $this->belongsTo(Commune::class);
     }
 
     public function services() {
-        $this->hasMany(Service::class);
+        return $this->hasMany(Service::class);
+    }
+    public static function edit($form_data)
+    {
+        return DB::table('branch_offices')
+            ->where('id', $form_data['id'])
+            ->update([
+                'company_id' => $form_data['company_id'],
+                'commune_id' => $form_data['commune_id'],
+                'name' => $form_data['name'],
+                'address' => $form_data['address'],
+                'phone1' => $form_data['phone1'],
+                'phone2' => $form_data['phone2'],
+                'updated_at' => Carbon::now()
+            ]);
     }
 }
