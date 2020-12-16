@@ -3,6 +3,7 @@
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReportController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('companies/rut/{rut}', [CompanyController::class, 'getCompanyByRut']);
     Route::get('services/associate', [ServiceController::class, 'create']);
     Route::post('services/associate', [ServiceController::class, 'store']);
+    // route for report view
+    Route::get('/reports', [ReportController::class, 'index']);
+    Route::get('/reports/{id}', [ReportController::class, 'show']);
+
+
 });
 
 

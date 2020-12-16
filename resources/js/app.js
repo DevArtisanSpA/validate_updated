@@ -85,7 +85,19 @@ Array.prototype.unique = function (a) {
 }(function (a, b, c) {
   return c.indexOf(a, b + 1) < 0
 });
+//Report
+Vue.component(
+  "report-by-company",
+  require("./components/report/report-by-company.vue").default
+);
+
+Vue.component(
+  "pie-chart",
+  require("./components/report/pie-chart.vue").default
+);
+
 const app = new Vue({
   el: "#app",
   components: {}
 });
+
