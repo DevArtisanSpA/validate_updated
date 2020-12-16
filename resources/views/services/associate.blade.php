@@ -13,6 +13,6 @@
         :auth="{{ $auth }}"
         :is_update="0"
         :service_types="{{ $serviceTypes }}"
-        :branchOffices="{{ $branchOffices }}"></associate-service>
+        :companies="{{ $companies }}"></associate-service>
 </div>
 @endsection

@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('companies', CompanyController::class);
     Route::get('companies/rut/{rut}', [CompanyController::class, 'getCompanyByRut']);
     Route::get('services/associate', [ServiceController::class, 'create']);
+    Route::post('services/associate', [ServiceController::class, 'store']);
 });
 
 
