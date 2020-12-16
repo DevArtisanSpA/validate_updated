@@ -11,6 +11,7 @@ use App\Models\DocumentType;
 use App\Models\Document;
 use App\Models\User;
 use App\Models\ServiceType;
+use App\Models\Service;
 use App\Helpers\Constants;
 
 use Auth;
@@ -37,7 +38,6 @@ class ServiceController extends Controller
     {
         $regions = Region::with('communes')->get();
         $commercialBusinesses = CommercialBusiness::all();
-        $companies = Company::with('branchOffices')->where("active", true)->orderBy('business_name')->get();
         $documentTypes = new stdClass();
         $authData = Auth::user();
         $authData->isAdmin = Auth::user()->user_type_id == 1;
@@ -45,18 +45,52 @@ class ServiceController extends Controller
             $documentTypes->$key = DocumentType::find($value)->sortBy('name');
         }
         $serviceTypes = ServiceType::all();
-        $myBranchOffices = BranchOffice::all();
-        return view('services/associate', [
+        $companies = Company::with('branchOffices')->where("active", true)->orderBy('business_name')->get();
+        $viewData = [
             'dataList' => json_encode([
                 'regions' => $regions,
                 'commercialBusinesses' => $commercialBusinesses,
-                'companiesFather' => $companies,
                 'affiliations' => Constants::$AFFILIATIONS,
                 'documentTypes' => $documentTypes
             ]),
             'auth' => $authData,
             'serviceTypes' => $serviceTypes,
-            'branchOffices' => $myBranchOffices
+            'companies' => $companies
+        ];
+        return view('services/associate', $viewData);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'branch_office_id' => ['required', 'integer'],
+            'service_type_id' => ['required', 'integer'],
+            'company_id' => ['required', 'integer'],
+            'description' => ['nullable'],
+            'active' => ['boolean']
         ]);
+
+        $error_array = array();
+        if ($validation->fails()) {
+            foreach ($validation->messages()->getMessages() as $field_name => $messages) {
+                $error_array[] = $messages[0];
+            }
+            return response()->json($error_array, 201);
+        } else {
+            $result = Service::create($request->all());
+            if ($result) {
+                return response()->json(["message" => "Servicio creado exitosamente", "service" => $result], 200);
+            }
+            else {
+                return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
+            }
+        }
+        return true;
     }
 }
