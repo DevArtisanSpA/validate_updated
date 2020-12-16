@@ -41,6 +41,13 @@ Vue.component(
   require("./components/service/form.vue").default
 );
 
+//User
+Vue.component(
+  "user-form",
+  require("./components/user/form.vue").default
+);
+
+
 Vue.prototype.$truthty = function (data) {
   if (
       data === undefined ||
