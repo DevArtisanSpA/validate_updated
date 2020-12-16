@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReportController;
 
@@ -27,6 +28,7 @@ Route::get('/', function () {
 
 Auth::routes(["register" => false]);
 Route::group(['middleware' => ['auth']], function () {
+    Route::resource('users', UserController::class);
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('companies', CompanyController::class);
     Route::get('companies/rut/{rut}', [CompanyController::class, 'getCompanyByRut']);
