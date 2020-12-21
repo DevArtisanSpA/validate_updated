@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Company extends Model
 {
@@ -23,5 +24,10 @@ class Company extends Model
 
     public function branchOffices() {
         return $this->hasMany(BranchOffice::class);
+    }
+
+    public function parentBranchOffices()
+    {
+        return $this->belongsToMany(BranchOffice::class, Service::class);
     }
 }

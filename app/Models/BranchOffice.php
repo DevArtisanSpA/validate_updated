@@ -12,14 +12,19 @@ class BranchOffice extends Model
     protected $fillable = ["company_id", "commune_id", "name", "address", "phone1", "phone2"];
 
     public function company() {
-        $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function commune() {
-        $this->belongsTo(Commune::class);
+        return $this->belongsTo(Commune::class);
     }
 
     public function services() {
-        $this->hasMany(Service::class);
+        return $this->hasMany(Service::class);
+    }
+
+    public function childCompanies()
+    {
+        return $this->belongToMany(Company::class, Service::class);
     }
 }
