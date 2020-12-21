@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\ActiveScope;
+use App\Models\Scopes\ActiveCompaniesScope;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,7 +23,7 @@ class Company extends Model
      */
     protected static function booted()
     {
-        static::addGlobalScope(new ActiveScope);
+        static::addGlobalScope(new ActiveCompaniesScope);
     }
 
     public function commercialBusiness() {

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class ActiveScope implements Scope
+class ActiveBranchOfficesScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -17,6 +17,6 @@ class ActiveScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('active', '=', '1');
+        $builder->where('branch_offices.active', '=', '1');
     }
 }
