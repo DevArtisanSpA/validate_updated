@@ -41,7 +41,7 @@ class CompanyController extends Controller
                 'commercialBusiness:id,name',
                 'parentBranchOffices:id,company_id',
                 'parentBranchOffices.company:id,business_name'
-            ])->withCount('branchOffices')->get();
+            ])->get();
             foreach($companies as $company) {
                 $parentCompanies = collect();
                 foreach($company->parentBranchOffices as $parentBranchOffice) {
@@ -202,6 +202,22 @@ class CompanyController extends Controller
                 return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
         }
         return true;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $deletedCompany = Company::find($id);
+        $deletedCompany->active = false;
+        if ($deletedCompany->save())
+            return response()->json(["message" => "Empresa eliminada exitosamente"], 200);
+        else
+            return response()->json(["message" => "Error al intentar eliminar empresa, por favor intentar nuevamente"], 400);
     }
 
     /**

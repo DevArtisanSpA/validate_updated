@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ActiveScope;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +15,16 @@ class Company extends Model
     protected $fillable = [
         "commercial_business_id", "rut", "business_name", "contact_name", "contact_email", "affiliation", "affiliation_date", "active"
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ActiveScope);
+    }
 
     public function commercialBusiness() {
         return $this->belongsTo(CommercialBusiness::class);

@@ -1,5 +1,14 @@
 <template>
   <div>
+    <div v-if="errors.length">
+      <b-alert variant="danger" show>
+        <ul class="mb-0 mx-3">
+          <li v-for="(error, index) in errors" v-bind:key="index">
+            {{ error }}
+          </li>
+        </ul>
+      </b-alert>
+    </div>
     <el-input
       v-model="search"
       placeholder="Buscar empresa"
@@ -157,7 +166,6 @@
             v-b-tooltip.hover
             title="Eliminar"
             circle
-            :disabled="isDisabled(props.row, tableData)"
           ></el-button>
         </template>
       </el-table-column>
@@ -211,14 +219,11 @@ export default {
           window.location.href = window.location.origin + "/companies";
         })
         .catch((err) => {
-          // catch error
+          this.errors.push( err.response.data.message );
         });
     },
     hideModal() {
       this.$refs["modal-confirm"].hide();
-    },
-    isDisabled(row) {
-      return row.branch_offices_count > 0;
     },
     valuesFilter(tableData, e) {
       let names = [];
@@ -295,6 +300,7 @@ export default {
       idRowDelete: null,
       search: "",
       company,
+      errors: [],
     };
   },
   mounted() {
