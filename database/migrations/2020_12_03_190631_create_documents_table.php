@@ -20,7 +20,7 @@ class CreateDocumentsTable extends Migration
             $table->foreignId('service_id')->constrained();
             $table->foreignId('employee_id')->nullable()->constrained();
             $table->date('start');
-            $table->date('finished')->nullable();
+            $table->date('finish')->nullable();
             $table->string('month_year_registry',7)->nullable();
             $table->string('path_data')->nullable();
             $table->text('observations')->nullable();

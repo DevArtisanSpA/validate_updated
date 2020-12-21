@@ -9,7 +9,7 @@ class BranchOffice extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["company_id", "commune_id", "name", "address", "phone1", "phone2"];
+    protected $fillable = ["company_id", "commune_id", "name", "address", "phone1", "phone2", "active"];
 
     public function company() {
         return $this->belongsTo(Company::class);
