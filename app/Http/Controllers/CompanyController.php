@@ -28,6 +28,43 @@ class CompanyController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $my_company = new stdClass();
+        if (Auth::user()->user_type_id == 1) {
+            $user = Auth::user();
+            $companies = Company::with([
+                'commercialBusiness:id,name',
+                'parentBranchOffices:id,company_id',
+                'parentBranchOffices.company:id,business_name'
+            ])->withCount('branchOffices')->get();
+            foreach($companies as $company) {
+                $parentCompanies = collect();
+                foreach($company->parentBranchOffices as $parentBranchOffice) {
+                    $parentCompanies = $parentCompanies->merge($parentBranchOffice->company->business_name);
+                }
+
+                $company->parentCompanies = $parentCompanies;
+                unset($company->parentBranchOffices);
+            }
+        } else {
+            $user = Auth::user()->load('company');
+            $my_company = Company::find(Auth::user()->id_company);
+            $companies = collect([$my_company]);
+            $child_companies = $my_company->Companies_c;
+            $companies = $companies->merge($child_companies);
+        }
+        return view('companies/index', [
+            'companies' =>  $companies,
+            'auth' => $user
+        ]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

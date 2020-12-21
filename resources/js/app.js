@@ -29,6 +29,10 @@ Vue.component(
   "company-search",
   require("./components/company/search.vue").default
 );
+Vue.component(
+  "company-table",
+  require("./components/company/table.vue").default
+);
 
 //Service
 Vue.component(
