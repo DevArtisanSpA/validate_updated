@@ -156,20 +156,48 @@ class CompanyController extends Controller
                 $branchOfficeData["name"] = "Casa Matriz";
                 $branchOfficeData["company_id"] = $result->id;
                 $newBranchOffice = BranchOffice::create($branchOfficeData);
-                /*foreach ($input['companies_p'] as $key => $id_p) {
-                    $contractor = new Contractor();
-                    $contractor->id_contractor = $result->id;
-                    $contractor->id_company = $id_p;
-                    $contractor->save();
-                    Mail::to(
-                        [Company::find($id_p)->email, $result->email, Constants::getAdmin()->email]
-                    )->send(new CompanyAssociation($result, [$id_p]));
-                }*/
                 if ($result)
                     return response()->json(["message" => "Empresa creada exitosamente", "company" => $result], 200);
                 else
                     return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
             }
+            else
+                return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
+        }
+        return true;
+    }
+
+    /**
+     * Update a resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id' => ['required'],
+            'commercial_business_id' => ['required'],
+            'business_name' => ['required', 'string', 'min:3', 'max:100'],
+            'contact_name' => ['required', 'string', 'min:3', 'max:50'],
+            'affiliation' => ['required', 'string', 'min:3'],
+            'affiliation_date' => ['required', 'date'],
+            'contact_email' => ['required', 'regex:/^.+@.+$/i'],
+            'rut' => ['required', 'min:3', 'max:20'],
+        ]);
+
+
+        $error_array = array();
+        if ($validation->fails()) {
+            foreach ($validation->messages()->getMessages() as $field_name => $messages) {
+                $error_array[] = $messages[0];
+            }
+            return response()->json($error_array, 201);
+        } else {
+            $company = Company::find($request->id);
+            $result = $company->update($request->all());
+            if ($result)
+                return response()->json(["message" => "Empresa creada exitosamente", "company" => $result], 200);
             else
                 return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
         }

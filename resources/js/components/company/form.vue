@@ -399,26 +399,28 @@ export default {
           this.states.commercial_business_id = false;
           this.message.commercial_business_id = "Giro de compañía requerido.";
         }
-        if (!this.$truthty(this.formData.branchOffice.region_id)) {
-          this.error = 1;
-          this.states.region_id = false;
-          this.message.region_id = "Región requerido.";
-        }
-        if (!this.$truthty(this.formData.branchOffice.commune_id)) {
-          this.error = 1;
-          this.states.commune_id = false;
-          this.message.commune_id = "Comuna requerida.";
-        }
-        if (!this.$truthty(this.formData.branchOffice.address)) {
-          this.error = 1;
-          this.states.address = false;
-          this.message.address = "Dirección requerida.";
-        }
-        if (!this.$truthty(this.formData.branchOffice.phone1)) {
-          this.error = 1;
-          this.states.phone1 = false;
-          this.message.phone1 =
-            "Se debe informar al menos un teléfono de contacto.";
+        if (!this.$props.is_update) {
+          if (!this.$truthty(this.formData.branchOffice.region_id)) {
+            this.error = 1;
+            this.states.region_id = false;
+            this.message.region_id = "Región requerido.";
+          }
+          if (!this.$truthty(this.formData.branchOffice.commune_id)) {
+            this.error = 1;
+            this.states.commune_id = false;
+            this.message.commune_id = "Comuna requerida.";
+          }
+          if (!this.$truthty(this.formData.branchOffice.address)) {
+            this.error = 1;
+            this.states.address = false;
+            this.message.address = "Dirección requerida.";
+          }
+          if (!this.$truthty(this.formData.branchOffice.phone1)) {
+            this.error = 1;
+            this.states.phone1 = false;
+            this.message.phone1 =
+              "Se debe informar al menos un teléfono de contacto.";
+          }
         }
         if (!this.$truthty(this.formData.company.contact_name)) {
           this.error = 1;
@@ -493,9 +495,14 @@ export default {
       console.log(this.formData);
       this.send = true;
       if (this.$props.is_update) {
+        const {
+          formData: {
+            company
+          }
+        } = this
         const url = `${window.location.origin}/companies/${this.formData.company.id}`;
         axios
-          .patch(url, this.formData)
+          .patch(url, company)
           .then((res) => {
             if (res.status === 200) {
               window.location.href = window.location.origin + "/companies";
