@@ -96,7 +96,31 @@ Array.prototype.unique = function (a) {
 }(function (a, b, c) {
   return c.indexOf(a, b + 1) < 0
 });
+//Report
+Vue.component(
+  "report-by-company",
+  require("./components/report/report-by-company.vue").default
+);
+
+Vue.component(
+  "pie-chart",
+  require("./components/report/pie-chart.vue").default
+);
+
+//Branch_offices
+Vue.component(
+  "branch-office-table",
+  require("./components/branchOffice/branch-office-table.vue").default
+);
+Vue.component(
+  "branch-office-new-edit",
+  require("./components/branchOffice/branch-office-new-edit.vue").default
+);
+
+
+
 const app = new Vue({
   el: "#app",
   components: {}
 });
+

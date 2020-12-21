@@ -112,17 +112,17 @@
 
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                           <a class="dropdown-item" href="{{ url('/review/company/fixed') }}">
-                              {{ __('Empresa fijo') }}
+                              {{ __('Documentos bases de empresas') }}
                           </a>
                           <a class="dropdown-item" href="{{ url('/review/company/monthly') }}">
-                              {{ __('Empresa mensual') }}
+                              {{ __('EDocumentos mensuales de empresas') }}
                           </a>
                           <hr class="line">
                           <a class="dropdown-item" href="{{ url('/review/employee/fixed') }}">
-                              {{ __('Empleado fijo') }}
+                              {{ __('Documentos bases de empleados') }}
                           </a>
                           <a class="dropdown-item" href="{{ url('/review/employee/monthly') }}">
-                              {{ __('Empleado mensual') }}
+                              {{ __('Documentos mensuales de empleados') }}
                           </a>
                       </div>
                   </li>
