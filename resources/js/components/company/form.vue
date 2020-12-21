@@ -134,107 +134,109 @@
         }}</b-form-invalid-feedback>
       </b-col>
     </b-row>
-    <b-row>
-      <b-col md="6">
-        <label for="input-phone1">
-          <span class="text-danger">*</span> Teléfono 1
-        </label>
-        <b-form-input
-          id="input-phone1"
-          :formatter="(e) => formatter('phone1', e)"
-          type="number"
-          v-model="formData.branchOffice.phone1"
-          :disabled="isDisabled() || disabled"
-          :state="this.states.phone1"
-        />
-        <b-form-invalid-feedback id="input-live-feedback">{{
-          this.message.phone1
-        }}</b-form-invalid-feedback>
-      </b-col>
-      <b-col md="6">
-        <label for="input-phone2">
-          <span>Teléfono 2</span>
-        </label>
-        <b-form-input
-          id="input-phone2"
-          :formatter="format"
-          type="number"
-          v-model="formData.branchOffice.phone2"
-          :disabled="isDisabled() || disabled"
-        />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col md="4">
-        <label for="input-region">
-          <span class="text-danger">*</span> Región
-        </label>
-        <b-form-select
-          id="input-region"
-          v-model="formData.branchOffice.region_id"
-          @input="loadCommunes(formData.branchOffice.region_id, !disabled)"
-          :disabled="isDisabled() || disabled"
-          :state="this.states.region_id"
-          :formatter="(e) => formatter('region_id', e)"
-        >
-          <template v-slot:first>
-            <option :value="null" disabled>Selecciona una opción</option>
-          </template>
-          <option
-            v-for="region in this.$props.dataList.regions"
-            v-bind:key="region.id"
-            :value="region.id"
+    <div v-if="is_update == 0">
+      <b-row>
+        <b-col md="6">
+          <label for="input-phone1">
+            <span class="text-danger">*</span> Teléfono 1
+          </label>
+          <b-form-input
+            id="input-phone1"
+            :formatter="(e) => formatter('phone1', e)"
+            type="number"
+            v-model="formData.branchOffice.phone1"
+            :disabled="isDisabled() || disabled"
+            :state="this.states.phone1"
+          />
+          <b-form-invalid-feedback id="input-live-feedback">{{
+            this.message.phone1
+          }}</b-form-invalid-feedback>
+        </b-col>
+        <b-col md="6">
+          <label for="input-phone2">
+            <span>Teléfono 2</span>
+          </label>
+          <b-form-input
+            id="input-phone2"
+            :formatter="format"
+            type="number"
+            v-model="formData.branchOffice.phone2"
+            :disabled="isDisabled() || disabled"
+          />
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col md="4">
+          <label for="input-region">
+            <span class="text-danger">*</span> Región
+          </label>
+          <b-form-select
+            id="input-region"
+            v-model="formData.branchOffice.region_id"
+            @input="loadCommunes(formData.branchOffice.region_id, !disabled)"
+            :disabled="isDisabled() || disabled"
+            :state="this.states.region_id"
+            :formatter="(e) => formatter('region_id', e)"
           >
-            {{ region.name }}
-          </option>
-        </b-form-select>
-        <b-form-invalid-feedback id="input-live-feedback">{{
-          this.message.region_id
-        }}</b-form-invalid-feedback>
-      </b-col>
-      <b-col md="4">
-        <label for="input-comuna">
-          <span class="text-danger">*</span> Comuna
-        </label>
-        <b-form-select
-          id="input-comuna"
-          v-model="formData.branchOffice.commune_id"
-          :disabled="isDisabled() || disabled"
-          :state="this.states.commune_id"
-          :formatter="(e) => formatter('commune_id', e)"
-        >
-          <template v-slot:first>
-            <option :value="null" disabled>Selecciona una opción</option>
-          </template>
-          <option
-            v-for="commune in communes"
-            v-bind:key="commune.id"
-            :value="commune.id"
+            <template v-slot:first>
+              <option :value="null" disabled>Selecciona una opción</option>
+            </template>
+            <option
+              v-for="region in this.$props.dataList.regions"
+              v-bind:key="region.id"
+              :value="region.id"
+            >
+              {{ region.name }}
+            </option>
+          </b-form-select>
+          <b-form-invalid-feedback id="input-live-feedback">{{
+            this.message.region_id
+          }}</b-form-invalid-feedback>
+        </b-col>
+        <b-col md="4">
+          <label for="input-comuna">
+            <span class="text-danger">*</span> Comuna
+          </label>
+          <b-form-select
+            id="input-comuna"
+            v-model="formData.branchOffice.commune_id"
+            :disabled="isDisabled() || disabled"
+            :state="this.states.commune_id"
+            :formatter="(e) => formatter('commune_id', e)"
           >
-            {{ commune.name.toCamelCase() }}
-          </option>
-        </b-form-select>
-        <b-form-invalid-feedback id="input-live-feedback">{{
-          this.message.commune_id
-        }}</b-form-invalid-feedback>
-      </b-col>
-      <b-col md="4">
-        <label for="input-address">
-          <span class="text-danger">*</span> Dirección
-        </label>
-        <b-form-input
-          id="input-address"
-          type="text"
-          v-model="formData.branchOffice.address"
-          :disabled="isDisabled() || disabled"
-          :state="this.states.address"
-          :formatter="(e) => formatter('address', e)"
-        />
-        <b-form-invalid-feedback id="input-live-feedback">{{
-          this.message.address
-        }}</b-form-invalid-feedback>
-      </b-col>
-    </b-row>
+            <template v-slot:first>
+              <option :value="null" disabled>Selecciona una opción</option>
+            </template>
+            <option
+              v-for="commune in communes"
+              v-bind:key="commune.id"
+              :value="commune.id"
+            >
+              {{ commune.name.toCamelCase() }}
+            </option>
+          </b-form-select>
+          <b-form-invalid-feedback id="input-live-feedback">{{
+            this.message.commune_id
+          }}</b-form-invalid-feedback>
+        </b-col>
+        <b-col md="4">
+          <label for="input-address">
+            <span class="text-danger">*</span> Dirección
+          </label>
+          <b-form-input
+            id="input-address"
+            type="text"
+            v-model="formData.branchOffice.address"
+            :disabled="isDisabled() || disabled"
+            :state="this.states.address"
+            :formatter="(e) => formatter('address', e)"
+          />
+          <b-form-invalid-feedback id="input-live-feedback">{{
+            this.message.address
+          }}</b-form-invalid-feedback>
+        </b-col>
+      </b-row>
+    </div>
     <b-row>
       <b-col md="6">
         <label for="input-affiliation">
@@ -311,7 +313,6 @@ export default {
   data() {
     const {
       company,
-      dataList: { documentTypes },
       rut
     } = this.$props;
     const truthty = this.$truthty;
@@ -322,7 +323,6 @@ export default {
       communes: [],
       disabled: false,
       business_name: "",
-      documentTypes: !truthty(documentTypes) ? [] : documentTypes.default,
       formData: {
         company: {
           id: !truthty(company) ? null : company.id,
@@ -337,11 +337,11 @@ export default {
           affiliation_date: !truthty(company) ? null : company.affiliation_date,
         },
         branchOffice: {
-          region_id: !truthty(company) ? null : company.commune.region_id,
-          commune_id: !truthty(company) ? null : company.commune_id,
-          address: !truthty(company) ? null : company.address,
-          phone1: !truthty(company) ? null : company.phone1,
-          phone2: !truthty(company) ? null : company.phone2
+          region_id: null,
+          commune_id: null,
+          address: null,
+          phone1: null,
+          phone2: null
         }
       },
       states: {
@@ -561,14 +561,6 @@ export default {
         }
       }
       return false;
-    },
-    changeListDocument(value) {
-      const documents = this.$props.dataList.documentTypes;
-      if (this.$truthty(documents[value])) {
-        this.documentTypes = documents[value];
-      } else {
-        this.documentTypes = documents.default;
-      }
     },
     getCompany(value) {
       if (value.length >= 8) {

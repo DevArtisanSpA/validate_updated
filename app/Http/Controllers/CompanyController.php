@@ -73,20 +73,39 @@ class CompanyController extends Controller
     {
         $regions = Region::with('communes')->get();
         $commercialBusinesses = CommercialBusiness::all();
-        $companies = Company::with('branchOffices')->where("active", true)->orderBy('business_name')->get();
-        $documentTypes = new stdClass();
+        $companies = Company::where("active", true)->orderBy('business_name')->get();
         $authData = Auth::user();
         $authData->isAdmin = Auth::user()->user_type_id == 1;
-        foreach (Constants::$DOC_COMPANY_CREATE as $key => $value) {
-            $documentTypes->$key = DocumentType::find($value)->sortBy('name');
-        }
         return view('companies/new', [
             'dataList' => json_encode([
                 'regions' => $regions,
                 'commercialBusinesses' => $commercialBusinesses,
-                'companiesFather' => $companies,
                 'affiliations' => Constants::$AFFILIATIONS,
-                'documentTypes' => $documentTypes
+            ]),
+            'auth' => $authData
+        ]);
+    }
+
+     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $company = Company::find($id);
+        $regions = Region::with('communes')->get();
+        $commercialBusinesses = CommercialBusiness::all();
+        $companies = Company::where([['active', '=', '1'], ['id', '<>', $id]])->orderBy('business_name')->get();
+        $authData = Auth::user();
+        $authData->isAdmin = Auth::user()->user_type_id == 1;
+        return view('companies/edit', [
+            'company' => $company,
+            'dataList' => json_encode([
+                'regions' => $regions,
+                'commercialBusinesses' => $commercialBusinesses,
+                'affiliations' => Constants::$AFFILIATIONS,
             ]),
             'auth' => $authData
         ]);
