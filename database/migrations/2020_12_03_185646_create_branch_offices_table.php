@@ -21,6 +21,7 @@ class CreateBranchOfficesTable extends Migration
             $table->string('address', 128);
             $table->string('phone1', 16);
             $table->string('phone2', 16)->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

@@ -18,7 +18,8 @@ class CreateServicesTable extends Migration
             $table->foreignId('company_id')->constrained();
             $table->foreignId('service_type_id')->constrained();
             $table->foreignId('branch_office_id')->constrained();
-            $table->string('description', 128);
+            $table->string('description', 128)->default("");
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }
