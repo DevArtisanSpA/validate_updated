@@ -14,6 +14,7 @@ use App\Helpers\Constants;
 
 use Auth;
 use stdClass;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Mail\CompanyAssociation;
 use Illuminate\Support\Facades\Mail;
@@ -214,8 +215,15 @@ class CompanyController extends Controller
     {
         $deletedCompany = Company::find($id);
         $deletedCompany->active = false;
+        if ($deletedCompany->branchOffices()->count() > 0) {
+            $deletedCompany->branchOffices()->update(["active" => 0]);
+        }
+        if ($deletedCompany->services()->count() > 0) {
+            $deletedCompany->services()->update(["active" => 0, "finished" => now()]);
+        }
         if ($deletedCompany->save())
             return response()->json(["message" => "Empresa eliminada exitosamente"], 200);
+
         else
             return response()->json(["message" => "Error al intentar eliminar empresa, por favor intentar nuevamente"], 400);
     }
