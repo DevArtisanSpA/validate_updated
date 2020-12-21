@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Scopes\ActiveCompaniesScope;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Company extends Model
 {
@@ -12,6 +15,16 @@ class Company extends Model
     protected $fillable = [
         "commercial_business_id", "rut", "business_name", "contact_name", "contact_email", "affiliation", "affiliation_date", "active"
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ActiveCompaniesScope);
+    }
 
     public function commercialBusiness() {
         return $this->belongsTo(CommercialBusiness::class);
@@ -23,5 +36,10 @@ class Company extends Model
 
     public function branchOffices() {
         return $this->hasMany(BranchOffice::class);
+    }
+
+    public function parentBranchOffices()
+    {
+        return $this->belongsToMany(BranchOffice::class, Service::class);
     }
 }

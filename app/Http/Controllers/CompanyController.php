@@ -14,6 +14,7 @@ use App\Helpers\Constants;
 
 use Auth;
 use stdClass;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Mail\CompanyAssociation;
 use Illuminate\Support\Facades\Mail;
@@ -28,6 +29,43 @@ class CompanyController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $my_company = new stdClass();
+        if (Auth::user()->user_type_id == 1) {
+            $user = Auth::user();
+            $companies = Company::with([
+                'commercialBusiness:id,name',
+                'parentBranchOffices:id,company_id',
+                'parentBranchOffices.company:id,business_name'
+            ])->get();
+            foreach($companies as $company) {
+                $parentCompanies = collect();
+                foreach($company->parentBranchOffices as $parentBranchOffice) {
+                    $parentCompanies = $parentCompanies->merge($parentBranchOffice->company->business_name);
+                }
+
+                $company->parentCompanies = $parentCompanies;
+                unset($company->parentBranchOffices);
+            }
+        } else {
+            $user = Auth::user()->load('company');
+            $my_company = Company::find(Auth::user()->id_company);
+            $companies = collect([$my_company]);
+            $child_companies = $my_company->Companies_c;
+            $companies = $companies->merge($child_companies);
+        }
+        return view('companies/index', [
+            'companies' =>  $companies,
+            'auth' => $user
+        ]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -36,20 +74,39 @@ class CompanyController extends Controller
     {
         $regions = Region::with('communes')->get();
         $commercialBusinesses = CommercialBusiness::all();
-        $companies = Company::with('branchOffices')->where("active", true)->orderBy('business_name')->get();
-        $documentTypes = new stdClass();
+        $companies = Company::where("active", true)->orderBy('business_name')->get();
         $authData = Auth::user();
         $authData->isAdmin = Auth::user()->user_type_id == 1;
-        foreach (Constants::$DOC_COMPANY_CREATE as $key => $value) {
-            $documentTypes->$key = DocumentType::find($value)->sortBy('name');
-        }
         return view('companies/new', [
             'dataList' => json_encode([
                 'regions' => $regions,
                 'commercialBusinesses' => $commercialBusinesses,
-                'companiesFather' => $companies,
                 'affiliations' => Constants::$AFFILIATIONS,
-                'documentTypes' => $documentTypes
+            ]),
+            'auth' => $authData
+        ]);
+    }
+
+     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $company = Company::find($id);
+        $regions = Region::with('communes')->get();
+        $commercialBusinesses = CommercialBusiness::all();
+        $companies = Company::where([['active', '=', '1'], ['id', '<>', $id]])->orderBy('business_name')->get();
+        $authData = Auth::user();
+        $authData->isAdmin = Auth::user()->user_type_id == 1;
+        return view('companies/edit', [
+            'company' => $company,
+            'dataList' => json_encode([
+                'regions' => $regions,
+                'commercialBusinesses' => $commercialBusinesses,
+                'affiliations' => Constants::$AFFILIATIONS,
             ]),
             'auth' => $authData
         ]);
@@ -100,15 +157,6 @@ class CompanyController extends Controller
                 $branchOfficeData["name"] = "Casa Matriz";
                 $branchOfficeData["company_id"] = $result->id;
                 $newBranchOffice = BranchOffice::create($branchOfficeData);
-                /*foreach ($input['companies_p'] as $key => $id_p) {
-                    $contractor = new Contractor();
-                    $contractor->id_contractor = $result->id;
-                    $contractor->id_company = $id_p;
-                    $contractor->save();
-                    Mail::to(
-                        [Company::find($id_p)->email, $result->email, Constants::getAdmin()->email]
-                    )->send(new CompanyAssociation($result, [$id_p]));
-                }*/
                 if ($result)
                     return response()->json(["message" => "Empresa creada exitosamente", "company" => $result], 200);
                 else
@@ -118,6 +166,66 @@ class CompanyController extends Controller
                 return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
         }
         return true;
+    }
+
+    /**
+     * Update a resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id' => ['required'],
+            'commercial_business_id' => ['required'],
+            'business_name' => ['required', 'string', 'min:3', 'max:100'],
+            'contact_name' => ['required', 'string', 'min:3', 'max:50'],
+            'affiliation' => ['required', 'string', 'min:3'],
+            'affiliation_date' => ['required', 'date'],
+            'contact_email' => ['required', 'regex:/^.+@.+$/i'],
+            'rut' => ['required', 'min:3', 'max:20'],
+        ]);
+
+
+        $error_array = array();
+        if ($validation->fails()) {
+            foreach ($validation->messages()->getMessages() as $field_name => $messages) {
+                $error_array[] = $messages[0];
+            }
+            return response()->json($error_array, 201);
+        } else {
+            $company = Company::find($request->id);
+            $result = $company->update($request->all());
+            if ($result)
+                return response()->json(["message" => "Empresa creada exitosamente", "company" => $result], 200);
+            else
+                return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
+        }
+        return true;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $deletedCompany = Company::find($id);
+        $deletedCompany->active = false;
+        if ($deletedCompany->branchOffices()->count() > 0) {
+            $deletedCompany->branchOffices()->update(["active" => 0]);
+        }
+        if ($deletedCompany->services()->count() > 0) {
+            $deletedCompany->services()->update(["active" => 0, "finished" => now()]);
+        }
+        if ($deletedCompany->save())
+            return response()->json(["message" => "Empresa eliminada exitosamente"], 200);
+
+        else
+            return response()->json(["message" => "Error al intentar eliminar empresa, por favor intentar nuevamente"], 400);
     }
 
     /**
