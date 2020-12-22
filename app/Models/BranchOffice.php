@@ -39,7 +39,7 @@ class BranchOffice extends Model
 
     public function childCompanies()
     {
-        return $this->belongToMany(Company::class, Service::class);
+        return $this->belongsToMany(Company::class, Service::class);
     }
 
     public static function edit($form_data)

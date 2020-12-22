@@ -34,7 +34,7 @@
                           <a class="dropdown-item" href="{{ url('/companies') }}">
                               {{ __('Lista de empresas') }}
                           </a>
-                          @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
+                          @if (Auth::user()->user_type_id == 1)
                           <a class="dropdown-item" href="{{ url('/companies/create') }}">
                               {{ __('Agregar empresa') }}
                           </a>

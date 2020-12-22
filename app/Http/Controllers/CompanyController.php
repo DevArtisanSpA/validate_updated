@@ -53,11 +53,20 @@ class CompanyController extends Controller
                 unset($company->parentBranchOffices);
             }
         } else {
-            $user = Auth::user()->load('company');
-            $my_company = Company::find(Auth::user()->id_company);
+            $user = Auth::user()->load('company.commercialBusiness:id,name');
+            $my_company = $user->company;
+            $my_company->load('parentBranchOffices.company:id,business_name');
+            $myParentCompanies = collect();
+            foreach($my_company->parentBranchOffices as $parentBranchOffice) {
+                $myParentCompanies = $myParentCompanies->merge($parentBranchOffice->company->business_name);
+            }
+            $my_company->parentCompanies = $myParentCompanies;
+            unset($my_company->parentBranchOffices);
             $companies = collect([$my_company]);
-            $child_companies = $my_company->Companies_c;
-            $companies = $companies->merge($child_companies);
+            $childData = $my_company->branchOffices()->with('childCompanies.commercialBusiness:id,name')->get();
+            foreach ($childData as $data) {
+                $companies = $companies->merge($data->childCompanies);
+            }
         }
         return view('companies/index', [
             'companies' =>  $companies,

@@ -114,13 +114,6 @@
         :filters="valuesFilterPrincipal(tableData)"
         :filter-method="filterPrincipal"
       >
-        <!-- <el-table-column
-        label="Principal"
-        prop="name_parent"
-        sortable
-        :filters="valuesFilter(tableData, 'name_parent')"
-        :filter-method="filter('name_parent')"
-      > -->
         <template slot-scope="props">
           <div v-if="auth.user_type_id == 1 || auth.company_id == props.row.id">
             <div
