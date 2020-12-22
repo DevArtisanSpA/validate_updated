@@ -28,4 +28,26 @@ class Service extends Model
     public function branchOffice() {
         return $this->belongsTo(BranchOffice::class);
     }
+
+    /**
+     * Scope a query to only include pending (unaccepted) services.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePending($query)
+    {
+        return $query->where('active', '=', '0')->whereNull(['start', 'finish']);
+    }
+
+    /**
+     * Scope a query to only include active (accepted) services.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('active', '=', '0')->whereNull(['start', 'finish']);
+    }
 }

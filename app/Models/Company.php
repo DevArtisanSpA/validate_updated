@@ -42,4 +42,8 @@ class Company extends Model
     {
         return $this->belongsToMany(BranchOffice::class, Service::class);
     }
+
+    public function contractedServices() {
+        return $this->hasManyThrough(Service::class, BranchOffice::class);
+    }
 }
