@@ -122,6 +122,31 @@ class CompanyController extends Controller
     }
 
     /**
+     * Dispaly the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $company = Company::find($id);
+        $regions = Region::with('communes')->get();
+        $commercialBusinesses = CommercialBusiness::all();
+        $companies = Company::where([['active', '=', '1'], ['id', '<>', $id]])->orderBy('business_name')->get();
+        $authData = Auth::user();
+        $authData->isAdmin = Auth::user()->user_type_id == 1;
+        return view('companies/edit', [
+            'company' => $company,
+            'dataList' => json_encode([
+                'regions' => $regions,
+                'commercialBusinesses' => $commercialBusinesses,
+                'affiliations' => Constants::$AFFILIATIONS,
+            ]),
+            'auth' => $authData
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
