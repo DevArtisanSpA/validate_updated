@@ -30,6 +30,43 @@ class ServiceController extends Controller
     }
 
     /**
+     * List all resources.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        if (Auth::user()->user_type_id == 1) {
+            $services = Service::with([
+                'company:id,business_name',
+                'type:id,name',
+                'branchOffice:id,company_id,name',
+                'branchOffice.company:id,business_name'
+            ])->get();
+            return $services;
+            //return view('services/index', $services);
+        }
+        else {
+            /*$my_company
+            $pendingServices = Service::pending()->get();
+            $active = Service::active()->get();
+            $contrac
+            $viewData = [
+                'dataList' => json_encode([
+                    'regions' => $regions,
+                    'commercialBusinesses' => $commercialBusinesses,
+                    'affiliations' => Constants::$AFFILIATIONS,
+                    'documentTypes' => $documentTypes
+                ]),
+                'auth' => $authData,
+                'serviceTypes' => $serviceTypes,
+                'companies' => $companies
+            ];
+            return view('services/associate', $viewData);*/
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

@@ -39,6 +39,9 @@
                               {{ __('Agregar empresa') }}
                           </a>
                           @endif
+                          <a class="dropdown-item" href="{{ url('/services') }}">
+                            {{ __('Lista de servicios') }}
+                          </a>
                           <a class="dropdown-item" href="{{ url('/services/associate') }}">
                             {{ __('Asociar servicio') }}
                         </a>
