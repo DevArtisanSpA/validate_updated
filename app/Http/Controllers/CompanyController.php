@@ -53,11 +53,20 @@ class CompanyController extends Controller
                 unset($company->parentBranchOffices);
             }
         } else {
-            $user = Auth::user()->load('company');
-            $my_company = Company::find(Auth::user()->id_company);
+            $user = Auth::user()->load('company.commercialBusiness:id,name');
+            $my_company = $user->company;
+            $my_company->load('parentBranchOffices.company:id,business_name');
+            $myParentCompanies = collect();
+            foreach($my_company->parentBranchOffices as $parentBranchOffice) {
+                $myParentCompanies = $myParentCompanies->merge($parentBranchOffice->company->business_name);
+            }
+            $my_company->parentCompanies = $myParentCompanies;
+            unset($my_company->parentBranchOffices);
             $companies = collect([$my_company]);
-            $child_companies = $my_company->Companies_c;
-            $companies = $companies->merge($child_companies);
+            $childData = $my_company->branchOffices()->with('childCompanies.commercialBusiness:id,name')->get();
+            foreach ($childData as $data) {
+                $companies = $companies->merge($data->childCompanies);
+            }
         }
         return view('companies/index', [
             'companies' =>  $companies,
@@ -94,6 +103,31 @@ class CompanyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
+    {
+        $company = Company::find($id);
+        $regions = Region::with('communes')->get();
+        $commercialBusinesses = CommercialBusiness::all();
+        $companies = Company::where([['active', '=', '1'], ['id', '<>', $id]])->orderBy('business_name')->get();
+        $authData = Auth::user();
+        $authData->isAdmin = Auth::user()->user_type_id == 1;
+        return view('companies/edit', [
+            'company' => $company,
+            'dataList' => json_encode([
+                'regions' => $regions,
+                'commercialBusinesses' => $commercialBusinesses,
+                'affiliations' => Constants::$AFFILIATIONS,
+            ]),
+            'auth' => $authData
+        ]);
+    }
+
+    /**
+     * Dispaly the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
         $company = Company::find($id);
         $regions = Region::with('communes')->get();
