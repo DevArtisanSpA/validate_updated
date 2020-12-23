@@ -50,4 +50,20 @@ class Service extends Model
     {
         return $query->where('active', '=', '1');
     }
+
+    /**
+     * Scope a query to get all service relationships.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeComplete($query)
+    {
+        return $query->with([
+            'company:id,business_name',
+            'serviceType:id,name',
+            'branchOffice:id,company_id,name',
+            'branchOffice.company:id,business_name'
+        ]);
+    }
 }

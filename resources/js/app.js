@@ -50,6 +50,11 @@ Vue.component(
   require("./components/service/table.vue").default
 );
 
+Vue.component(
+  "service-multitable",
+  require("./components/service/multitable.vue").default
+);
+
 //User
 Vue.component(
   "user-form",

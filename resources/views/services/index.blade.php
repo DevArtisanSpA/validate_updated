@@ -7,9 +7,16 @@
             <button type="button" onclick="window.location.href='{{ url('/services/associate') }}'"
                 class="btn btn-success">Asociar servicio</button>
         </div>
-        <service-table
-         :services="{{ $services }}"
-         :auth="{{ $auth }}"
-        ></service-table>
+        @if ($auth->user_type_id == 1)
+            <service-table
+            :services="{{ $services }}"
+            :auth="{{ $auth }}"
+            ></service-table>
+        @else
+            <service-multitable
+            :services="{{ $services }}"
+            :auth="{{ $auth }}"
+            ></service-multitable>
+        @endif
     </div>
 @endsection

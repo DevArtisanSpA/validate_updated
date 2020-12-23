@@ -39,34 +39,26 @@ class ServiceController extends Controller
         if (Auth::user()->user_type_id == 1) {
             $services = Service::active()->orWhere(function ($query) {
                 $query->pending();
-            })->with([
-                'company:id,business_name',
-                'serviceType:id,name',
-                'branchOffice:id,company_id,name',
-                'branchOffice.company:id,business_name'
-            ])->get();
+            })->complete()->get();
             return view('services/index', [
                 'services' => $services,
                 'auth' => Auth::user()
             ]);
         }
         else {
-            /*$my_company
-            $pendingServices = Service::pending()->get();
-            $active = Service::active()->get();
-            $contrac
+            $myCompany = Company::find(Auth::user()->company_id);
+            $pendingServices = $myCompany->services()->pending()->complete()->get();
+            $activeServices = $myCompany->services()->active()->complete()->get();
+            $contractedServices = $myCompany->contractedServices()->complete()->get();
             $viewData = [
-                'dataList' => json_encode([
-                    'regions' => $regions,
-                    'commercialBusinesses' => $commercialBusinesses,
-                    'affiliations' => Constants::$AFFILIATIONS,
-                    'documentTypes' => $documentTypes
+                'services' => json_encode([
+                    'pending' => $pendingServices,
+                    'active' => $activeServices,
+                    'contracted' => $contractedServices,
                 ]),
-                'auth' => $authData,
-                'serviceTypes' => $serviceTypes,
-                'companies' => $companies
+                'auth' => Auth::user()
             ];
-            return view('services/associate', $viewData);*/
+            return view('services/index', $viewData);
         }
     }
 
