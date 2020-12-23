@@ -105,6 +105,46 @@
       </b-col>
     </b-row>
     <b-row>
+      <b-col md="6">
+        <label for="input-description"> <span class="text-danger">*</span> Descripción del servicio </label>
+        <b-form-input
+          id="input-description"
+          type="text"
+          v-model="service.description"
+          :state="this.states.description"
+          @change="formatter('description', service.description)"
+        >
+        </b-form-input>
+        <b-form-invalid-feedback id="input-live-feedback">La descripción del servicio es obligatorio</b-form-invalid-feedback>
+      </b-col>
+      <b-col md="3">
+        <label for="input-start">
+          <span class="text-danger">*</span> Fecha de inicio
+        </label>
+        <b-form-input
+          id="input-start"
+          type="date"
+          v-model="service.start"
+          :state="this.states.start"
+          @change="formatter('start', service.start)"
+        />
+        <b-form-invalid-feedback id="input-live-feedback">La fecha de inicio es requerida</b-form-invalid-feedback>
+      </b-col>
+      <b-col md="3">
+        <label for="input-finished">
+          <span class="text-danger">*</span> Fecha de término
+        </label>
+        <b-form-input
+          id="input-finished"
+          type="date"
+          v-model="service.finished"
+          :state="this.states.finished"
+          @change="formatter('finished', service.finished)"
+        />
+        <b-form-invalid-feedback id="input-live-feedback">La fecha de término es requerida</b-form-invalid-feedback>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-button class="m-3" type="submit" variant="success">
         Asociar servicio
       </b-button>
@@ -127,12 +167,18 @@ export default {
         company_id: company_id,
         branch_office_id: "",
         service_type_id: "",
-        active: false
+        description: "",
+        start: "",
+        finished: "",
+        active: true
       },
       states: {
         my_company_id: null,
         branch_office_id: null,
         service_type_id: null,
+        description: null,
+        start: null,
+        finished: null,
       },
       my_company_id: null,
       rut_company: rut_company,
@@ -211,7 +257,7 @@ export default {
       const url = `${window.location.origin}/services/associate`;
       axios.post(url, this.service).then(response => {
         if (response.status == 200) {
-          window.location.href = window.location.origin + "/home";
+          window.location.href = window.location.origin + "/services";
         }
         else if (response.status == 201 && this.$truthty(response.data)) {
           const {
@@ -232,7 +278,7 @@ export default {
       auth
     } = this.$props
     if (!auth.isAdmin && this.$truthty(auth.company_id)) {
-      this.company_id = auth.company_id
+      this.my_company_id = auth.company_id
       this.loadBranchOffices(auth.company_id)
       this.disabled_company = true
     }
