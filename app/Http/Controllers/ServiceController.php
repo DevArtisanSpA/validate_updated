@@ -37,14 +37,18 @@ class ServiceController extends Controller
     public function index()
     {
         if (Auth::user()->user_type_id == 1) {
-            $services = Service::with([
+            $services = Service::active()->orWhere(function ($query) {
+                $query->pending();
+            })->with([
                 'company:id,business_name',
-                'type:id,name',
+                'serviceType:id,name',
                 'branchOffice:id,company_id,name',
                 'branchOffice.company:id,business_name'
             ])->get();
-            return $services;
-            //return view('services/index', $services);
+            return view('services/index', [
+                'services' => $services,
+                'auth' => Auth::user()
+            ]);
         }
         else {
             /*$my_company

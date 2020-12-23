@@ -10,7 +10,7 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
-        "service_type_id", "branch_office_id", "company_id", "description", "active", "start", "finish"
+        "service_type_id", "branch_office_id", "company_id", "description", "active", "start", "finished"
     ];
 
     public function company() {
@@ -21,7 +21,7 @@ class Service extends Model
         return $this->hasMany(Document::class);
     }
 
-    public function type() {
+    public function serviceType() {
         return $this->belongsTo(ServiceType::class);
     }
 
@@ -37,7 +37,7 @@ class Service extends Model
      */
     public function scopePending($query)
     {
-        return $query->where('active', '=', '0')->whereNull(['start', 'finish']);
+        return $query->where('active', '=', '0')->whereNull(['start', 'finished']);
     }
 
     /**
@@ -48,6 +48,6 @@ class Service extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('active', '=', '0')->whereNull(['start', 'finish']);
+        return $query->where('active', '=', '1');
     }
 }
