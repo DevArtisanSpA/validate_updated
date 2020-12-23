@@ -30,6 +30,39 @@ class ServiceController extends Controller
     }
 
     /**
+     * List all resources.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        if (Auth::user()->user_type_id == 1) {
+            $services = Service::active()->orWhere(function ($query) {
+                $query->pending();
+            })->complete()->get();
+            return view('services/index', [
+                'services' => $services,
+                'auth' => Auth::user()
+            ]);
+        }
+        else {
+            $myCompany = Company::find(Auth::user()->company_id);
+            $pendingServices = $myCompany->services()->pending()->complete()->get();
+            $activeServices = $myCompany->services()->active()->complete()->get();
+            $contractedServices = $myCompany->contractedServices()->complete()->get();
+            $viewData = [
+                'services' => json_encode([
+                    'pending' => $pendingServices,
+                    'active' => $activeServices,
+                    'contracted' => $contractedServices,
+                ]),
+                'auth' => Auth::user()
+            ];
+            return view('services/index', $viewData);
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
