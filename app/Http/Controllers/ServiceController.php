@@ -94,6 +94,37 @@ class ServiceController extends Controller
     }
 
     /**
+     * Show the form for editing an existing resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $service = Service::select([
+            'id', 'branch_office_id','service_type_id','company_id','description','active','start','finished'
+        ])->with('branchOffice.company:id,business_name,rut')->find($id);
+        $serviceCompany = Company::select(['id', 'rut', 'business_name'])->find($service->company_id);
+        $serviceType = ServiceType::select(['id', 'name'])->find($service->service_type_id);
+        $serviceParentCompany = $service->branchOffice->company;
+        unset($service->branchOffice->company);
+        $serviceParentCompany->branchOffices = collect([$service->branchOffice]);
+        unset($service->branchOffice);
+        $authData = Auth::user();
+        $authData->isAdmin = Auth::user()->user_type_id == 1;
+        $viewData = [
+            'service' => $service,
+            'companyRut' => $serviceCompany->rut,
+            'companyId' => $serviceCompany->id,
+            'serviceTypes' => collect([$serviceType]),
+            'companies' => collect([$serviceParentCompany]),
+            'auth' => $authData,
+        ];
+        //return $viewData;
+        return view('services/edit', $viewData);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

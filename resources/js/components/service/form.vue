@@ -44,7 +44,7 @@
           id="input-company"
           v-model="my_company_id"
           :state="this.states.my_company_id"
-          :disabled="disabled_company"
+          :disabled="disabled_company || isUpdate"
           :formatter="(e) => formatter('my_company_id', e)"
           @change="loadBranchOffices(my_company_id)"
         >
@@ -67,6 +67,7 @@
           id="input-branch-office"
           v-model="service.branch_office_id"
           :state="this.states.branch_office_id"
+          :disabled="isUpdate"
           @change="formatter('branch_office_id', service.branch_office_id)"
         >
           <template v-slot:first>
@@ -88,6 +89,7 @@
           id="input-service-type"
           v-model="service.service_type_id"
           :state="this.states.service_type_id"
+          :disabled="isUpdate"
           @change="formatter('service_type_id', service.service_type_id)"
         >
           <template v-slot:first>
@@ -112,6 +114,7 @@
           type="text"
           v-model="service.description"
           :state="this.states.description"
+          @click="alert('a')"
           @change="formatter('description', service.description)"
         >
         </b-form-input>
@@ -154,14 +157,16 @@
 
 <script>
 export default {
-  props: ["auth", "rut_company", "company_id", "service_types", "companies"],
+  props: ["auth", "rut_company", "company_id", "service_types", "companies", "service"],
   data() {
     const {
       rut_company,
       company_id,
       service_types,
-      companies
+      companies,
+      service
     } = this.$props
+    const truthty = this.$truthty;
     return {
       service: {
         company_id: company_id,
@@ -186,11 +191,13 @@ export default {
       companies: companies,
       branchOffices: null,
       disabled_company: false,
+      isUpdate: false,
       errors: []
     }
   },
   methods: {
     formatter(label, value) {
+      console.log(this.service)
       console.log(label, value)
       if (this.$truthty(value)) {
         this.states[label] = true
@@ -275,12 +282,24 @@ export default {
   },
   mounted() {
     const {
-      auth
+      auth,
+      service
     } = this.$props
     if (!auth.isAdmin && this.$truthty(auth.company_id)) {
       this.my_company_id = auth.company_id
       this.loadBranchOffices(auth.company_id)
       this.disabled_company = true
+    }
+    else if(this.$truthty(service)) {
+      const {
+        companies
+      } = this.$props
+      console.log(service)
+      console.log(companies)
+      this.service = service
+      this.my_company_id = companies[0].id
+      this.branchOffices = companies[0].branchOffices
+      this.isUpdate = true
     }
   }
 }

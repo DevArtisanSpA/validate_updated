@@ -60,7 +60,7 @@ class Service extends Model
     public function scopeComplete($query)
     {
         return $query->with([
-            'company:id,business_name',
+            'company:id,business_name,rut',
             'serviceType:id,name',
             'branchOffice:id,company_id,name',
             'branchOffice.company:id,business_name'
