@@ -12,7 +12,7 @@
       :company_id="{{ $companyId }}"
       :service_types="{{ $serviceTypes }}"
       :companies="{{ $companies }}"
-      :service="{{ $service }}"
+      :service-to-update="{{ $service }}"
       :auth="{{ $auth }}"></service-form>
 </div>
 @endsection

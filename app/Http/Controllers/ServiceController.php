@@ -136,7 +136,9 @@ class ServiceController extends Controller
             'branch_office_id' => ['required', 'integer'],
             'service_type_id' => ['required', 'integer'],
             'company_id' => ['required', 'integer'],
-            'description' => ['nullable'],
+            'description' => ['required', 'string'],
+            'start' => ['required', 'date'],
+            'finished' => ['required', 'date'],
             'active' => ['boolean']
         ]);
 
@@ -152,7 +154,45 @@ class ServiceController extends Controller
                 return response()->json(["message" => "Servicio creado exitosamente", "service" => $result], 200);
             }
             else {
-                return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
+                return response()->json(["message" => "Error al intentar crear servicio. Por favor intente nuevamente"], 400);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Update a resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id' => ['required'],
+            'branch_office_id' => ['required', 'integer'],
+            'service_type_id' => ['required', 'integer'],
+            'company_id' => ['required', 'integer'],
+            'description' => ['required', 'string'],
+            'start' => ['required', 'date'],
+            'finished' => ['required', 'date'],
+            'active' => ['boolean']
+        ]);
+
+        $error_array = array();
+        if ($validation->fails()) {
+            foreach ($validation->messages()->getMessages() as $field_name => $messages) {
+                $error_array[] = $messages[0];
+            }
+            return response()->json($error_array, 201);
+        } else {
+            $service = Service::find($request->id);
+            $result = $service->update($request->all());
+            if ($result) {
+                return response()->json(["message" => "Servicio editado exitosamente", "service" => $result], 200);
+            }
+            else {
+                return response()->json(["message" => "Error al intentar editar servicio.Por favor intente nuevamente"], 400);
             }
         }
         return true;

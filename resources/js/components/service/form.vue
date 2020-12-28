@@ -12,7 +12,9 @@
 
     <b-modal ref="modal-confirm" hide-footer>
       <div slot="modal-title">
-        <span>Se asociará un servicio entre dos empresas</span>
+        <span>{{
+          isUpdate ? "Se editará un servicio entre dos empresas" : "Se asociará un servicio entre dos empresas"
+        }}</span>
       </div>
       <p class="d-block text-center mt-3 mb-5">
         ¿Los datos ingresados son correctos?
@@ -149,7 +151,7 @@
     </b-row>
     <b-row>
       <b-button class="m-3" type="submit" variant="success">
-        Asociar servicio
+        {{ isUpdate ? "Editar servicio" : "Asociar servicio" }}
       </b-button>
     </b-row>
   </form>
@@ -283,24 +285,44 @@ export default {
     submit(e) {
       e.preventDefault();
       console.log(this.service)
-
-      const url = `${window.location.origin}/services/associate`;
-      axios.post(url, this.service).then(response => {
-        if (response.status == 200) {
-          window.location.href = window.location.origin + "/services";
-        }
-        else if (response.status == 201 && this.$truthty(response.data)) {
-          const {
-            data
-          } = response
-          this.errors = data
-        }
-        else {
+      if (this.isUpdate) {
+        const url = `${window.location.origin}/services/edit`;
+        axios.put(url, this.service).then(response => {
+          if (response.status == 200) {
+            window.location.href = window.location.origin + "/services";
+          }
+          else if (response.status == 201 && this.$truthty(response.data)) {
+            const {
+              data
+            } = response
+            this.errors = data
+          }
+          else {
+            this.errors.push("Ha ocurrido un error procesando la operación. Inténtelo más tarde.")
+          }
+        }).catch(err => {
           this.errors.push("Ha ocurrido un error procesando la operación. Inténtelo más tarde.")
-        }
-      }).catch(err => {
-        this.errors.push("Ha ocurrido un error procesando la operación. Inténtelo más tarde.")
-      })
+        })
+      }
+      else {
+        const url = `${window.location.origin}/services/associate`;
+        axios.post(url, this.service).then(response => {
+          if (response.status == 200) {
+            window.location.href = window.location.origin + "/services";
+          }
+          else if (response.status == 201 && this.$truthty(response.data)) {
+            const {
+              data
+            } = response
+            this.errors = data
+          }
+          else {
+            this.errors.push("Ha ocurrido un error procesando la operación. Inténtelo más tarde.")
+          }
+        }).catch(err => {
+          this.errors.push("Ha ocurrido un error procesando la operación. Inténtelo más tarde.")
+        })
+      }
     }
   },
   mounted() {
