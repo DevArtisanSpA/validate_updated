@@ -198,8 +198,6 @@ export default {
   },
   methods: {
     formatter(label, value) {
-      console.log(this.service)
-      console.log(label, value)
       if (this.$truthty(value)) {
         this.states[label] = true
       }
@@ -284,7 +282,6 @@ export default {
     },
     submit(e) {
       e.preventDefault();
-      console.log(this.service)
       if (this.isUpdate) {
         const url = `${window.location.origin}/services/edit`;
         axios.put(url, this.service).then(response => {
@@ -336,11 +333,9 @@ export default {
       this.disabled_company = true
     }
     else if(this.$truthty(serviceToUpdate)) {
-      alert('a')
       const {
         companies
       } = this.$props
-      console.log(serviceToUpdate)
       this.service = serviceToUpdate
       this.my_company_id = companies[0].id
       this.branchOffices = companies[0].branchOffices
