@@ -157,14 +157,13 @@
 
 <script>
 export default {
-  props: ["auth", "rut_company", "company_id", "service_types", "companies", "service"],
+  props: ["auth", "rut_company", "company_id", "service_types", "companies", "serviceToUpdate"],
   data() {
     const {
       rut_company,
       company_id,
       service_types,
-      companies,
-      service
+      companies
     } = this.$props
     const truthty = this.$truthty;
     return {
@@ -212,26 +211,50 @@ export default {
         states: {
           my_company_id,
           branch_office_id,
-          service_type_id
-        }
+          service_type_id,
+          description,
+          start,
+          finished
+        },
+        isUpdate
       } = this
       let error = false
-      if (!my_company_id) {
-        error = true
-        if (my_company_id == null) {
-          this.states.my_company_id = false
+      if (!isUpdate) {
+        if (!my_company_id) {
+          error = true
+          if (my_company_id == null) {
+            this.states.my_company_id = false
+          }
+        }
+        if (!branch_office_id) {
+          error = true
+          if (branch_office_id == null) {
+            this.states.branch_office_id = false
+          }
+        }
+        if (!service_type_id) {
+          error = true
+          if (service_type_id == null) {
+            this.states.service_type_id = false
+          }
         }
       }
-      if (!branch_office_id) {
+      if (!description) {
         error = true
-        if (branch_office_id == null) {
-          this.states.branch_office_id = false
+        if (description == null) {
+          this.states.description = false
         }
       }
-      if (!service_type_id) {
+      if (!start) {
         error = true
-        if (service_type_id == null) {
-          this.states.service_type_id = false
+        if (start == null) {
+          this.states.start = false
+        }
+      }
+      if (!finished) {
+        error = true
+        if (finished == null) {
+          this.states.finished = false
         }
       }
       if (error) {
@@ -283,23 +306,26 @@ export default {
   mounted() {
     const {
       auth,
-      service
+      serviceToUpdate
     } = this.$props
     if (!auth.isAdmin && this.$truthty(auth.company_id)) {
       this.my_company_id = auth.company_id
       this.loadBranchOffices(auth.company_id)
       this.disabled_company = true
     }
-    else if(this.$truthty(service)) {
+    else if(this.$truthty(serviceToUpdate)) {
+      alert('a')
       const {
         companies
       } = this.$props
-      console.log(service)
-      console.log(companies)
-      this.service = service
+      console.log(serviceToUpdate)
+      this.service = serviceToUpdate
       this.my_company_id = companies[0].id
       this.branchOffices = companies[0].branchOffices
       this.isUpdate = true
+      this.states.description = true
+      this.states.start = true
+      this.states.finished = true
     }
   }
 }
