@@ -94,6 +94,37 @@ class ServiceController extends Controller
     }
 
     /**
+     * Show the form for editing an existing resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $service = Service::select([
+            'id', 'branch_office_id','service_type_id','company_id','description','active','start','finished'
+        ])->with('branchOffice.company:id,business_name,rut')->find($id);
+        $serviceCompany = Company::select(['id', 'rut', 'business_name'])->find($service->company_id);
+        $serviceType = ServiceType::select(['id', 'name'])->find($service->service_type_id);
+        $serviceParentCompany = $service->branchOffice->company;
+        unset($service->branchOffice->company);
+        $serviceParentCompany->branchOffices = collect([$service->branchOffice]);
+        unset($service->branchOffice);
+        $authData = Auth::user();
+        $authData->isAdmin = Auth::user()->user_type_id == 1;
+        $viewData = [
+            'service' => $service,
+            'companyRut' => $serviceCompany->rut,
+            'companyId' => $serviceCompany->id,
+            'serviceTypes' => collect([$serviceType]),
+            'companies' => collect([$serviceParentCompany]),
+            'auth' => $authData,
+        ];
+        //return $viewData;
+        return view('services/edit', $viewData);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -105,7 +136,9 @@ class ServiceController extends Controller
             'branch_office_id' => ['required', 'integer'],
             'service_type_id' => ['required', 'integer'],
             'company_id' => ['required', 'integer'],
-            'description' => ['nullable'],
+            'description' => ['required', 'string'],
+            'start' => ['required', 'date'],
+            'finished' => ['required', 'date'],
             'active' => ['boolean']
         ]);
 
@@ -121,7 +154,45 @@ class ServiceController extends Controller
                 return response()->json(["message" => "Servicio creado exitosamente", "service" => $result], 200);
             }
             else {
-                return response()->json(["message" => "Error al intentar crear empresa, por favor intentar nuevamente"], 400);
+                return response()->json(["message" => "Error al intentar crear servicio. Por favor intente nuevamente"], 400);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Update a resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id' => ['required'],
+            'branch_office_id' => ['required', 'integer'],
+            'service_type_id' => ['required', 'integer'],
+            'company_id' => ['required', 'integer'],
+            'description' => ['required', 'string'],
+            'start' => ['required', 'date'],
+            'finished' => ['required', 'date'],
+            'active' => ['boolean']
+        ]);
+
+        $error_array = array();
+        if ($validation->fails()) {
+            foreach ($validation->messages()->getMessages() as $field_name => $messages) {
+                $error_array[] = $messages[0];
+            }
+            return response()->json($error_array, 201);
+        } else {
+            $service = Service::find($request->id);
+            $result = $service->update($request->all());
+            if ($result) {
+                return response()->json(["message" => "Servicio editado exitosamente", "service" => $result], 200);
+            }
+            else {
+                return response()->json(["message" => "Error al intentar editar servicio.Por favor intente nuevamente"], 400);
             }
         }
         return true;

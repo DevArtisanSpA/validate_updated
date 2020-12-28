@@ -77,7 +77,7 @@
             <b-col md="3">
               <p>
                 <b>Término:</b>
-                {{ props.row.finish }}
+                {{ props.row.finished }}
               </p>
             </b-col>
           </b-row>
