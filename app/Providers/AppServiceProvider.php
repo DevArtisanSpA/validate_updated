@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (AppFacade::environment('production')) {
+        if (AppFacade::environment('heroku')) {
             URL::forceScheme('https');
         }
     }
