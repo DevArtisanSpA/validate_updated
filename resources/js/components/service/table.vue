@@ -119,16 +119,16 @@
       <el-table-column label="Acciones" width="120">
         <template slot-scope="props">
           <el-button
-            v-if="auth.user_type_id != 1 && auth.company_id !== props.row.id"
-            v-on:click="show(props.row.id, tableData)"
+            v-if="auth.user_type_id != 1 && auth.company_id == props.row.company.id"
+            v-on:click="addDocuments(props.row.id, tableData)"
             type="warning"
             icon="el-icon-view"
             v-b-tooltip.hover
-            title="Ver detalle"
+            title="Subir documentos"
             circle
           ></el-button>
           <el-button
-            v-if="auth.user_type_id == 1 || auth.company_id === props.row.id"
+            v-if="auth.user_type_id == 1 || auth.company_id == props.row.branch_office.company.id"
             v-on:click="edit(props.row.id, tableData)"
             type="primary"
             icon="el-icon-edit"
@@ -137,7 +137,7 @@
             circle
           ></el-button>
           <el-button
-            v-if="auth.user_type_id == 1"
+            v-if="auth.user_type_id == 1 || auth.company_id == props.row.branch_office.company.id"
             v-on:click="deleteRow(props.row.id, tableData)"
             type="danger"
             icon="el-icon-delete"
@@ -179,10 +179,10 @@ export default {
     },
     edit(id, rows) {
       window.location.href =
-        window.location.origin + "/companies/" + id + "/edit";
+        window.location.origin + "/services/" + id + "/edit";
     },
-    show(id, rows) {
-      window.location.href = window.location.origin + "/companies/" + id;
+    addDocuments(id) {
+      window.location.href = window.location.origin + "/home";
     },
     deleteRow(id, rows) {
       this.idRowDelete = id;
@@ -190,9 +190,9 @@ export default {
     },
     submit() {
       axios
-        .delete(window.location.origin + "/companies/" + this.idRowDelete)
+        .delete(window.location.origin + "/services/" + this.idRowDelete)
         .then((res) => {
-          window.location.href = window.location.origin + "/companies";
+          window.location.href = window.location.origin + "/services";
         })
         .catch((err) => {
           this.errors.push( err.response.data.message );

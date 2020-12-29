@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\ActiveServicesScope;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +14,16 @@ class Service extends Model
     protected $fillable = [
         "service_type_id", "branch_office_id", "company_id", "description", "active", "start", "finished"
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ActiveServicesScope);
+    }
 
     public function company() {
         return $this->belongsTo(Company::class);

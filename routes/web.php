@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('services/associate', [ServiceController::class, 'store']);
     Route::get('services/{id}/edit', [ServiceController::class, 'edit']);
     Route::put('services/edit', [ServiceController::class, 'update']);
+    Route::delete('services/{id}', [ServiceController::class, 'destroy']);
     Route::get('services', [ServiceController::class, 'index']);
     Route::resource('branch_offices', BranchOfficeController::class);
     // route for report view
