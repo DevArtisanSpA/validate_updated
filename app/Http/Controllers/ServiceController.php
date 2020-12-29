@@ -197,4 +197,21 @@ class ServiceController extends Controller
         }
         return true;
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $deletedService = Service::find($id);
+        $deletedService->active = false;
+        if ($deletedService->save())
+            return response()->json(["message" => "Servicio eliminado exitosamente"], 200);
+
+        else
+            return response()->json(["message" => "Error al intentar eliminar servicio. Por favor intente nuevamente"], 400);
+    }
 }

@@ -190,9 +190,9 @@ export default {
     },
     submit() {
       axios
-        .delete(window.location.origin + "/companies/" + this.idRowDelete)
+        .delete(window.location.origin + "/services/" + this.idRowDelete)
         .then((res) => {
-          window.location.href = window.location.origin + "/companies";
+          window.location.href = window.location.origin + "/services";
         })
         .catch((err) => {
           this.errors.push( err.response.data.message );
