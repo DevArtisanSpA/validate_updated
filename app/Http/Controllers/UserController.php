@@ -45,10 +45,24 @@ class UserController extends Controller
     public function create()
     {
         //
-        $user_types = UserType::All();
         $companies = Company::where('active', true)->orderBy('business_name')->get();
         $create = json_encode([ 'companies' => $companies ]);
         return view('users/new', ['create' => $create]);
+    }
+
+    /**
+     * Show the form for editing a resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+        $companies = Company::where('active', true)->orderBy('business_name')->get();
+        $create = json_encode([ 'companies' => $companies ]);
+        $user = User::find($id);
+        return view('users/edit', ['create' => $create, 'user' => $user]);
     }
 
     /**
@@ -86,6 +100,43 @@ class UserController extends Controller
             }
             else
                 return response()->json(["message" => "Error al intentar crear usuario, por favor intentar nuevamente"], 400);
+        }
+        return true;
+    }
+
+    /**
+     * Update a resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'id' => ['required'],
+            'name' => ['required', 'string', 'min:3'],
+            'email' => ['required', 'string', 'min:5'],
+            'company_id' => ['required'],
+            'user_type_id' => ['required']
+        ]);
+        if ($validation->fails())
+        {
+            $error_array = array();
+            foreach($validation->messages()->getMessages() as $field_name => $messages)
+            {
+                $error_array[] = $messages[0];
+            }
+            return response()->json($error_array, 201);
+        }
+        else
+        {
+            $user = User::find($request->id);
+            $result = $user->update($request->all());
+            if($result){
+                return response()->json(["message" => "Usuario editado exitosamente"], 200);
+            }
+            else
+                return response()->json(["message" => "Error al intentar editar usuario. Por favor intente nuevamente"], 400);
         }
         return true;
     }
