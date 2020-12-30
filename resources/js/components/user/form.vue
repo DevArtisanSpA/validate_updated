@@ -183,7 +183,7 @@ export default {
           .post(url, this.formdata )
           .then((res) => {
             if(res.status === 200){
-              window.location.href = window.location.origin + '/home';
+              window.location.href = window.location.origin + '/users';
             } else {
               this.$refs["modal-confirm"].hide();
               this.errors = [];

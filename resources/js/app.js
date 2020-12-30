@@ -61,6 +61,11 @@ Vue.component(
   require("./components/user/form.vue").default
 );
 
+Vue.component(
+  "user-table",
+  require("./components/user/table.vue").default
+);
+
 
 Vue.prototype.$truthty = function (data) {
   if (
