@@ -19,6 +19,7 @@
                 </div>
             </div>
         </div>
+        @if(Auth::user()->user_type_id == 1)
         <div class="col-md-4">
             <div class="card border-dark w-75 mx-auto">
                 <div class="card-body">
@@ -27,6 +28,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
     <hr class="mt-5 mb-3">
     <div class="row">

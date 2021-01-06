@@ -11,7 +11,8 @@ class Employee extends Model
 
     protected $fillable = [
         "job_type_id", "commune_id", "name", "surname", "second_surname", "birthday", "address", "email",
-        "phone", "gender", "nationality", "working_day", "disability", "identification_type", "identification_id"
+        "phone", "gender", "nationality", "working_day", "disability", "identification_type", "identification_id",
+        "payment"
     ];
 
     public function commune() {

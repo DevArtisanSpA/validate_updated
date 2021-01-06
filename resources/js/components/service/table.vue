@@ -116,8 +116,9 @@
         :filter-method="filter(4)"
       />
 
-      <el-table-column label="Acciones" width="120">
+      <el-table-column label="Acciones">
         <template slot-scope="props">
+          
           <el-button
             v-if="auth.user_type_id != 1 && auth.company_id == props.row.company.id"
             v-on:click="addDocuments(props.row.id, tableData)"
@@ -134,6 +135,15 @@
             icon="el-icon-edit"
             v-b-tooltip.hover
             title="Editar"
+            circle
+          ></el-button>
+          <el-button
+            v-if="auth.user_type_id == 1 || auth.company_id == props.row.company.id"
+            v-on:click="addEmployee(props.row.id)"
+            type="success"
+            icon="el-icon-plus"
+            v-b-tooltip.hover
+            title="Agregar Empleados"
             circle
           ></el-button>
           <el-button
@@ -183,6 +193,9 @@ export default {
     },
     addDocuments(id) {
       window.location.href = window.location.origin + "/home";
+    },
+    addEmployee(id){
+      window.location.href = window.location.origin + "/employees/"+id+"/create";
     },
     deleteRow(id, rows) {
       this.idRowDelete = id;

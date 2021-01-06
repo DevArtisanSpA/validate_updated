@@ -10,7 +10,7 @@ class Document extends Model
     use HasFactory;
 
     protected $fillable = [
-        "document_type_id", "service_id", "branch_office_id", "employee_id",
+        "document_type_id", "service_id", "employee_id","validation_state_id",
         "start", "finish", "month_year_registry", "path_data", "observations"
     ];
 
