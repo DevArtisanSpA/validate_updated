@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\BranchOfficeController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,4 +50,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('employees/{id_service}/create', [EmployeeController::class, 'create']);
     Route::post('employees/update', [EmployeeController::class, 'update']);
     Route::get('employees/{id_service}/edit/{id_employee}', [EmployeeController::class, 'edit']);
+    Route::get('documents/companies/base',[DocumentController::class,'companyBaseIndex']);
+    Route::get('documents/companies/monthly',[DocumentController::class,'companyMonthlyIndex']);
+    Route::get('documents/employees/base',[DocumentController::class,'employeeBaseIndex']);
+    Route::get('documents/employees/monthly',[DocumentController::class,'employeeMonthlyIndex']);
 });
