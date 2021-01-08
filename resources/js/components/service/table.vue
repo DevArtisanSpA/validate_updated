@@ -123,7 +123,7 @@
             v-if="auth.user_type_id != 1 && auth.company_id == props.row.company.id"
             v-on:click="addDocuments(props.row.id, tableData)"
             type="warning"
-            icon="el-icon-view"
+            icon="el-icon-upload2"
             v-b-tooltip.hover
             title="Subir documentos"
             circle

@@ -25,7 +25,7 @@ class EmployeeController extends Controller
   public function index()
   {
     $my_company = new stdClass;
-    $employees = Employee::complete()->get();
+    $employees = Employee::table()->active()->get();
     if (Auth::user()->user_type_id == 1) {
       $user = Auth::user();
     } else {
@@ -51,7 +51,7 @@ class EmployeeController extends Controller
   {
     $regions = Region::with('communes')->get();
     $jobs = JobType::all();
-    $service = Service::where('id', $id_service)->complete()->first();
+    $service = Service::where('id', $id_service)->table()->first();
     $authData = Auth::user();
     $authData->isAdmin = Auth::user()->user_type_id == 1;
     return view('employees/new', [
@@ -145,8 +145,8 @@ class EmployeeController extends Controller
   {
     $regions = Region::with('communes')->get();
     $jobs = JobType::all();
-    $service = Service::where('id', $id_service)->complete()->first();
-    $employee = Employee::where('id', $id_employee)->complete($id_service)->first();
+    $service = Service::where('id', $id_service)->table()->first();
+    $employee = Employee::where('id', $id_employee)->table($id_service)->first();
     $authData = Auth::user();
     $authData->isAdmin = Auth::user()->user_type_id == 1;
     return view('employees/edit', [
@@ -224,38 +224,19 @@ class EmployeeController extends Controller
         "document" => $document
       ], 200);
     });
+  }
 
-
-
-    DB::transaction(function () use ($document, $inputDocument, $update) {
-      $update = $document->update($inputDocument);
-    });
-    if ($document->update($inputDocument)) {
-    } else {
+  public function destroy($id){
+    $employee=Employee::find($id);
+    $employee->active=false;
+    if($employee->save()){
+      return response()->json([
+        "message" => "Empleado desactivado con exito",
+      ], 200);
+    }else{
+      return response()->json([
+        "message" => "Error al desactivar empleado, intente más tarde",
+      ], 400);
     }
-    // $employee = Employee::create($inputEmployee);
-
-    // if ($employee) {
-    //   try {
-    //     $file_path = $request->file('file')->store('uploads', 's3');
-    //     $inputDocument['path_data'] = $file_path;
-    //     $inputDocument['employee_id'] = $employee->id;
-    //     $document = Document::create($inputDocument);
-    //     if ($document) {
-    //       return response()->json(["message" => "Empleado creado con exito"], 200);
-    //     } else {
-    //       $employee->delete();
-    //       return response()->json(["message" => "Error al intentar crear empleado. Por favor intente nuevamente"], 400);
-    //     }
-    //   } catch (\Throwable $th) {
-    //     $employee->delete();
-    //     return response()->json(["message" => "Error al intentar crear empleado. Por favor intente nuevamente"], 400);
-    //   }
-    // } else {
-    //   return response()->json(["message" => "Error al intentar crear empleado. Por favor intente nuevamente"], 400);
-    // }
-
-
-
   }
 }

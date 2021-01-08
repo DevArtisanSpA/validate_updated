@@ -56,15 +56,23 @@ class CompanyController extends Controller
             $user = Auth::user()->load('company.commercialBusiness:id,name');
             $my_company = $user->company;
             $my_company->load('parentBranchOffices.company:id,business_name');
-            $myParentCompanies = collect();
+            $parentCompanies = collect();
             foreach($my_company->parentBranchOffices as $parentBranchOffice) {
-                $myParentCompanies = $myParentCompanies->merge($parentBranchOffice->company->business_name);
+                $parentCompanies = $parentCompanies->merge($parentBranchOffice->company->business_name);
             }
-            $my_company->parentCompanies = $myParentCompanies;
+            $my_company->parentCompanies = $parentCompanies;
             unset($my_company->parentBranchOffices);
             $companies = collect([$my_company]);
-            $childData = $my_company->branchOffices()->with('childCompanies.commercialBusiness:id,name')->get();
+
+            $childData = $my_company->branchOffices()->
+            with(['childCompanies'
+            // :id,name'
+            =>function ($query) use ($my_company) {
+                return $query->where('companies.id','!=', $my_company->id);
+              }])->get();
             foreach ($childData as $data) {
+                \Debugbar::info($data->childCompanies);
+
                 $companies = $companies->merge($data->childCompanies);
             }
         }

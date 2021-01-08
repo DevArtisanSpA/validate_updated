@@ -117,18 +117,33 @@
                 }}
               </p></b-col
             >
-            <b-col md="12">
+            <b-col md="4">
               <p v-if="$truthty(props.row.job_type)">
-                <strong>Tipo:</strong> {{ props.row.job_type.name }}
+                <strong>Cargo:</strong> {{ props.row.job_type.name }}
               </p>
-              <p v-else><strong>Tipo:</strong> Otro</p>
+              <p v-else><strong>Cargo:</strong> Otro</p>
             </b-col>
-            <b-col md=12>
-              <p><strong>Servicio:</strong>
-              <strong>{{props.row.service.description}}</strong> entregado por 
-              <strong>{{props.row.service.company.business_name}}</strong> para la sucursal 
-              <strong>{{props.row.service.branch_office.name}}</strong> de la compañia
-              <strong>{{props.row.service.branch_office.company.business_name}}</strong>.</p>
+            <b-col md="4">
+              <p>
+                <strong>Servicio:</strong>{{ props.row.service.description }}
+              </p>
+            </b-col>
+            <b-col md="4">
+              <p>
+                <strong>Empresa Contratista:</strong
+                >{{ props.row.service.company.business_name }}
+              </p>
+            </b-col>
+            <b-col md="4">
+              <p>
+                <strong>Empresa Principal:</strong
+                >{{ props.row.service.branch_office.company.business_name }}
+              </p> </b-col
+            ><b-col md="4">
+              <p>
+                <strong>Sucursal:</strong
+                >{{ props.row.service.branch_office.name }}
+              </p>
             </b-col>
             <!-- <b-col md="4"
               ><p>
@@ -241,6 +256,13 @@
 </template>
 
 <script>
+const copy = (x) => {
+  if (x != null && x != undefined) {
+    return JSON.parse(JSON.stringify(x));
+  }
+  return x;
+};
+
 export default {
   props: ["employees", "auth"],
   data() {
@@ -264,16 +286,17 @@ export default {
       let base = this.employees.filter((data) => {
         return (
           !search ||
-          data.document_id.toLowerCase().includes(search.toLowerCase()) ||
+          data.identification_id.toLowerCase().includes(search.toLowerCase()) ||
           (this.$truthty(data.surname) &&
             data.surname.toLowerCase().includes(search.toLowerCase())) ||
           (this.$truthty(data.second_surname) &&
             data.second_surname.toLowerCase().includes(search.toLowerCase())) ||
           (this.$truthty(data.name) &&
             data.name.toLowerCase().includes(search.toLowerCase())) ||
-          data.business_name.toLowerCase().includes(search.toLowerCase()) ||
-          data.parent_name.toLowerCase().includes(search.toLowerCase()) ||
-          data.branch_name.toLowerCase().includes(search.toLowerCase())
+          data.service.description.toLowerCase().includes(search.toLowerCase()) ||
+          data.service.company.business_name.toLowerCase().includes(search.toLowerCase()) ||
+          data.service.branch_office.company.business_name.toLowerCase().includes(search.toLowerCase()) ||
+          data.service.branch_office.name.toLowerCase().includes(search.toLowerCase())
         );
       });
       let respaldo2 = [];
@@ -296,7 +319,11 @@ export default {
     },
     edit(row) {
       window.location.href =
-        window.location.origin + "/employees/" + row.service.id + "/edit/"+row.id;
+        window.location.origin +
+        "/employees/" +
+        row.service.id +
+        "/edit/" +
+        row.id;
     },
     show(row) {
       window.location.href = window.location.origin + "/employees/" + row.id;
