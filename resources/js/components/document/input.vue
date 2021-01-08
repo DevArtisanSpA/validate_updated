@@ -50,7 +50,7 @@
           class="el-upload-list__item-name text-prev"
           :href="'/documents/download/'+$props.fileExt.id"
           target="_blank"
-        >{{file.name}}</a>
+        >{{file.type.name}}</a>
         <a v-else>{{file.name}}</a>
       </div>
     </div>

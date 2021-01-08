@@ -4,7 +4,7 @@
 <div class="col-md-9">
   <a href="javascript:history.back()"><span>
       << Volver</span> </a> <div class="d-flex justify-content-between">
-        <h3>Nuevo Empleado</h3>
+        <h3>Editar Empleado</h3>
 </div>
 <h5 class="text-secondary">Para el servicio
   <strong>{{ $service->description }}</strong> entregado por
@@ -14,7 +14,8 @@
 </h5>
 
 @csrf
-<employee-form :data-list="{{ $dataList }}" :auth="{{ $auth }}" :is_update="0" :service="{{ $service }}">
+<employee-form :data-list="{{ $dataList }}" :auth="{{ $auth }}" 
+:is_update="0" :service="{{ $service }}" :employee="{{ $employee }}">
 </employee-form>
 </div>
 @endsection

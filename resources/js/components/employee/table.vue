@@ -9,7 +9,7 @@
           @input="changeInput"
           clearable /></b-col
       ><b-col class="d-flex justify-content-end">
-        <button
+        <!-- <button
           type="button"
           v-if="myEmployee"
           @click="sureToSendMail"
@@ -29,9 +29,15 @@
               Enviar correo
             </button>
           </div>
-        </el-tooltip>
+        </el-tooltip> -->
 
-        <b-modal ref="modal_mail" hide-footer @hidden="hideModalMail" :no-close-on-esc="send" :no-close-on-backdrop="send">
+        <b-modal
+          ref="modal_mail"
+          hide-footer
+          @hidden="hideModalMail"
+          :no-close-on-esc="send"
+          :no-close-on-backdrop="send"
+        >
           <div slot="modal-title"><h5>IMPORTANTE</h5></div>
           <div class="d-block text-center mt-2 mb-4">
             <span v-if="$truthty(errorMail)">{{ errorMail }}</span>
@@ -117,7 +123,14 @@
               </p>
               <p v-else><strong>Tipo:</strong> Otro</p>
             </b-col>
-            <b-col md="4"
+            <b-col md=12>
+              <p><strong>Servicio:</strong>
+              <strong>{{props.row.service.description}}</strong> entregado por 
+              <strong>{{props.row.service.company.business_name}}</strong> para la sucursal 
+              <strong>{{props.row.service.branch_office.name}}</strong> de la compañia
+              <strong>{{props.row.service.branch_office.company.business_name}}</strong>.</p>
+            </b-col>
+            <!-- <b-col md="4"
               ><p>
                 <strong>Fecha inicio de contrato:</strong>
                 {{ props.row.contract_start }}
@@ -130,12 +143,11 @@
               <p v-else>
                 <strong>Fecha término de contrato:</strong>
                 {{ props.row.contract_finished }}
-              </p></b-col
-            ></b-row
-          >
+              </p></b-col> -->
+          </b-row>
         </template>
       </el-table-column>
-      <el-table-column type="selection" width="30"> </el-table-column>
+      <!-- <el-table-column type="selection" width="30"> </el-table-column> -->
       <el-table-column
         label="Status"
         width="100"
@@ -157,20 +169,26 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="document_id"
-        label="Documento"
-        sortable
-        width="140"
-      />
+      <el-table-column prop="identification_id" label="N° Documento" sortable />
       <el-table-column label="Nombre" :sort-method="sortTernario('surname')">
         <template slot-scope="props">
           {{
-            `${$truthty(props.row.surname) ? props.row.surname.toCamelCase() : ""} ${$truthty(props.row.second_surname)? props.row.second_surname.toCamelCase(): ""}, ${$truthty(props.row.name) ? props.row.name.toCamelCase() : ""} `
+            `${
+              $truthty(props.row.surname) ? props.row.surname.toCamelCase() : ""
+            } ${
+              $truthty(props.row.second_surname)
+                ? props.row.second_surname.toCamelCase()
+                : ""
+            }, ${$truthty(props.row.name) ? props.row.name.toCamelCase() : ""} `
           }}
         </template>
       </el-table-column>
       <el-table-column
+        label="Servicio"
+        prop="service.description"
+        sortable
+      ></el-table-column>
+      <!-- <el-table-column
         prop="business_name"
         label="Contratista"
         sortable
@@ -185,7 +203,7 @@
         :filters="valuesFilter(tableData, 'parent_name')"
         :filter-method="filter('parent_name')"
       />
-      <el-table-column label="Sucursal" sortable prop="branch_name" />
+      <el-table-column label="Sucursal" sortable prop="branch_name" /> -->
       <el-table-column label="Acciones" width="120">
         <template slot-scope="props">
           <el-button
@@ -224,29 +242,231 @@
 
 <script>
 export default {
-  props: ["companies","employees", "auth"],
-  methods: {
-    init() {
-      console.log(this.$props.companies)
-    },
-  },
+  props: ["employees", "auth"],
   data() {
-    // let company = {};
-    // if (this.auth.user_type_id > 1) {
-    //   company = this.$props.companies.find((x) => {
-    //     return x.id == this.auth.company_id;
-    //   });
-    // }
     return {
-      tableData: [],
+      tableData: this.employees,
       idRowDelete: null,
       search: "",
-      company,
       errors: [],
+      send: false,
+      errorMail: false,
+      messageMail: null,
     };
   },
   mounted() {
     this.init();
+  },
+  methods: {
+    changeInput() {
+      const { search, multipleSelection } = this;
+      let respaldo1 = copy(multipleSelection);
+      let base = this.employees.filter((data) => {
+        return (
+          !search ||
+          data.document_id.toLowerCase().includes(search.toLowerCase()) ||
+          (this.$truthty(data.surname) &&
+            data.surname.toLowerCase().includes(search.toLowerCase())) ||
+          (this.$truthty(data.second_surname) &&
+            data.second_surname.toLowerCase().includes(search.toLowerCase())) ||
+          (this.$truthty(data.name) &&
+            data.name.toLowerCase().includes(search.toLowerCase())) ||
+          data.business_name.toLowerCase().includes(search.toLowerCase()) ||
+          data.parent_name.toLowerCase().includes(search.toLowerCase()) ||
+          data.branch_name.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+      let respaldo2 = [];
+      respaldo1.map((x) => {
+        let row = base.find((y) => {
+          return x.id == y.id;
+        });
+        if (this.$truthty(row)) {
+          respaldo2.push(row);
+        }
+      });
+      this.multipleSelectionBefore = respaldo2;
+      this.tableData = base;
+      if (this.$truthty(this.multipleSelectionBefore)) {
+        let aux = copy(this.multipleSelectionBefore);
+        aux.forEach((row) => {
+          this.$refs.multipleTable.toggleRowSelection(row, true);
+        });
+      }
+    },
+    edit(row) {
+      window.location.href =
+        window.location.origin + "/employees/" + row.service.id + "/edit/"+row.id;
+    },
+    show(row) {
+      window.location.href = window.location.origin + "/employees/" + row.id;
+    },
+    deleteRow(row) {
+      this.idRowDelete = row.id;
+      this.$refs["modal-confirm"].show();
+    },
+    submit() {
+      axios
+        .delete(window.location.origin + "/employees/" + this.idRowDelete)
+        .then((res) => {
+          window.location.href = window.location.origin + "/employees";
+        })
+        .catch((err) => {
+          // catch error
+        });
+    },
+    hideModal() {
+      this.$refs["modal-confirm"].hide();
+    },
+    hideModalMail() {
+      this.$refs["modal_mail"].hide();
+      this.errorMail = "";
+      this.messageMail = "";
+      this.statusMail = false;
+    },
+    sureToSendMail() {
+      if (this.$truthty(this.multipleSelection)) {
+        this.$refs["modal_mail"].show();
+      }
+    },
+    send_mail() {
+      this.send = true;
+      axios
+        .post(window.location.origin + "/mail/mail_employee_created", {
+          employees: this.multipleSelection,
+        })
+        .then((respose) => {
+          this.send = false;
+          if (respose.status == 200) {
+            this.statusMail = true;
+            this.messageMail = "El correo se envio exitosamente";
+            this.$refs.multipleTable.clearSelection();
+          } else {
+            this.statusMail = false;
+            this.errorMail =
+              "Ha ocurrido error al enviar el correo, intente más tarde";
+          }
+        })
+        .catch((error) => {
+          this.send = false;
+          this.statusMail = false;
+          this.errorMail = false;
+          this.errorMail =
+            "Ha ocurrido error al enviar el correo, intente más tarde";
+        });
+    },
+    getStatus(validation) {
+      const numEmpresa = 4;
+      if (validation == 1 || validation == 1 + numEmpresa) {
+        return `Pendiente por falta de archivos ${
+          validation > numEmpresa ? "de la empresa" : ""
+        }`;
+      } // negado por falta de documento
+      if (validation == 2 || validation == 2 + numEmpresa) {
+        return `Pendiente, aún se están revisando los documentos ${
+          validation > numEmpresa ? "de la empresa" : ""
+        }`;
+      } // negado por falta de documento
+      if (validation == 3 || validation == 3 + numEmpresa) {
+        return "Aprobado";
+      } // aprobado
+      if (validation == 4 || validation == 4 + numEmpresa) {
+        return `Rechazado ${
+          validation > numEmpresa ? "por documentacion de la empresa" : ""
+        }`;
+      } // negado estado de documento
+    },
+    getIconStatus(validation) {
+      const numEmpresa = 4;
+      if (
+        validation == 1 ||
+        validation == 2 ||
+        validation == 1 + numEmpresa ||
+        validation == 2 + numEmpresa
+      ) {
+        return "el-icon-remove text-warning";
+      } // negado por falta de documento
+      if (validation == 3 || validation == 3 + numEmpresa) {
+        return "el-icon-success text-success";
+      } // aprobado
+      if (validation == 4 || validation == 4 + numEmpresa) {
+        return "el-icon-error text-danger";
+      } // negado estado de documento
+    },
+    valuesFilter(tableData, e) {
+      let names = [];
+      tableData.map((data) => {
+        names.push(data[e]);
+      });
+      names = names.unique();
+      names.sort();
+      let values = [];
+      names.map((name) => {
+        values.push({ text: name, value: name });
+      });
+      return values;
+    },
+    filter: (e) => (value, row) => {
+      return row[e] == value;
+    },
+    sortSecundario(other) {
+      return function (a, b) {
+        if (a.parent_name < b.parent_name) return -1;
+        if (a.parent_name > b.parent_name) return 1;
+        if (a[other] < b[other]) return -1;
+        if (a[other] > b[other]) return 1;
+      };
+    },
+    sortTernario(other) {
+      return function (a, b) {
+        if (a.parent_name < b.parent_name) return -1;
+        if (a.parent_name > b.parent_name) return 1;
+        if (a.business_name) {
+          if (a.business_name < b.business_name) return -1;
+          if (a.business_name > b.business_name) return 1;
+        } else {
+          if (a.company.business_name < b.company.business_name) return -1;
+          if (a.company.business_name > b.company.business_name) return 1;
+        }
+        if (a[other] < b[other]) return -1;
+        if (a[other] > b[other]) return 1;
+      };
+    },
+    valuesFilterEmployee(tableData) {
+      let names = [];
+      tableData.map((data) => {
+        names.push(`${data.surname} ${data.second_surname}, ${data.name}`);
+      });
+      names = names.unique();
+      names.sort();
+      let values = [];
+      names.map((name) => {
+        values.push({ text: name, value: name });
+      });
+      return values;
+    },
+    filterEmployee(value, row) {
+      return `${row.surname} ${row.second_surname}, ${row.name}` == value;
+    },
+    valuesFilterStatus(tableData) {
+      let values = [];
+      tableData.map((data) => {
+        values.push(data.validation);
+      });
+      values = values.unique();
+      values.sort();
+      let valuesEnd = [];
+      values.map((v) => {
+        valuesEnd.push({ text: this.getStatus(v), value: v });
+      });
+      return valuesEnd;
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    init() {
+      console.log(this.employees);
+    },
   },
 };
 </script>

@@ -43,12 +43,10 @@ Route::group(['middleware' => ['auth']], function () {
     // route for report view
     Route::get('/reports', [ReportController::class, 'index']);
     Route::get('/reports/{id}', [ReportController::class, 'show']);
-    Route::get('employees', [EmployeeController::class, 'index']);
+    Route::resource('employees', EmployeeController::class)->except([
+        'create', 'edit','update',
+    ]);
     Route::get('employees/{id_service}/create', [EmployeeController::class, 'create']);
-    Route::post('employees', [EmployeeController::class, 'store']);
-
-
+    Route::post('employees/update', [EmployeeController::class, 'update']);
+    Route::get('employees/{id_service}/edit/{id_employee}', [EmployeeController::class, 'edit']);
 });
-
-
-

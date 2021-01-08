@@ -163,6 +163,7 @@
           <document-input
             @input="inputFile(...arguments)"
             :state="states.file"
+            :fileExt="$truthty(document.path_data) ? document : null"
           />
         </b-col>
       </b-row>
@@ -402,7 +403,24 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="6">
+        <b-col sm="4">
+          <label for="input-salary">
+            <span class="text-danger">*</span> Sueldo Imponible
+          </label>
+          <b-form-input
+            id="input-salary"
+            v-model="formData.payment"
+            type="number"
+            @keypress="isNumber()"
+            :state="states.payment"
+            :disabled="disabledData"
+            @change="isNotNull('payment')"
+          ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback">{{
+            this.message.payment
+          }}</b-form-invalid-feedback>
+        </b-col>
+        <b-col md="4">
           <label for="input-type">
             <span class="text-danger">*</span> Tipo de Trabajo
           </label>
@@ -427,7 +445,7 @@
             this.message.job_type_id
           }}</b-form-invalid-feedback>
         </b-col>
-        <b-col md="6">
+        <b-col md="4">
           <label for="input-working-day">
             <span class="text-danger">*</span> Jornada
           </label>
@@ -444,8 +462,8 @@
           }}</b-form-invalid-feedback>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col md="6">
+      <!-- <b-row>
+        <b-col md="4">
           <label for="input-start">
             <span class="text-danger">*</span> Fecha Inicio de Contrato
           </label>
@@ -461,7 +479,7 @@
             this.message.contract_start
           }}</b-form-invalid-feedback>
         </b-col>
-        <b-col md="6">
+        <b-col md="4">
           <label for="input-finished">Fecha Termino de Contrato</label>
           <b-form-input
             id="input-finished"
@@ -474,26 +492,7 @@
             this.message.contract_finished
           }}</b-form-invalid-feedback>
         </b-col>
-      </b-row>
-      <b-row>
-        <b-col sm="4">
-          <label for="input-salary">
-            <span class="text-danger">*</span> Sueldo Base
-          </label>
-          <b-form-input
-            id="input-salary"
-            v-model="formData.payment"
-            type="number"
-            @keypress="isNumber()"
-            :state="states.payment"
-            :disabled="disabledData"
-            @change="isNotNull('payment')"
-          ></b-form-input>
-          <b-form-invalid-feedback id="input-live-feedback">{{
-            this.message.payment
-          }}</b-form-invalid-feedback>
-        </b-col>
-      </b-row>
+      </b-row> -->
       <b-row
         ><b-button class="button-create" type="submit" variant="success">{{
           !this.$truthty(this.$props.employee) ? "Crear" : "Actualizar"
@@ -510,43 +509,61 @@ export default {
   props: ["service", "employee", "data-list", "is_update", "auth"],
 
   data() {
+    let formData = {
+      name: null,
+      surname: null,
+      second_surname: null,
+      birthday: null,
+      address: null,
+      email: null,
+      phone: null,
+      gender: null,
+      nationality: null,
+      working_day: null,
+      disability: null,
+      identification_type: 1,
+      identification_id: null,
+      payment: null,
+      job_type_id: null,
+      commune_id: null,
+    };
+    let document = {
+      document_type_id: 3,
+      service_id: this.service.id,
+      employee_id: null,
+      start: null,
+      finish: null,
+      path_data: null,
+      validation_state_id: 2,
+      id: null,
+      file: null,
+    };
+    let region = null;
+    let communes = [];
+    if (this.$truthty(this.employee)) {
+      let localDocument = this.employee.documents[0];
+      formData = this.employee;
+      region = formData.commune.region;
+      region = this.dataList.regions.find((x) => {
+        return region.id == x.id;
+      });
+      communes = region.communes;
+      console.log(this.dataList);
+      if (this.$truthty(document)) {
+        document = localDocument;
+        document.file = null;
+      }
+    }
     return {
       sendStatus: false,
       error: 0,
       errors: [],
       errorsData: [],
-      region: null,
+      region,
       disabledData: false,
-      communes: [],
-      document: {
-        document_type_id: 3,
-        service_id: this.service.id,
-        employee_id: null,
-        start: null,
-        finish: null,
-        path_data: null,
-        validation_state_id: 2,
-        id: null,
-        file: null,
-      },
-      formData: {
-        name: null,
-        surname: null,
-        second_surname: null,
-        birthday: null,
-        address: null,
-        email: null,
-        phone: null,
-        gender: null,
-        nationality: null,
-        working_day: null,
-        disability: null,
-        identification_type: 1,
-        identification_id: null,
-        payment: null,
-        job_type_id: null,
-        commune_id: null,
-      },
+      communes,
+      document,
+      formData,
       message: {
         region: null,
         job_type_id: null,
@@ -565,7 +582,7 @@ export default {
         contract_finished: null,
         gender: null,
         start: null,
-        finish:null,
+        finish: null,
         nationality: null,
         working_day: null,
         payment: null,
@@ -588,7 +605,7 @@ export default {
         contract_finished: null,
         gender: null,
         start: null,
-        finish:null,
+        finish: null,
         nationality: null,
         working_day: null,
         payment: null,
@@ -605,7 +622,7 @@ export default {
         address: "La dirección es requerida",
         email: "El email es requerido",
         phone: "El número de contacto es requerido",
-        contract_start: "La fecha de inicio de contrato es requerida",
+        // contract_start: "La fecha de inicio de contrato es requerida",
         gender: "El género es requerido",
         // start: "La emision del documento es requerida",
         // finish: "El vencimiento del documento es requerido",
@@ -617,20 +634,23 @@ export default {
   },
   methods: {
     submit() {
-      const url = `${window.location.origin}/employees`;
+      let url = `${window.location.origin}/employees`;
       let config = { headers: { "Content-Type": "multipart/form-data" } };
       let formData = new FormData();
       formData.append("employee", JSON.stringify(this.formData));
       formData.append("document", JSON.stringify(this.document));
       formData.append("file", this.document.file);
-      console.log(this.document);
+      // console.log(this.document);
       this.sendStatus = true;
+      if (this.$truthty(this.employee)) {
+        url = url + "/update";
+      }
       axios
         .post(url, formData)
         .then((res) => {
-          window.location.href= `${window.location.origin}/employees`;
-          this.sendStatus = false;
-          this.$refs["modal-confirm"].hide();
+          window.location.href = `${window.location.origin}/employees`;
+          // this.sendStatus = false;
+          // this.$refs["modal-confirm"].hide();
         })
         .catch((err) => {
           this.sendStatus = false;
@@ -644,9 +664,9 @@ export default {
       this.error = 0;
       this.errors = [];
       Object.keys(this.validations).forEach((param) => {
-        console.log(param);
         if (!this.$truthty(this.formData[param])) {
           this.error = 1;
+          console.log("error param " + param);
           this.message[param] = this.validations[param];
           this.states[param] = false;
         } else {
@@ -656,6 +676,7 @@ export default {
       });
       if (!this.$truthty(this.region)) {
         this.error = 1;
+        console.log("error param región");
         this.message.region = "La región es requerida";
         this.states.region = false;
       } else {
@@ -663,7 +684,11 @@ export default {
         this.states.region = true;
       }
       if (!this.$truthty(this.document.id)) {
-        if (this.document.file == null) {
+        if (
+          this.document.file == null &&
+          this.truthty(this.document.path_data)
+        ) {
+          console.log("error param document");
           this.states.file = false;
           this.message.file = "El archivo es requerido";
           this.error = 1;
@@ -673,22 +698,21 @@ export default {
         }
       }
       if (!this.$truthty(this.document.finish)) {
-          this.states.finish = false;
-          this.message.finish = "El vencimiento del documento es requerido";
-          this.error = 1;
-        } else {
-          this.message.finish = "";
-          this.states.finish = true;
-        }
-      
+        this.states.finish = false;
+        this.message.finish = "El vencimiento del documento es requerido";
+        this.error = 1;
+      } else {
+        this.message.finish = "";
+        this.states.finish = true;
+      }
+
       if (!this.$truthty(this.document.start)) {
-          this.states.start = false;
-          this.message.start = "La emision del documento es requerida";
-          this.error = 1;
-        } else {
-          this.message.start = "";
-          this.states.start = true;
-        
+        this.states.start = false;
+        this.message.start = "La emision del documento es requerida";
+        this.error = 1;
+      } else {
+        this.message.start = "";
+        this.states.start = true;
       }
       if (this.errors.length > 0) {
         this.error = 1;
@@ -884,9 +908,7 @@ export default {
       this.document.file = file;
       console.log(this.document.file);
     },
-    init() {
-      console.log(this.service);
-    },
+    init() {},
   },
   mounted() {
     this.init();
