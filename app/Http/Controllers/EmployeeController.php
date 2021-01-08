@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
-use Symfony\Component\Console\Input\Input;
 
 class EmployeeController extends Controller
 {
