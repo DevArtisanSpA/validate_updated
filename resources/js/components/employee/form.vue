@@ -686,7 +686,7 @@ export default {
       if (!this.$truthty(this.document.id)) {
         if (
           this.document.file == null &&
-          this.truthty(this.document.path_data)
+          this.$truthty(this.document.path_data)
         ) {
           console.log("error param document");
           this.states.file = false;

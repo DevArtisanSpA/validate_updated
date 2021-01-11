@@ -73,37 +73,13 @@ class EmployeeController extends Controller
     if ($request->hasFile('file') && $request->file('file')->isValid()) {
       $inputEmployee = (array) (json_decode($input["employee"]));
       $inputDocument = (array)(json_decode($input["document"]));
-      $validationEmployee = Validator::make($inputEmployee, [
-        'commune_id' => ['required', 'integer'],
-        'job_type_id' => ['nullable', 'integer'],
-        'identification_id' => ['required', 'min:3', 'max:20'],
-        'identification_type' => ['required', 'integer'],
-        'name' => ['required', 'string', 'max:30'],
-        'surname' => ['required', 'string', 'max:30'],
-        'second_surname' => ['nullable', 'string', 'max:20'],
-        'birthday' => ['required', 'date'],
-        'address' => ['required', 'string', 'max:100'],
-        'email' => ['required', 'regex:/^.+@.+$/i'],
-        'phone' => ['required', 'integer'],
-        'contract_start' => ['required', 'date'],
-        'contract_finished' => ['nullable', 'date'],
-        'gender' => ['required', 'integer'],
-        // 'valid_document' => ['required', 'date'],
-        'nationality' => ['required', 'string', 'max:50'],
-        'working_day' => ['nullable', 'string', 'max:50'],
-        'disability' => ['nullable', 'boolean'],
-        'payment' => ['required', 'integer'],
-      ]);
+      $validationEmployee = Employee::validator($inputEmployee);
       $validationDocument = Validator::make($inputDocument, [
         "document_type_id" => ['required', 'integer'],
         "service_id" => ['required', 'integer'],
-        // "employee_id" => [],
         "start" => ['required', 'date'],
         "finish" => ['required', 'date'],
-        // "month_year_registry" => [],
-        // "path_data" => [],
         "validation_state_id" => ['required', 'integer'],
-        // "id" => [],
       ]);
       $error_array = array();
       if ($validationEmployee->fails() || $validationDocument->fails()) {
