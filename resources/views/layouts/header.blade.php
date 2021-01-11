@@ -53,7 +53,7 @@
                               {{ __('Agregar sucursal') }}
                           </a>
                           <hr class="line">
-                          <a class="dropdown-item" href="{{ url('/documents/company/fixed') }}">
+                          <a class="dropdown-item" href="{{ url('documents/companies/base') }}">
                               {{ __('Lista documentos bases de empresa') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
@@ -62,7 +62,7 @@
                           </a>
                           @endif
                           <hr class="line">
-                          <a class="dropdown-item" href="{{ url('/documents/company/monthly') }}">
+                          <a class="dropdown-item" href="{{ url('documents/companies/monthly') }}">
                               {{ __('Lista documentos mensuales de empresa') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
@@ -87,7 +87,7 @@
                               {{ __('Finiquitar Empleado') }}
                           </a>
                           <hr class="line">
-                          <a class="dropdown-item" href="{{ url('/documents/employee/fixed') }}">
+                          <a class="dropdown-item" href="{{ url('documents/employees/base') }}">
                               {{ __('Lista documentos bases de empleado') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
@@ -97,7 +97,7 @@
                           @endif
                           <hr class="line">
 
-                          <a class="dropdown-item" href="{{ url('/documents/employee/monthly') }}">
+                          <a class="dropdown-item" href="{{ url('documents/employees/monthly') }}">
                               {{ __('Lista documentos mensuales de empleado') }}
                           </a>
                           @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
