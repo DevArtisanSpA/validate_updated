@@ -34,6 +34,11 @@ class Employee extends Model
   {
     return $query->where('active', '=', '1');
   }
+  /**
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+  
   public function scopeTable($query)
   {
     return $query->with([

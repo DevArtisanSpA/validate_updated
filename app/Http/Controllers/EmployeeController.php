@@ -25,7 +25,7 @@ class EmployeeController extends Controller
   public function index()
   {
     $my_company = new stdClass;
-    $employees = Employee::table()->active()->get();
+    $employees = Employee::active()->get();
     if (Auth::user()->user_type_id == 1) {
       $user = Auth::user();
     } else {
@@ -51,7 +51,7 @@ class EmployeeController extends Controller
   {
     $regions = Region::with('communes')->get();
     $jobs = JobType::all();
-    $service = Service::where('id', $id_service)->table()->first();
+    $service = Service::where('id', $id_service)->complete()->first();
     $authData = Auth::user();
     $authData->isAdmin = Auth::user()->user_type_id == 1;
     return view('employees/new', [
@@ -145,7 +145,7 @@ class EmployeeController extends Controller
   {
     $regions = Region::with('communes')->get();
     $jobs = JobType::all();
-    $service = Service::where('id', $id_service)->table()->first();
+    $service = Service::where('id', $id_service)->complete()->first();
     $employee = Employee::where('id', $id_employee)->table($id_service)->first();
     $authData = Auth::user();
     $authData->isAdmin = Auth::user()->user_type_id == 1;
