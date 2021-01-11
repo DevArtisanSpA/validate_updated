@@ -71,8 +71,6 @@ class CompanyController extends Controller
                 return $query->where('companies.id','!=', $my_company->id);
               }])->get();
             foreach ($childData as $data) {
-                \Debugbar::info($data->childCompanies);
-
                 $companies = $companies->merge($data->childCompanies);
             }
         }
