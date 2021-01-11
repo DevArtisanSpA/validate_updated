@@ -203,22 +203,6 @@
         prop="service.description"
         sortable
       ></el-table-column>
-      <!-- <el-table-column
-        prop="business_name"
-        label="Contratista"
-        sortable
-        :sort-method="sortSecundario('business_name')"
-        :filters="valuesFilter(tableData, 'business_name')"
-        :filter-method="filter('business_name')"
-      />
-      <el-table-column
-        prop="parent_name"
-        label="Principal"
-        sortable
-        :filters="valuesFilter(tableData, 'parent_name')"
-        :filter-method="filter('parent_name')"
-      />
-      <el-table-column label="Sucursal" sortable prop="branch_name" /> -->
       <el-table-column label="Acciones" width="120">
         <template slot-scope="props">
           <el-button

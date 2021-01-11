@@ -24,7 +24,7 @@ class EmployeeController extends Controller
   public function index()
   {
     $my_company = new stdClass;
-    $employees = Employee::active()->get();
+    $employees = Employee::table()->active()->get();
     if (Auth::user()->user_type_id == 1) {
       $user = Auth::user();
     } else {
