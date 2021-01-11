@@ -258,6 +258,29 @@ export default {
         values.push({ text: name, value: name });
       });
       return values;
+    },filterPrincipal(value, row) {
+      const element = row.parentCompanies;
+      if (this.auth.id_type > 1) {
+        if (row.id == this.auth.id_company) {
+          const e = element.find((x) => {
+            return x.business_name == value;
+          });
+          if (e) {
+            return true;
+          }
+        } else {
+          this.company.business_name == value;
+        }
+      } else {
+        const e = element.find((x) => {
+          return x.business_name == value;
+        });
+        if (e) {
+          return true;
+        }
+      }
+
+      return false;
     },
     sortSecundario(other) {
       return function (a, b) {

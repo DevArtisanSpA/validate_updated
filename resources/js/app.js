@@ -66,7 +66,41 @@ Vue.component(
   require("./components/user/table.vue").default
 );
 
+//Employee
+Vue.component(
+  "employee-form",
+  require("./components/employee/form.vue").default
+);
+// Vue.component(
+//   "company-search",
+//   require("./components/company/search.vue").default
+// );
+Vue.component(
+  "employee-table",
+  require("./components/employee/table.vue").default
+);
 
+//Document
+Vue.component(
+  "document-input",
+  require("./components/document/input.vue").default
+);
+Vue.component(
+  "document-table-company-base",
+  require("./components/document/company/base/table.vue").default
+);
+Vue.component(
+  "document-table-company-monthly",
+  require("./components/document/company/monthly/table.vue").default
+);
+Vue.component(
+  "document-table-employee-base",
+  require("./components/document/employee/base/table.vue").default
+);
+Vue.component(
+  "document-table-employee-monthly",
+  require("./components/document/employee/monthly/table.vue").default
+);
 Vue.prototype.$truthty = function (data) {
   if (
       data === undefined ||
