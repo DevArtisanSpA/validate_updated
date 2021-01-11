@@ -684,9 +684,10 @@ export default {
         this.states.region = true;
       }
       if (!this.$truthty(this.document.id)) {
+        console.log(this.document);
         if (
           this.document.file == null &&
-          this.$truthty(this.document.path_data)
+          !this.$truthty(this.document.path_data)
         ) {
           console.log("error param document");
           this.states.file = false;
