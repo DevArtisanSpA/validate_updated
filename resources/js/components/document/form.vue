@@ -471,9 +471,9 @@ export default {
       console.log(url);
       Promise.all(promises)
         .then((values) => {
-          // window.history.back()
-          this.send = false;
-          this.$refs["modal-confirm"].hide();
+          window.history.back()
+          // this.send = false;
+          // this.$refs["modal-confirm"].hide();
         })
         .catch((err) => {
           this.send = false;
