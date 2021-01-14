@@ -86,6 +86,10 @@ Vue.component(
   require("./components/document/input.vue").default
 );
 Vue.component(
+  "document-form",
+  require("./components/document/form.vue").default
+);
+Vue.component(
   "document-table-company-base",
   require("./components/document/company/base/table.vue").default
 );
@@ -101,22 +105,23 @@ Vue.component(
   "document-table-employee-monthly",
   require("./components/document/employee/monthly/table.vue").default
 );
+
 Vue.prototype.$truthty = function (data) {
   if (
-      data === undefined ||
-      data === null ||
-      (!data && data !== 0) ||
-      data === ""
+    data === undefined ||
+    data === null ||
+    (!data && data !== 0) ||
+    data === ""
   ) {
-      return false;
+    return false;
   }
   if (Array.isArray(data)) {
-      return data.length !== 0;
+    return data.length !== 0;
   }
   if (typeof data !== "string" && typeof data !== "number") {
-      if (typeof data === "object") {
-          return Object.keys(data).length !== 0;
-      }
+    if (typeof data === "object") {
+      return Object.keys(data).length !== 0;
+    }
   }
   return true;
 };
@@ -125,15 +130,15 @@ String.prototype.toCamelCase = function () {
 
   let inputArray = this.match(regex);
   if (inputArray == null) {
-      return '';
+    return '';
   }
   let result = "";
   for (let i = 0; i < inputArray.length; i++) {
-      let str = inputArray[i];
-      let tempStr = str.toLowerCase();
-      tempStr = tempStr.substr(0, 1).toUpperCase() + tempStr.substr(1);
+    let str = inputArray[i];
+    let tempStr = str.toLowerCase();
+    tempStr = tempStr.substr(0, 1).toUpperCase() + tempStr.substr(1);
 
-      result += tempStr + " ";
+    result += tempStr + " ";
   }
   return result;
 };

@@ -25,24 +25,32 @@ class Document extends Model
     }
     public function type()
     {
-        return $this->belongsTo(DocumentType::class,'document_type_id');
+        return $this->belongsTo(DocumentType::class, 'document_type_id');
     }
     public function employee()
     {
         return $this->belongsTo(Employee::class);
     }
 
-    public static function validator($inputDocument){
+    public function scopeBasic($query)
+    {
+        $query->with([
+            'type:id,temporality_id,area_id,name',
+            'type.temporality:id,name',
+            'type.area:id,name',
+            'validationState:id,name'
+        ]);
+    }
+
+    public static function validator($inputDocument)
+    {
         return Validator::make($inputDocument, [
             "document_type_id" => ['required', 'integer'],
             "service_id" => ['required', 'integer'],
-            "employee_id" => ['required', 'integer'],
-            "start" => ['required', 'date'],
-            "finish" => ['required', 'date'],
-            // "month_year_registry" => [],
-            // "path_data" => [],
+            // "start" => ['required_if:month_year_registry,==,null', 'date'],
+            // "month_year_registry"=> ['required_if:start,==,null','date_format:Y-M'],
             "validation_state_id" => ['required', 'integer'],
-            "id" => ['required', 'integer'],
           ]);
+        
     }
 }

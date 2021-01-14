@@ -46,15 +46,10 @@ class Employee extends Model
       'commune:id,name,region_id',
       'commune.region:id,name',
       'documents' => function ($query) {
-        return $query->where('document_type_id', 3);
+        return $query->whereIn('document_type_id', [4,5,6]);
       },
       'documents.service' => function ($query) {
-        return $query->with([
-          'company:id,business_name,rut',
-          'serviceType:id,name',
-          'branchOffice:id,company_id,name',
-          'branchOffice.company:id,business_name'
-        ])
+        return $query->complete()
           ->where('active', '=', '1');
       },
       'documents.type:id,name'
@@ -68,15 +63,10 @@ class Employee extends Model
       'commune:id,name,region_id',
       'commune.region:id,name',
       'documents' => function ($query) use ($id_service) {
-        return $query->where('document_type_id', 3)->where('service_id', $id_service);
+        return $query->whereIn('document_type_id', [4,5,6])->where('service_id', $id_service);
       },
       'documents.service' => function ($query) {
-        return $query->with([
-          'company:id,business_name,rut',
-          'serviceType:id,name',
-          'branchOffice:id,company_id,name',
-          'branchOffice.company:id,business_name'
-        ]);
+        return $query->complete();
       },
       'documents.type:id,name'
     ]);

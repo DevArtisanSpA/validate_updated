@@ -277,10 +277,18 @@ export default {
             data.second_surname.toLowerCase().includes(search.toLowerCase())) ||
           (this.$truthty(data.name) &&
             data.name.toLowerCase().includes(search.toLowerCase())) ||
-          data.service.description.toLowerCase().includes(search.toLowerCase()) ||
-          data.service.company.business_name.toLowerCase().includes(search.toLowerCase()) ||
-          data.service.branch_office.company.business_name.toLowerCase().includes(search.toLowerCase()) ||
-          data.service.branch_office.name.toLowerCase().includes(search.toLowerCase())
+          data.service.description
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          data.service.company.business_name
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          data.service.branch_office.company.business_name
+            .toLowerCase()
+            .includes(search.toLowerCase()) ||
+          data.service.branch_office.name
+            .toLowerCase()
+            .includes(search.toLowerCase())
         );
       });
       let respaldo2 = [];
@@ -304,10 +312,11 @@ export default {
     edit(row) {
       window.location.href =
         window.location.origin +
-        "/employees/" +
+        "/services/" +
         row.service.id +
-        "/edit/" +
-        row.id;
+        "/employees/" +
+        row.id +
+        "/edit/";
     },
     show(row) {
       window.location.href = window.location.origin + "/employees/" + row.id;
