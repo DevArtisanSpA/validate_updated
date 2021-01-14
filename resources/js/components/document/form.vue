@@ -253,6 +253,7 @@ export default {
   methods: {
     addDoc($event, document_type) {
       $event.preventDefault();
+      let aux=window.location.pathname.split('/');
       let document = {
         // id,
         document_type_id: document_type.id,
@@ -261,7 +262,7 @@ export default {
         employee_id: this.$truthty(this.employee) ? this.employee.id : null,
         start: null,
         finish: null,
-        month_year_registry: null,
+        month_year_registry: this.$truthty(this.monthly)?aux[aux.length-2]:null,
         path_data: null,
         file: null,
         name: document_type.name,
@@ -285,10 +286,10 @@ export default {
       this.formData.documents[index].path_data = null;
     },
     validDelete(document) {
-      const elements=this.documents.filter(x=>{
-        return [4,5,6].includes(x.document_type_id);
-      })
-      if(elements.length>1 || elements.length==0){
+      const elements = this.documents.filter((x) => {
+        return [4, 5, 6].includes(x.document_type_id);
+      });
+      if (elements.length > 1 || elements.length == 0) {
         return true;
       }
       return false;
@@ -338,39 +339,42 @@ export default {
       }
       console.log(this.formData.documents);
       this.formData.documents.map((document, index) => {
-        console.log(document);
-        // if (this.filter === 0) {
-        if (!this.$truthty(document.start)) {
-          this.formData.states[index].date_init = false;
-          this.formData.message[index].date_init =
-            "Fecha del documento es requerido";
-          this.error = 1;
-        } else {
-          if (
-            moment(moment().format("YYYY-MM-DD")).diff(
-              document.start,
-              "days",
-              true
-            ) < 0
-          ) {
-            this.errors.push({
-              message: `La fecha del documento ${document.name} (${
-                index + 1
-              }°) no puede ser mayor a hoy`,
-            });
+        if (!this.$truthty(this.monthly)) {
+          if (!this.$truthty(document.start)) {
+            this.formData.states[index].date_init = false;
+            this.formData.message[index].date_init =
+              "Fecha del documento es requerido";
             this.error = 1;
+          } else {
+            if (
+              moment(moment().format("YYYY-MM-DD")).diff(
+                document.start,
+                "days",
+                true
+              ) < 0
+            ) {
+              this.errors.push({
+                message: `La fecha del documento ${document.name} (${
+                  index + 1
+                }°) no puede ser mayor a hoy`,
+              });
+              this.error = 1;
+            }
           }
-        }
-        if (this.$truthty(document.finished) && this.$truthty(document.start)) {
           if (
-            moment(document.start).diff(document.finished, "days", true) > 0
+            this.$truthty(document.finished) &&
+            this.$truthty(document.start)
           ) {
-            this.errors.push({
-              message: `La fecha finalización del documento ${document.name} (${
-                index + 1
-              }°) no puede ser menor a la del documento`,
-            });
-            this.error = 1;
+            if (
+              moment(document.start).diff(document.finished, "days", true) > 0
+            ) {
+              this.errors.push({
+                message: `La fecha finalización del documento ${
+                  document.name
+                } (${index + 1}°) no puede ser menor a la del documento`,
+              });
+              this.error = 1;
+            }
           }
         }
 
@@ -452,6 +456,9 @@ export default {
       }
       return value;
     },
+    discart(){
+      this.formData = copy(this.prevDocument);
+    },
     submit() {
       let url = window.location.origin + "/documents";
       let config = { headers: { "Content-Type": "multipart/form-data" } };
@@ -466,12 +473,12 @@ export default {
       console.log("in");
       promises.push(axios.post(url, formData, config));
       console.log(this.idsDelete);
-      promises.push(axios.post(url+'/delete',{ids:this.idsDelete}));
+      promises.push(axios.post(url + "/delete", { ids: this.idsDelete }));
       this.send = true;
       console.log(url);
       Promise.all(promises)
         .then((values) => {
-          window.history.back()
+          window.history.back();
           // this.send = false;
           // this.$refs["modal-confirm"].hide();
         })
@@ -494,7 +501,7 @@ export default {
         });
         this.formData.message.push({ date_init: null, file: null });
       });
-      this.prevDocument = copy(this.formData.documents);
+      this.prevDocument = copy(this.formData);
     },
   },
   mounted() {

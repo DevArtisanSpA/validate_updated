@@ -4,7 +4,7 @@
 <div class="col-md-9">
   <a href="javascript:history.back()"><span>
       << Volver</span> </a> <div class="d-flex justify-content-between">
-        <h3>Agregar documentos base de empresa</h3>
+        <h3>Agregar documentos base de empleados</h3>
 </div>
 
 <h5 class="text-secondary">Para el servicio
