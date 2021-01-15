@@ -527,8 +527,9 @@ export default {
       job_type_id: null,
       commune_id: null,
     };
+
     let document = {
-      document_type_id: 3,
+      document_type_id: this.service.doc_cedula_id,
       service_id: this.service.id,
       employee_id: null,
       start: null,
@@ -537,6 +538,7 @@ export default {
       validation_state_id: 2,
       id: null,
       file: null,
+      name:null,
     };
     let region = null;
     let communes = [];
@@ -905,6 +907,8 @@ export default {
         this.document.validation_state_id = 2;
         this.states.file = null;
         this.message.file = null;
+        this.document.name = "Cédula de Identidad";
+
       }
       this.document.file = file;
       console.log(this.document.file);

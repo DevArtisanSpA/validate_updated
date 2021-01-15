@@ -195,7 +195,7 @@ export default {
       window.location.href = window.location.origin + "/home";
     },
     addEmployee(id){
-      window.location.href = window.location.origin + "/employees/"+id+"/create";
+      window.location.href = window.location.origin + "/services/"+id+"/employees/create";
     },
     deleteRow(id, rows) {
       this.idRowDelete = id;

@@ -9,7 +9,7 @@ class DocumentType extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["temporality_id", "area_id", "name"];
+    protected $fillable = ["temporality_id", "area_id", "name","service_type_id","optional"];
 
     public function temporality() {
         return $this->belongsTo(Temporality::class);
@@ -21,5 +21,9 @@ class DocumentType extends Model
 
     public function documents() {
         return $this->hasMany(Document::class);
+    }
+
+    public function service_type() {
+        return $this->belongsTo(ServiceType::class);
     }
 }

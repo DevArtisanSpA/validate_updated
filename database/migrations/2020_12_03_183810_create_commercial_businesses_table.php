@@ -27,6 +27,6 @@ class CreateCommercialBusinessesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('commercial_bussinesses');
+        Schema::dropIfExists('commercial_businesses');
     }
 }

@@ -8,7 +8,9 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\BranchOfficeController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,13 +47,34 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/reports', [ReportController::class, 'index']);
     Route::get('/reports/{id}', [ReportController::class, 'show']);
     Route::resource('employees', EmployeeController::class)->except([
-        'create', 'edit','update',
+        'create', 'edit', 'update',
     ]);
-    Route::get('employees/{id_service}/create', [EmployeeController::class, 'create']);
+    Route::get('services/{id_service}/employees/create', [EmployeeController::class, 'create']);
     Route::post('employees/update', [EmployeeController::class, 'update']);
-    Route::get('employees/{id_service}/edit/{id_employee}', [EmployeeController::class, 'edit']);
-    Route::get('documents/companies/base',[DocumentController::class,'companyBaseIndex']);
-    Route::get('documents/companies/monthly',[DocumentController::class,'companyMonthlyIndex']);
-    Route::get('documents/employees/base',[DocumentController::class,'employeeBaseIndex']);
-    Route::get('documents/employees/monthly',[DocumentController::class,'employeeMonthlyIndex']);
+    Route::get('services/{id_service}/employees/{id_employee}/edit', [EmployeeController::class, 'edit']);
+
+    Route::get('documents/companies/base', [DocumentController::class, 'companyBaseIndex']);
+    Route::get('documents/companies/monthly/{monthYear}', [DocumentController::class, 'companyMonthlyIndex'])->name('companyMonthly');
+    Route::get('documents/companies/monthly/', function () {
+        return redirect()->route('companyMonthly', ['monthYear' => Carbon::now()->format('Y-m')]);
+    });
+    Route::get('documents/employees/base', [DocumentController::class, 'employeeBaseIndex']);
+    Route::get('documents/employees/monthly/{monthYear}', [DocumentController::class, 'employeeMonthlyIndex'])->name('employeeMonthly');
+    Route::get('documents/employees/monthly/', function () {
+        return redirect()->route('employeeMonthly', ['monthYear' => Carbon::now()->format('Y-m')]);
+    });
+    Route::get('services/{id_service}/documents/companies/base/edit', [DocumentController::class, 'createEdit']);
+    Route::get('services/{id_service}/documents/companies/monthly/{monthYear}/edit', [DocumentController::class, 'createEdit'])->name('createEditCompanyMonthly');
+    Route::get('services/{id_service}/documents/companies/monthly/edit', function ($id_service) {
+        return redirect()->route('createEditCompanyMonthly', [
+            $id_service, 'monthYear' => Carbon::now()->format('Y-m')
+        ]);
+    });
+    Route::get('services/{id_service}/documents/employees/base/edit', [DocumentController::class, 'createEdit']);
+    Route::get('services/{id_service}/documents/employees/monthly/{monthYear}/edit', [DocumentController::class, 'createEdit'])->name('createEditEmployeeMonthly');
+    Route::get('services/{id_service}/documents/employees/monthly/edit', function ($id_service) {
+        return redirect()->route('createEditEmployeeMonthly', [$id_service, 'monthYear' => Carbon::now()->format('Y-m')]);
+    });
+    Route::post('documents/', [DocumentController::class, 'storeUpdate']);
+    Route::post('documents/delete', [DocumentController::class, 'destroy']);
 });

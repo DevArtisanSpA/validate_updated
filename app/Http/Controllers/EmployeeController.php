@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Constants;
 use App\Models\Document;
+use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\JobType;
 use App\Models\Region;
@@ -51,6 +52,9 @@ class EmployeeController extends Controller
     $regions = Region::with('communes')->get();
     $jobs = JobType::all();
     $service = Service::where('id', $id_service)->complete()->first();
+    $documentType = DocumentType::where('service_type_id', $service->service_type_id)
+      ->where('name', 'Cédula de Identidad')->first();
+    $service->doc_cedula_id = $documentType->id;
     $authData = Auth::user();
     $authData->isAdmin = Auth::user()->user_type_id == 1;
     return view('employees/new', [
@@ -91,27 +95,28 @@ class EmployeeController extends Controller
         }
         return response()->json($error_array, 400);
       } else {
-        $employee = Employee::create($inputEmployee);
-
-        if ($employee) {
-          try {
-            $file_path = $request->file('file')->store('uploads', 's3');
-            $inputDocument['path_data'] = $file_path;
-            $inputDocument['employee_id'] = $employee->id;
-            $document = Document::create($inputDocument);
-            if ($document) {
-              return response()->json(["message" => "Empleado creado con exito"], 200);
-            } else {
+        return DB::transaction(function () use ($inputEmployee, $inputDocument, $request) {
+          $employee = Employee::create($inputEmployee);
+          if ($employee) {
+            try {
+              $file_path = $request->file('file')->store('uploads', 's3');
+              $inputDocument['path_data'] = $file_path;
+              $inputDocument['employee_id'] = $employee->id;
+              $document = Document::create($inputDocument);
+              if ($document) {
+                return response()->json(["message" => "Empleado creado con exito"], 200);
+              } else {
+                $employee->delete();
+                return response()->json(["message" => "Error al intentar crear empleado. Por favor intente nuevamente"], 400);
+              }
+            } catch (\Throwable $th) {
               $employee->delete();
               return response()->json(["message" => "Error al intentar crear empleado. Por favor intente nuevamente"], 400);
             }
-          } catch (\Throwable $th) {
-            $employee->delete();
+          } else {
             return response()->json(["message" => "Error al intentar crear empleado. Por favor intente nuevamente"], 400);
           }
-        } else {
-          return response()->json(["message" => "Error al intentar crear empleado. Por favor intente nuevamente"], 400);
-        }
+        });
       }
     }
   }
@@ -121,6 +126,9 @@ class EmployeeController extends Controller
     $regions = Region::with('communes')->get();
     $jobs = JobType::all();
     $service = Service::where('id', $id_service)->complete()->first();
+    $documentType = DocumentType::where('service_type_id', $service->service_type_id)
+      ->where('name', 'Cédula de Identidad')->first();
+    $service->doc_cedula_id = $documentType->id;
     $employee = Employee::where('id', $id_employee)->table($id_service)->first();
     $authData = Auth::user();
     $authData->isAdmin = Auth::user()->user_type_id == 1;
@@ -140,7 +148,7 @@ class EmployeeController extends Controller
   public function update(Request $request)
   {
     $input = $request->all();
-    $file = $request->file;
+    // $file = $request->file;
     $document = json_decode($input["document"]);
     $inputEmployee = (array) (json_decode($input["employee"]));
     $validationEmployee = Employee::validator($inputEmployee);
@@ -201,14 +209,15 @@ class EmployeeController extends Controller
     });
   }
 
-  public function destroy($id){
-    $employee=Employee::find($id);
-    $employee->active=false;
-    if($employee->save()){
+  public function destroy($id)
+  {
+    $employee = Employee::find($id);
+    $employee->active = false;
+    if ($employee->save()) {
       return response()->json([
         "message" => "Empleado desactivado con exito",
       ], 200);
-    }else{
+    } else {
       return response()->json([
         "message" => "Error al desactivar empleado, intente más tarde",
       ], 400);
