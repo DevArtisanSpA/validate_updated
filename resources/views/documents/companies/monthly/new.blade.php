@@ -3,8 +3,9 @@
 @section('content')
 <div class="col-md-9">
   <a href="javascript:history.back()"><span>
-      << Volver</span> </a> <div class="d-flex justify-content-between">
-        <h3>Agregar documentos base de empresa</h3>
+      << Volver</span> </a> <div class="d-flex justify-content-start align-items-end">
+        <h3>Agregar documentos mensuales de empresa</h3> 
+        <h4 class="text-info" style="font-size: 1.3em;">&ensp; al periodo {{$monthYear}}</h4>
 </div>
 
 <h5 class="text-secondary">Para el servicio
@@ -18,7 +19,7 @@
 :service="{{$service}}" 
 :documents=" {{$documents}}" 
 :document_types="{{$document_types}}"
-monthly="true"
+:monthly="{{true}}"
 ></document-form>
 </div>
 @endsection

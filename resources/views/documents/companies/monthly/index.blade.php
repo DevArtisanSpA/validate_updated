@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between">
         <h3>Documentos mensuales de empresas</h3>
     </div>
-    <document-table-company-monthly :auth="{{ $auth }}"></document-table-company-monthly>
+    <document-table-company-monthly :auth="{{ $auth }}" :companies="{{ $companies }}"></document-table-company-monthly>
 
 </div>
 @endsection

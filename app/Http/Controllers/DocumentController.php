@@ -28,7 +28,7 @@ class DocumentController extends Controller
       'services.documents' => function ($query) {
         return $query->basic()
           ->whereHas('type', function (Builder $query) {
-            $query->where('area_id', 2);
+            return $query->where('area_id', 2)->where('temporality_id',1);
           });
       },
     ])->get();
@@ -49,22 +49,86 @@ class DocumentController extends Controller
   public function companyMonthlyIndex($monthYear)
   {
     $authData = Auth::user();
+    $companies = Company::with([
+      'services' => function ($query) {
+        return $query->complete();
+      },
+      'services.documents' => function ($query) use ($monthYear){
+        return $query->basic()->where('month_year_registry',$monthYear)
+          ->whereHas('type', function (Builder $query){
+            return $query->where('area_id', 2)->where('temporality_id',2);
+          });
+      },
+    ])->get();
+    $companies2 = [];
+    foreach ($companies as $key => $companyLocal) {
+      foreach ($companyLocal->services as $key => $service) {
+        $company = clone $companyLocal;
+        $company->service = clone ($service);
+        unset($company->services);
+        array_push($companies2, $company);
+      }
+    }
     return view('documents/companies/monthly/index', [
-      'auth' => $authData
+      'auth' => $authData,
+      'companies' => collect($companies2),
+      'monthYear'=>$monthYear
     ]);
   }
   public function employeeBaseIndex()
   {
     $authData = Auth::user();
-    return view('documents/employees/base/index', [
-      'auth' => $authData
+    $companies = Company::with([
+      'services' => function ($query) {
+        return $query->complete();
+      },
+      'services.documents' => function ($query) {
+        return $query->basic()
+          ->whereHas('type', function (Builder $query){
+            return $query->where('area_id', 1)->where('temporality_id',1);
+          });
+      },
+    ])->get();
+    $companies2 = [];
+    foreach ($companies as $key => $companyLocal) {
+      foreach ($companyLocal->services as $key => $service) {
+        $company = clone $companyLocal;
+        $company->service = clone ($service);
+        unset($company->services);
+        array_push($companies2, $company);
+      }
+    }    return view('documents/employees/base/index', [
+      'auth' => $authData,
+      'companies' => collect($companies2)
     ]);
   }
   public function employeeMonthlyIndex($monthYear)
   {
     $authData = Auth::user();
+    $companies = Company::with([
+      'services' => function ($query) {
+        return $query->complete();
+      },
+      'services.documents' => function ($query) use ($monthYear){
+        return $query->basic()->where('month_year_registry',$monthYear)
+          ->whereHas('type', function (Builder $query){
+            return $query->where('area_id', 1)->where('temporality_id',2);
+          });
+      },
+    ])->get();
+    $companies2 = [];
+    foreach ($companies as $key => $companyLocal) {
+      foreach ($companyLocal->services as $key => $service) {
+        $company = clone $companyLocal;
+        $company->service = clone ($service);
+        unset($company->services);
+        array_push($companies2, $company);
+      }
+    }
     return view('documents/employees/monthly/index', [
-      'auth' => $authData
+      'auth' => $authData,
+      'companies' => collect($companies2),
+      'monthYear'=>$monthYear
     ]);
   }
 
@@ -73,6 +137,7 @@ class DocumentController extends Controller
     $path_split = explode("/",  URL::current());
     $area = ($path_split[6] == 'employees') ? 1 : 2;
     $temp = ($path_split[7] == 'base') ? 1 : 2;
+    
     // $monthYear = ($path_split[7] == 'base') ? 1 : 2;
     $authData = Auth::user();
     $service = Service::where('id', $id_service)->complete()->first();
@@ -81,15 +146,19 @@ class DocumentController extends Controller
       ->where('service_type_id', $service->service_type_id)->orderby('name')->get();
 
     $documents = Document::where('service_id', $id_service)->basic()
-      ->whereHas('type', function (Builder $query) use ($area, $temp) {
-        $query->where('area_id', $area)->where('temporality_id', $temp);
+      ->whereHas('type', function (Builder $query) use ($area, $temp,$monthYear) {
+        if(is_null($monthYear)){
+          return $query->where('area_id', $area)->where('temporality_id', $temp);
+        }
+        return $query->where('area_id', $area)->where('temporality_id', $temp)
+        ->where('month_year_registry',$monthYear);
       })->get();
-
     return view('documents/' . $path_split[6] . '/' . $path_split[7] . '/new', [
       'auth' => $authData,
       'service' => $service,
       'documents' => collect($documents),
       'document_types' => collect($document_types),
+      'monthYear'=>strval($monthYear)
     ]);
   }
   public function storeUpdate(Request $request)
