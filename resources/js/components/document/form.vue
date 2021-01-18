@@ -252,6 +252,8 @@ export default {
     addDoc($event, document_type) {
       $event.preventDefault();
       let aux = window.location.pathname.split("/");
+
+      console.log(startOfMonth, endOfMonth);
       let document = {
         // id,
         document_type_id: document_type.id,
@@ -268,7 +270,18 @@ export default {
         name: document_type.name,
         observations: "",
       };
-      console.log(document.document_type_id);
+      if (this.$truthty(this.monthly)) {
+        const startOfMonth = moment(aux[aux.length - 2], "YYYY-MM")
+          .clone()
+          .startOf("month")
+          .format("YYYY-MM-DD");
+        document.start = startOfMonth;
+        const endOfMonth = moment(aux[aux.length - 2], "YYYY-MM")
+          .clone()
+          .endOf("month")
+          .format("YYYY-MM-DD");
+        document.finish = endOfMonth;
+      }
       this.formData.documents.splice(0, 0, document);
       this.formData.states.splice(0, 0, {
         date_init: null,
