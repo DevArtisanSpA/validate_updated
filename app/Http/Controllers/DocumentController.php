@@ -237,7 +237,12 @@ class DocumentController extends Controller
   public function download($id)
   {
     $document = Document::find($id);
-    return Storage::disk('s3')->download($document->path_data);
+    $headers = [
+      'Content-Type' => 'multipart/form-data',
+    ];
+    $split = explode(".", $document->path_data);
+    $ext = $split[count($split) - 1];
+    return Storage::disk('s3')->download($document->path_data, $document->type->name.'.'.$ext, $headers);
   }
   public function downloadZip(Request $request)
   {
@@ -281,10 +286,9 @@ class DocumentController extends Controller
           $file = Storage::disk('s3')->get($document->path_data);
           $split = explode(".", $document->path_data);
           $ext = $split[count($split) - 1];
-          $name = strtr($document->type->name, array(' ' => '_'))  . $key . '.' . $ext;
+          $name = strtr($document->type->name, array(' ' => '_')).'.' . $key . '.' . $ext;
           $temporality = ($temp === 2) ? $document->month_year_registry . '/' : '';
           $filename = $temporality . Constants::$BASE_URL_ZIP[$document->validation_state_id - 1] . $name;
-          \Debugbar::info($filename);
           $zip->put($filename, $file);
         }
       }
