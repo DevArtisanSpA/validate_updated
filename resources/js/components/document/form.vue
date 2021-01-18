@@ -252,8 +252,6 @@ export default {
     addDoc($event, document_type) {
       $event.preventDefault();
       let aux = window.location.pathname.split("/");
-
-      console.log(startOfMonth, endOfMonth);
       let document = {
         // id,
         document_type_id: document_type.id,
