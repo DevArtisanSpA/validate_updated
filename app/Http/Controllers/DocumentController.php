@@ -261,6 +261,7 @@ class DocumentController extends Controller
     }
     $area = $input['area'];
     $temp = $input['temp'];
+    $service = $input['service'];
     try {
       $monthYear = $input['monthYear'];
     } catch (\Throwable $th) {
@@ -271,8 +272,8 @@ class DocumentController extends Controller
     } catch (\Throwable $th) {
       $employee = null;
     }
-    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp, $monthYear,$employee) {
-      $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
+    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp,$service, $monthYear,$employee) {
+      $Q = $query->where('area_id', $area)->where('temporality_id', $temp)->where('service_id',$service);
       if (!is_null($monthYear)) {
         $Q = $Q->where('month_year_registry', $monthYear);
       }
