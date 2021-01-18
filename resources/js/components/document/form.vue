@@ -120,7 +120,7 @@
               <b-input
                 :id="'input-end' + index"
                 type="date"
-                v-model="formData.documents[index].finished"
+                v-model="formData.documents[index].finish"
                 :min="formData.documents[index].start"
               />
             </b-col>
@@ -286,7 +286,7 @@ export default {
       this.formData.documents[index].path_data = null;
     },
     validDelete(document) {
-      const elements = this.documents.filter((x) => {
+      const elements = this.formData.documents.filter((x) => {
         return [4, 5, 6].includes(x.document_type_id);
       });
       if (elements.length > 1 || elements.length == 0) {
@@ -362,11 +362,11 @@ export default {
             }
           }
           if (
-            this.$truthty(document.finished) &&
+            this.$truthty(document.finish) &&
             this.$truthty(document.start)
           ) {
             if (
-              moment(document.start).diff(document.finished, "days", true) > 0
+              moment(document.start).diff(document.finish, "days", true) > 0
             ) {
               this.errors.push({
                 message: `La fecha finalización del documento ${
@@ -417,7 +417,7 @@ export default {
       let idsDelete = [];
       let idsIgnore = [];
       let documents = copy(this.formData.documents);
-      this.prevDocument.map((document) => {
+      this.prevDocument.documents.map((document) => {
         let indexNew = documents.findIndex((doc) => {
           return doc.id == document.id;
         });

@@ -8,9 +8,9 @@
 </div>
 
 <h5 class="text-secondary">Para el servicio
-  <strong>{{ $service->description }}</strong> entregado por
+  <strong>{{ $service->description }}</strong> entregado por la empresa contratista
   <strong>{{ $service->company->business_name }}</strong> para la sucursal
-  <strong>{{ $service->branchOffice->name }}</strong> de la compañia
+  <strong>{{ $service->branchOffice->name }}</strong> de la empresa principal
   <strong>{{ $service->branchOffice->company->business_name }}</strong>
 </h5>
 @csrf

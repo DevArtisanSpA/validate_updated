@@ -108,7 +108,7 @@
           <template slot-scope="scope">
             <el-button
               v-if="auth.user_type_id == 1 || auth.id_company === scope.row.id"
-              v-on:click="edit(scope.row.service.id)"
+              v-on:click="edit(scope.row.service.id,scope.row.id)"
               type="primary"
               icon="el-icon-edit"
               v-b-tooltip.hover
@@ -175,8 +175,8 @@ export default {
     },
     downloadZip(id_service) {},
     goTo(row) {},
-    edit(id_service) {
-      window.location.href = `${window.location.origin}/services/${id_service}/documents/companies/base/edit`;
+    edit(id_service,id_company) {
+      window.location.href = `${window.location.origin}/services/${id_service}/documents/companies/${id_company}/base/edit`;
     },
   },
   mounted() {
