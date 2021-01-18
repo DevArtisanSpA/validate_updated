@@ -104,7 +104,6 @@
             </b-col>
             <b-col class="d-flex align-items-center" md="1" offset-md="1">
               <el-button
-                v-if="validDelete(document)"
                 type="danger"
                 icon="el-icon-close"
                 title="Quitar"
@@ -173,7 +172,6 @@
             </b-col>
             <b-col class="d-flex align-items-center" md="1">
               <el-button
-                v-if="validDelete(document)"
                 type="danger"
                 icon="el-icon-close"
                 title="Quitar"
@@ -253,7 +251,7 @@ export default {
   methods: {
     addDoc($event, document_type) {
       $event.preventDefault();
-      let aux=window.location.pathname.split('/');
+      let aux = window.location.pathname.split("/");
       let document = {
         // id,
         document_type_id: document_type.id,
@@ -262,12 +260,15 @@ export default {
         employee_id: this.$truthty(this.employee) ? this.employee.id : null,
         start: null,
         finish: null,
-        month_year_registry: this.$truthty(this.monthly)?aux[aux.length-2]:null,
+        month_year_registry: this.$truthty(this.monthly)
+          ? aux[aux.length - 2]
+          : null,
         path_data: null,
         file: null,
         name: document_type.name,
         observations: "",
       };
+      console.log(document.document_type_id);
       this.formData.documents.splice(0, 0, document);
       this.formData.states.splice(0, 0, {
         date_init: null,
@@ -286,13 +287,17 @@ export default {
       this.formData.documents[index].path_data = null;
     },
     validDelete(document) {
-      const elements = this.formData.documents.filter((x) => {
-        return [4, 5, 6].includes(x.document_type_id);
-      });
-      if (elements.length > 1 || elements.length == 0) {
-        return true;
+      // const elements = this.formData.documents.filter((x) => {
+      //   return [4, 5, 6].includes(x.document_type_id);
+      // });
+      // if (elements.length > 1 || elements.length == 0) {
+      //   return true;
+      // }
+      console.log(document.document_type_id);
+      if ([4, 5, 6].includes(document.document_type_id)) {
+        return false;
       }
-      return false;
+      true;
     },
     inputFile(index, file) {
       if (file == null) {
@@ -361,10 +366,7 @@ export default {
               this.error = 1;
             }
           }
-          if (
-            this.$truthty(document.finish) &&
-            this.$truthty(document.start)
-          ) {
+          if (this.$truthty(document.finish) && this.$truthty(document.start)) {
             if (
               moment(document.start).diff(document.finish, "days", true) > 0
             ) {
@@ -456,7 +458,7 @@ export default {
       }
       return value;
     },
-    discart(){
+    discard() {
       this.formData = copy(this.prevDocument);
     },
     submit() {
@@ -470,15 +472,19 @@ export default {
           formData.append("file" + (index + 1), document.file);
         }
       });
-      console.log("in");
       promises.push(axios.post(url, formData, config));
-      console.log(this.idsDelete);
       promises.push(axios.post(url + "/delete", { ids: this.idsDelete }));
       this.send = true;
-      console.log(url);
+      let urlBack = window.location.origin + "/documents/";
+      urlBack = this.$truthty(this.employee)
+        ? urlBack + "employees/"
+        : (urlBack = urlBack + "companies/");
+      urlBack = this.$truthty(this.monthly)
+        ? urlBack + "monthly"
+        : (urlBack = urlBack + "base");
       Promise.all(promises)
         .then((values) => {
-          window.history.back();
+          window.location.href = urlBack;
           // this.send = false;
           // this.$refs["modal-confirm"].hide();
         })

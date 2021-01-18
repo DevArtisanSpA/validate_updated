@@ -110,27 +110,27 @@ class DocumentController extends Controller
   public function employeeMonthlyIndex($monthYear)
   {
     $authData = Auth::user();
-    $employees = Employee::
-    with([
-      'services' => function ($query) {
-        return $query->complete();
-      }
-    ])->
-    whereHas('services', function (Builder $query) {
-      return $query->where('service_type_id', 1);
-    })->get();
+    $employees = Employee::with([
+        'services' => function ($query) {
+          return $query->complete();
+        }
+      ])->whereHas('services', function (Builder $query) {
+        return $query->where('service_type_id', 1);
+      })->get();
     $employees2 = [];
     foreach ($employees as $key => $employeeLocal) {
       foreach ($employeeLocal->services as $key => $service) {
-        $employee = clone $employeeLocal;
-        $employee->service = clone ($service);
-        $employee->service->documents = Document::where('service_id', $service->id)
-          ->where('employee_id', $employee->id)->basic()->where('month_year_registry', $monthYear)
-          ->whereHas('type', function (Builder $query) {
-            return $query->where('area_id', 1)->where('temporality_id', 2);
-          })->get();
-        unset($employee->services);
-        array_push($employees2, $employee);
+        if ($service->service_type_id == 1) {
+          $employee = clone $employeeLocal;
+          $employee->service = clone ($service);
+          $employee->service->documents = Document::where('service_id', $service->id)
+            ->where('employee_id', $employee->id)->basic()->where('month_year_registry', $monthYear)
+            ->whereHas('type', function (Builder $query) {
+              return $query->where('area_id', 1)->where('temporality_id', 2);
+            })->get();
+          unset($employee->services);
+          array_push($employees2, $employee);
+        }
       }
     }
     return view('documents/employees/monthly/index', [
@@ -159,10 +159,10 @@ class DocumentController extends Controller
         }
         return $Q;
       });
-    $employee= new stdClass();
-    if($area==1){
-      $Q = $Q->where('employee_id',$id);
-      $employee=Employee::find($id);
+    $employee = new stdClass();
+    if ($area == 1) {
+      $Q = $Q->where('employee_id', $id);
+      $employee = Employee::find($id);
     }
     $documents = $Q->get();
     return view('documents/' . $path_split[6] . '/' . $path_split[8] . '/new', [
@@ -171,7 +171,7 @@ class DocumentController extends Controller
       'documents' => collect($documents),
       'document_types' => collect($document_types),
       'monthYear' => strval($monthYear),
-      'employee' =>$employee,
+      'employee' => $employee,
     ]);
   }
   public function storeUpdate(Request $request)

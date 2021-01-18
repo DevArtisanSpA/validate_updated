@@ -31,37 +31,30 @@
         class="w-100"
       >
         <!-- <el-table-column type="selection" width="30"> </el-table-column> -->
-        <!-- <el-table-column
-          prop="name_parent"
+        <el-table-column
+          v-if="auth.user_type_id == 1"
+          prop="service.branch_office.company.business_name"
           label="Principal"
           sortable
-          min-width="130"
           :filters="valuesFilter(tableData, 'name_parent')"
           :filter-method="filterRow('name_parent')"
-        /> -->
-        <!-- <el-table-column
-          prop="business_name"
+        />
+        <el-table-column
+          v-if="auth.user_type_id == 1"
+          prop="service.company.business_name"
           sortable
           label="Contratista"
-          min-width="130"
           :filters="valuesFilter(tableData, 'business_name')"
           :filter-method="filterRow('business_name')"
         />
         <el-table-column
-          prop="branch_name"
+          v-if="auth.user_type_id == 1"
+          prop="service.branch_office.name"
           label="Sucursal"
           sortable
-          width="120"
           :filters="valuesFilter(tableData, 'branch_name')"
           :filter-method="filterRow('branch_name')"
-        /> -->
-        <!-- 
-        <el-table-column
-          prop="document_id"
-          label="N° identificación"
-          sortable
-          width="155"
-        /> -->
+        />
         <el-table-column
           prop="service.description"
           label="Servicio"
@@ -71,12 +64,7 @@
           label="Tipo"
           sortable
         />
-        <!-- <el-table-column
-          prop=""
-          label="Prestado por"
-          sortable
-        /> -->
-        <el-table-column label="Documentos" min-width="250">
+        <el-table-column label="Documentos" min-width="230">
           <template slot-scope="props">
             <div v-for="doc in props.row.service.documents" v-bind:key="doc.id">
               <p

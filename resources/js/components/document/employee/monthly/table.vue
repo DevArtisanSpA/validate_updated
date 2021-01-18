@@ -1,10 +1,15 @@
 <template>
   <div>
     <b-row>
-     <b-col sm="4">
+      <b-col sm="4">
         <el-input v-model="search" placeholder="Buscar " clearable /> </b-col
       ><b-col sm="4">
-        <b-form-input type="month" @input="filterSearch" :max="max" v-model="monthYear" />
+        <b-form-input
+          type="month"
+          @input="filterSearch"
+          :max="max"
+          v-model="monthYear"
+        />
       </b-col>
     </b-row>
     <b-overlay :show="loading" rounded="sm">
@@ -15,51 +20,48 @@
           tableData.filter(
             (data) =>
               !search ||
-              data.company.business_name
+              data.identification_id
                 .toLowerCase()
                 .includes(search.toLowerCase()) ||
-              data.name_parent.toLowerCase().includes(search.toLowerCase()) ||
-              data.branch_name.toLowerCase().includes(search.toLowerCase()) ||
-              data.document_id.toLowerCase().includes(search.toLowerCase()) ||
               data.name.toLowerCase().includes(search.toLowerCase()) ||
-              data.surname.toLowerCase().includes(search.toLowerCase())
+              data.surname
+                .toLowerCase()
+                .includes(
+                  search.toLowerCase() ||
+                    data.service.description
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                )
           )
         "
         ref="multipleTable"
         class="w-100"
       >
         <!-- <el-table-column type="selection" width="30"> </el-table-column> -->
-        <!-- <el-table-column
-          prop="name_parent"
+        <el-table-column
+          v-if="auth.user_type_id == 1"
+          prop="service.branch_office.company.business_name"
           label="Principal"
           sortable
-          min-width="130"
           :filters="valuesFilter(tableData, 'name_parent')"
           :filter-method="filterRow('name_parent')"
-        /> -->
-        <!-- <el-table-column
-          prop="business_name"
+        />
+        <el-table-column
+          v-if="auth.user_type_id == 1"
+          prop="service.company.business_name"
           sortable
           label="Contratista"
-          min-width="130"
           :filters="valuesFilter(tableData, 'business_name')"
           :filter-method="filterRow('business_name')"
         />
         <el-table-column
-          prop="branch_name"
+          v-if="auth.user_type_id == 1"
+          prop="service.branch_office.name"
           label="Sucursal"
           sortable
-          width="120"
           :filters="valuesFilter(tableData, 'branch_name')"
           :filter-method="filterRow('branch_name')"
-        /> -->
-        <!-- 
-        <el-table-column
-          prop="document_id"
-          label="N° identificación"
-          sortable
-          width="155"
-        /> -->
+        />
         <el-table-column label="Nombre">
           <template slot-scope="props">
             {{
@@ -82,22 +84,13 @@
           label="N° de identificación"
           sortable
         />
-        <el-table-column
-          prop="service.description"
-          label="Servicio"
-          sortable
-        />
+        <el-table-column prop="service.description" label="Servicio" sortable />
         <el-table-column
           prop="service.service_type.name"
           label="Tipo"
           sortable
         />
-        <!-- <el-table-column
-          prop=""
-          label="Prestado por"
-          sortable
-        /> -->
-        <el-table-column label="Documentos" min-width="250">
+        <el-table-column label="Documentos" min-width="230">
           <template slot-scope="props">
             <div v-for="doc in props.row.service.documents" v-bind:key="doc.id">
               <p
@@ -133,7 +126,7 @@
           <template slot-scope="scope">
             <el-button
               v-if="auth.user_type_id == 1 || auth.id_company === scope.row.id"
-              v-on:click="edit(scope.row.service.id,scope.row.id)"
+              v-on:click="edit(scope.row.service.id, scope.row.id)"
               type="primary"
               icon="el-icon-edit"
               v-b-tooltip.hover
@@ -173,14 +166,14 @@ const copy = (x) => {
 export default {
   props: ["documents", "auth", "employees"],
   data() {
-    let aux=window.location.pathname.split('/');
-    console.log(this.$props)
+    let aux = window.location.pathname.split("/");
+    console.log(this.$props);
     return {
-     search: null,
+      search: null,
       loading: false,
       tableData: this.employees,
       max: moment().format("YYYY-MM"),
-      monthYear:aux[aux.length-1],
+      monthYear: aux[aux.length - 1],
     };
   },
   methods: {
@@ -204,16 +197,17 @@ export default {
     },
     downloadZip(id_service) {},
     goTo(row) {},
-    edit(id_service,id_employee) {
+    edit(id_service, id_employee) {
       window.location.href = `${window.location.origin}/services/${id_service}/documents/employees/${id_employee}/monthly/${this.monthYear}/edit`;
     },
     filterSearch() {
       this.loading = true;
       window.location.href =
-        window.location.origin + "/documents/employees/monthly/" + this.monthYear;
-    }
+        window.location.origin +
+        "/documents/employees/monthly/" +
+        this.monthYear;
+    },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>

@@ -4,7 +4,7 @@
 <div class="col-md-9">
   <a href="javascript:history.back()"><span>
       << Volver</span> </a>
-  <div class="d-flex justify-content-between">
+  <div class="d-flex justify-content-start align-items-end">
     <h3>Agregar documentos mensuales de empleado</h3>
     <h4 class="text-info" style="font-size: 1.3em;">&ensp; al periodo {{$monthYear}}</h4>
   </div>
