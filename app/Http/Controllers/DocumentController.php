@@ -266,10 +266,18 @@ class DocumentController extends Controller
     } catch (\Throwable $th) {
       $monthYear = null;
     }
-    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
+    try {
+      $employee = $input['emplo$employee'];
+    } catch (\Throwable $th) {
+      $employee = null;
+    }
+    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp, $monthYear,$employee) {
       $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
       if (!is_null($monthYear)) {
         $Q = $Q->where('month_year_registry', $monthYear);
+      }
+      if (!is_null($employee)) {
+        $Q = $Q->where('employee_id', $employee);
       }
       return $Q;
     })->get();

@@ -13,10 +13,18 @@
           tableData.filter(
             (data) =>
               !search ||
-              data.identification_id.toLowerCase().includes(search.toLowerCase()) ||
+              data.identification_id
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
               data.name.toLowerCase().includes(search.toLowerCase()) ||
-              data.surname.toLowerCase().includes(search.toLowerCase() ||
-              data.service.description.toLowerCase().includes(search.toLowerCase()))
+              data.surname
+                .toLowerCase()
+                .includes(
+                  search.toLowerCase() ||
+                    data.service.description
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                )
           )
         "
         ref="multipleTable"
@@ -69,11 +77,7 @@
           label="N° de identificación"
           sortable
         />
-        <el-table-column
-          prop="service.description"
-          label="Servicio"
-          sortable
-        />
+        <el-table-column prop="service.description" label="Servicio" sortable />
         <el-table-column
           prop="service.service_type.name"
           label="Tipo"
@@ -115,7 +119,7 @@
           <template slot-scope="scope">
             <el-button
               v-if="auth.user_type_id == 1 || auth.id_company === scope.row.id"
-              v-on:click="edit(scope.row.service.id,scope.row.id)"
+              v-on:click="edit(scope.row.service.id, scope.row.id)"
               type="primary"
               icon="el-icon-edit"
               v-b-tooltip.hover
@@ -132,7 +136,12 @@
               v-b-tooltip.hover
             />
             <el-button
-              @click="downloadZip(scope.row.service.id, `service_${scope.row.service.description}`)"
+              @click="
+                downloadZip(
+                  scope.row.service.id,scope.row.id,
+                  `service_${scope.row.service.description}`
+                )
+              "
               type="info"
               icon="el-icon-download"
               v-b-tooltip.hover
@@ -180,7 +189,7 @@ export default {
         return row[e] == value;
       };
     },
-downloadZip(id_service, label) {
+    downloadZip(id_service, id_employee, label) {
       const url = window.location.origin + "/documents/download/zip";
       axios({
         url,
@@ -189,6 +198,7 @@ downloadZip(id_service, label) {
           service: id_service,
           area: 1,
           temp: 1,
+          employee: id_employee,
         },
         responseType: "blob",
       })
@@ -210,8 +220,9 @@ downloadZip(id_service, label) {
           console.log(error);
           alert("Ha ocurrido un error");
         });
-    },    goTo(row) {},
-    edit(id_service,id_employee) {
+    },
+    goTo(row) {},
+    edit(id_service, id_employee) {
       window.location.href = `${window.location.origin}/services/${id_service}/documents/employees/${id_employee}/base/edit`;
     },
   },

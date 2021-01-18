@@ -143,7 +143,13 @@
               v-b-tooltip.hover
             />
             <el-button
-              @click="downloadZip(scope.row.service.id, `service_${scope.row.service.description}`)"
+              @click="
+                downloadZip(
+                  scope.row.service.id,
+                  scope.row.id,
+                  `service_${scope.row.service.description}`
+                )
+              "
               type="info"
               icon="el-icon-download"
               v-b-tooltip.hover
@@ -195,7 +201,7 @@ export default {
         return row[e] == value;
       };
     },
-    downloadZip(id_service, label) {
+    downloadZip(id_service, id_employee, label) {
       const url = window.location.origin + "/documents/download/zip";
       axios({
         url,
@@ -204,6 +210,7 @@ export default {
           service: id_service,
           area: 1,
           temp: 2,
+          employee: id_employee,
         },
         responseType: "blob",
       })
