@@ -132,7 +132,7 @@
               v-b-tooltip.hover
             />
             <el-button
-              @click="downloadZip(scope.row.service.id)"
+              @click="downloadZip(scope.row.service.id, `service_${scope.row.service.description}`)"
               type="info"
               icon="el-icon-download"
               v-b-tooltip.hover
@@ -180,8 +180,37 @@ export default {
         return row[e] == value;
       };
     },
-    downloadZip(id_service) {},
-    goTo(row) {},
+downloadZip(id_service, label) {
+      const url = window.location.origin + "/documents/download/zip";
+      axios({
+        url,
+        method: "POST",
+        data: {
+          service: id_service,
+          area: 1,
+          temp: 1,
+        },
+        responseType: "blob",
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            let fileURL = window.URL.createObjectURL(new Blob([res.data]));
+            let fileLink = document.createElement("a");
+            fileLink.href = fileURL;
+            fileLink.setAttribute("download", label + ".zip");
+            document.body.appendChild(fileLink);
+            fileLink.click();
+          }
+          if (res.status === 204) {
+            alert("No hay documentos para agregar al zip");
+          }
+        })
+        .catch((error) => {
+          const { response } = error;
+          console.log(error);
+          alert("Ha ocurrido un error");
+        });
+    },    goTo(row) {},
     edit(id_service,id_employee) {
       window.location.href = `${window.location.origin}/services/${id_service}/documents/employees/${id_employee}/base/edit`;
     },

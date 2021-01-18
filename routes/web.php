@@ -76,5 +76,7 @@ Route::group(['middleware' => ['auth']], function () {
         return redirect()->route('createEditEmployeeMonthly', [$id_service,$id, 'monthYear' => Carbon::now()->format('Y-m')]);
     });
     Route::post('documents/', [DocumentController::class, 'storeUpdate']);
+    Route::get('documents/download/{id}', [DocumentController::class, 'download']);
+    Route::post('documents/download/zip', [DocumentController::class, 'downloadZip']);
     Route::post('documents/delete', [DocumentController::class, 'destroy']);
 });

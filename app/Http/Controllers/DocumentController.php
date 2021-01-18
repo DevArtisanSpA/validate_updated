@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Constants;
 use App\Models\Area;
 use App\Models\Company;
 use App\Models\Document;
@@ -13,8 +14,12 @@ use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\URL;
+use League\Flysystem\Filesystem;
+use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use stdClass;
 
 class DocumentController extends Controller
@@ -111,12 +116,12 @@ class DocumentController extends Controller
   {
     $authData = Auth::user();
     $employees = Employee::with([
-        'services' => function ($query) {
-          return $query->complete();
-        }
-      ])->whereHas('services', function (Builder $query) {
-        return $query->where('service_type_id', 1);
-      })->get();
+      'services' => function ($query) {
+        return $query->complete();
+      }
+    ])->whereHas('services', function (Builder $query) {
+      return $query->where('service_type_id', 1);
+    })->get();
     $employees2 = [];
     foreach ($employees as $key => $employeeLocal) {
       foreach ($employeeLocal->services as $key => $service) {
@@ -227,5 +232,70 @@ class DocumentController extends Controller
     DB::transaction(function () use ($input) {
       Document::destroy(collect($input['ids']));
     });
+  }
+
+  public function download($id)
+  {
+    $document = Document::find($id);
+    return Storage::disk('s3')->download($document->path_data);
+  }
+  public function downloadZip(Request $request)
+  {
+    $input = $request->all();
+    $validator = Validator::make($input, [
+      'service' => ['required', 'integer'],
+      'area' => ['required', 'integer'],
+      'temp' => ['required', 'integer']
+    ]);
+    $error_array = array();
+    if ($validator->fails()) {
+      foreach ($validator->messages()->getMessages() as $field_name => $messages) {
+        $error_array[] = $messages[0];
+      }
+      return response()->json($error_array, 401);
+    }
+    $area = $input['area'];
+    $temp = $input['temp'];
+    try {
+      $monthYear = $input['monthYear'];
+    } catch (\Throwable $th) {
+      $monthYear = null;
+    }
+    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
+      $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
+      if (!is_null($monthYear)) {
+        $Q = $Q->where('month_year_registry', $monthYear);
+      }
+      return $Q;
+    })->get();
+    $zipname = "app\\uploads\\all.zip";
+    if (!file_exists(storage_path('app\\uploads'))) {
+      File::makeDirectory(storage_path('app\\uploads'));
+    }
+    $zip = new Filesystem(new ZipArchiveAdapter(storage_path($zipname)));
+    try {
+      foreach ($documents as $key => $document) {
+        if (
+          Storage::disk('s3')->exists($document->path_data)
+        ) {
+          $file = Storage::disk('s3')->get($document->path_data);
+          $split = explode(".", $document->path_data);
+          $ext = $split[count($split) - 1];
+          $name = strtr($document->type->name, array(' ' => '_'))  . $key . '.' . $ext;
+          $temporality = ($temp === 2) ? $document->month_year_registry . '/' : '';
+          $filename = $temporality . Constants::$BASE_URL_ZIP[$document->validation_state_id - 1] . $name;
+          \Debugbar::info($filename);
+          $zip->put($filename, $file);
+        }
+      }
+      $zip->getAdapter()->getArchive()->close();
+    } catch (\Exception $e) {
+      return response()->json([], 204);
+    }
+    if (file_exists(storage_path($zipname))) {
+      return response()->file(storage_path($zipname))->deleteFileAfterSend();
+    } else {
+      return response()->json([], 204);
+    }
   }
 }
