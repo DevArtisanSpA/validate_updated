@@ -267,7 +267,7 @@ class DocumentController extends Controller
       $monthYear = null;
     }
     try {
-      $employee = $input['emplo$employee'];
+      $employee = $input['employee'];
     } catch (\Throwable $th) {
       $employee = null;
     }
