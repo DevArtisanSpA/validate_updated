@@ -6,7 +6,12 @@
       <b-col sm="4">
         <el-input v-model="search" placeholder="Buscar " clearable /> </b-col
       ><b-col sm="4">
-        <b-form-input type="month" @input="filterSearch" :max="max" v-model="monthYear" />
+        <b-form-input
+          type="month"
+          @input="filterSearch"
+          :max="max"
+          v-model="monthYear"
+        />
       </b-col>
     </b-row>
     <b-overlay :show="loading" rounded="sm">
@@ -41,19 +46,19 @@
         />
         <el-table-column
           v-if="auth.user_type_id == 1"
-          prop="service.company.business_name"
-          sortable
-          label="Contratista"
-          :filters="valuesFilter(tableData, 'business_name')"
-          :filter-method="filterRow('business_name')"
-        />
-        <el-table-column
-          v-if="auth.user_type_id == 1"
           prop="service.branch_office.name"
           label="Sucursal"
           sortable
           :filters="valuesFilter(tableData, 'branch_name')"
           :filter-method="filterRow('branch_name')"
+        />
+        <el-table-column
+          v-if="auth.user_type_id == 1"
+          prop="service.company.business_name"
+          sortable
+          label="Contratista"
+          :filters="valuesFilter(tableData, 'business_name')"
+          :filter-method="filterRow('business_name')"
         />
         <el-table-column
           prop="service.description"
@@ -100,7 +105,7 @@
           <template slot-scope="scope">
             <el-button
               v-if="auth.user_type_id == 1 || auth.id_company === scope.row.id"
-              v-on:click="edit(scope.row.service.id,scope.row.id)"
+              v-on:click="edit(scope.row.service.id, scope.row.id)"
               type="primary"
               icon="el-icon-edit"
               v-b-tooltip.hover
@@ -117,7 +122,14 @@
               v-b-tooltip.hover
             />
             <el-button
-              @click="downloadZip(scope.row.service.id, `service_${scope.row.service.description}`)"
+              @click="
+                downloadZip(
+                  scope.row.service.id,
+                  `${scope.row.rut}_${
+                    scope.row.service.description
+                  }_${scope.row.business_name.toCamelCase()}_all`
+                )
+              "
               type="info"
               icon="el-icon-download"
               v-b-tooltip.hover
@@ -140,13 +152,13 @@ const copy = (x) => {
 export default {
   props: ["documents", "auth", "companies"],
   data() {
-    let aux=window.location.pathname.split('/');
+    let aux = window.location.pathname.split("/");
     return {
       search: null,
       loading: false,
       tableData: this.companies,
       max: moment().format("YYYY-MM"),
-      monthYear:aux[aux.length-1],
+      monthYear: aux[aux.length - 1],
     };
   },
   methods: {
@@ -200,14 +212,16 @@ export default {
         });
     },
     goTo(row) {},
-    edit(id_service,id_company) {
+    edit(id_service, id_company) {
       window.location.href = `${window.location.origin}/services/${id_service}/documents/companies/${id_company}/monthly/${this.monthYear}/edit`;
     },
     filterSearch() {
       this.loading = true;
       window.location.href =
-        window.location.origin + "/documents/companies/monthly/" + this.monthYear;
-    }
+        window.location.origin +
+        "/documents/companies/monthly/" +
+        this.monthYear;
+    },
   },
   mounted() {
     console.log(this.companies, this.auth);

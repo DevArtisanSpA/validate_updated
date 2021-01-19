@@ -41,20 +41,21 @@
         />
         <el-table-column
           v-if="auth.user_type_id == 1"
+          prop="service.branch_office.name"
+          label="Sucursal"
+          sortable
+          :filters="valuesFilter(tableData, 'branch_name')"
+          :filter-method="filterRow('branch_name')"
+        /><el-table-column
+          v-if="auth.user_type_id == 1"
           prop="service.company.business_name"
           sortable
           label="Contratista"
           :filters="valuesFilter(tableData, 'business_name')"
           :filter-method="filterRow('business_name')"
         />
-        <el-table-column
-          v-if="auth.user_type_id == 1"
-          prop="service.branch_office.name"
-          label="Sucursal"
-          sortable
-          :filters="valuesFilter(tableData, 'branch_name')"
-          :filter-method="filterRow('branch_name')"
-        />
+        <el-table-column prop="service.description" label="Servicio" sortable />
+
         <el-table-column label="Nombre">
           <template slot-scope="props">
             {{
@@ -77,7 +78,6 @@
           label="N° de identificación"
           sortable
         />
-        <el-table-column prop="service.description" label="Servicio" sortable />
         <el-table-column
           prop="service.service_type.name"
           label="Tipo"
@@ -138,8 +138,11 @@
             <el-button
               @click="
                 downloadZip(
-                  scope.row.service.id,scope.row.id,
-                  `service_${scope.row.service.description}`
+                  scope.row.service.id,
+                  scope.row.id,
+                  `${scope.row.identification_id}_${
+                    scope.row.service.description
+                  }_${scope.row.surname.toCamelCase()}_${scope.row.name.toCamelCase()}_all`
                 )
               "
               type="info"

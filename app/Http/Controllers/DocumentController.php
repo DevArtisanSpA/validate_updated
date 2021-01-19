@@ -237,12 +237,20 @@ class DocumentController extends Controller
   public function download($id)
   {
     $document = Document::find($id);
+    $company = $document->service->company;
+    $employee = $document->employee;
+    if (is_null($employee)) {
+      $numID = $company->rut;
+    } else {
+      $numID = $employee->identification_id;
+    }
     $headers = [
       'Content-Type' => 'multipart/form-data',
     ];
     $split = explode(".", $document->path_data);
     $ext = $split[count($split) - 1];
-    return Storage::disk('s3')->download($document->path_data, $document->type->name.'.'.$ext, $headers);
+    $name = $numID . "_" . strtr($document->type->name, array(' ' => '_')) . '_' . $document->updated_at->toDateString() . '.' . $ext;
+    return Storage::disk('s3')->download($document->path_data, $name, $headers);
   }
   public function downloadZip(Request $request)
   {
@@ -272,8 +280,8 @@ class DocumentController extends Controller
     } catch (\Throwable $th) {
       $employee = null;
     }
-    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp,$service, $monthYear,$employee) {
-      $Q = $query->where('area_id', $area)->where('temporality_id', $temp)->where('service_id',$service);
+    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp, $service, $monthYear, $employee) {
+      $Q = $query->where('area_id', $area)->where('temporality_id', $temp)->where('service_id', $service);
       if (!is_null($monthYear)) {
         $Q = $Q->where('month_year_registry', $monthYear);
       }
@@ -295,7 +303,14 @@ class DocumentController extends Controller
           $file = Storage::disk('s3')->get($document->path_data);
           $split = explode(".", $document->path_data);
           $ext = $split[count($split) - 1];
-          $name = strtr($document->type->name, array(' ' => '_')).'.' . $key . '.' . $ext;
+          $company = $document->service->company;
+          $employee = $document->employee;
+          if (is_null($employee)) {
+            $numID = $company->rut;
+          } else {
+            $numID = $employee->identification_id;
+          }
+          $name = $numID . "_" . strtr($document->type->name, array(' ' => '_')) . '_' . $document->updated_at->toDateString() . '.' . $ext;
           $temporality = ($temp === 2) ? $document->month_year_registry . '/' : '';
           $filename = $temporality . Constants::$BASE_URL_ZIP[$document->validation_state_id - 1] . $name;
           $zip->put($filename, $file);
