@@ -30,6 +30,11 @@ class Employee extends Model
   {
     return $this->hasMany(Document::class);
   }
+
+  public function services(){
+    return $this->belongsToMany(Service::class,'documents')->distinct();
+  }
+
   public function scopeActive($query)
   {
     return $query->where('active', '=', '1');

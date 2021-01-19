@@ -163,7 +163,7 @@
           <document-input
             @input="inputFile(...arguments)"
             :state="states.file"
-            :fileExt="$truthty(document.path_data) ? document : null"
+            :fileExt="document"
           />
         </b-col>
       </b-row>

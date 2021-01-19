@@ -84,6 +84,11 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="description"
+        label="Servicio"
+        sortable
+      />
+      <el-table-column
         prop="company.business_name"
         label="Empresa contratista"
         sortable
