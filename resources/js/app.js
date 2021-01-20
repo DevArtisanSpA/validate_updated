@@ -106,6 +106,26 @@ Vue.component(
   require("./components/document/employee/monthly/table.vue").default
 );
 
+Vue.component(
+  "review-table-company-base",
+  require("./components/review/company/base/table.vue").default
+);
+Vue.component(
+  "review-table-company-monthly",
+  require("./components/review/company/monthly/table.vue").default
+);
+Vue.component(
+  "review-table-employee-base",
+  require("./components/review/employee/base/table.vue").default
+);
+Vue.component(
+  "review-table-employee-monthly",
+  require("./components/review/employee/monthly/table.vue").default
+);
+Vue.component(
+  "review-form",
+  require("./components/review/form.vue").default
+);
 Vue.prototype.$truthty = function (data) {
   if (
     data === undefined ||

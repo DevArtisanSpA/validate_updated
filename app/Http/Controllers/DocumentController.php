@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Constants;
-use App\Models\Area;
 use App\Models\Company;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Service;
-use App\Models\Temporality;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -144,7 +143,6 @@ class DocumentController extends Controller
       'monthYear' => $monthYear
     ]);
   }
-
   public function createEdit($id_service, $id, $monthYear = null)
   {
     $path_split = explode("/",  URL::current());
@@ -225,7 +223,6 @@ class DocumentController extends Controller
       });
     }
   }
-
   public function destroy(Request $request)
   {
     $input = $request->all();
@@ -233,7 +230,6 @@ class DocumentController extends Controller
       Document::destroy(collect($input['ids']));
     });
   }
-
   public function download($id)
   {
     $document = Document::find($id);
@@ -325,5 +321,33 @@ class DocumentController extends Controller
     } else {
       return response()->json([], 204);
     }
+  }
+  public function update(Request  $request)
+  {
+    $inputs = $request->all();
+    foreach ($inputs['documents'] as $key => $input) {
+      $obs = $inputs['observations'][$key];
+      $document = Document::find($input['id']);
+      $update = false;
+      if ($document->validation_state_id !== $input['validation_state_id']) { //estados distintos
+        $document->validation_state_id = $input['validation_state_id'];
+        $update = true;
+      }
+      if ($input['validation_state_id'] == 4 && !is_null($obs) && trim($obs) != '') { // tenga observaciones no null o vacias
+        $update = true;
+        $fecha = Carbon::now()->timezone('America/Santiago')->format('Y-m-d H:i');
+        $obs =  $fecha . '\\n' . $obs . "</div>";
+        $document->observations = $obs . $document->observations;
+      }
+      $result = true;
+      if ($update) {
+        \Debugbar::info($document->toArray());
+        $result = $document->save();
+      }
+      if (!$result) {
+        return response()->json(["message" => "Error al intentar modificar el documento, por favor intentar nuevamente"], 400);
+      }
+    }
+    return response()->json(["message" => "Documentos modificados exitosamente"], 200);
   }
 }

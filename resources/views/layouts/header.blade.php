@@ -114,17 +114,17 @@
                       </a>
 
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                          <a class="dropdown-item" href="{{ url('/review/company/fixed') }}">
+                          <a class="dropdown-item" href="{{ url('/review/companies/base') }}">
                               {{ __('Documentos bases de empresas') }}
                           </a>
-                          <a class="dropdown-item" href="{{ url('/review/company/monthly') }}">
-                              {{ __('EDocumentos mensuales de empresas') }}
+                          <a class="dropdown-item" href="{{ url('/review/companies/monthly') }}">
+                              {{ __('Documentos mensuales de empresas') }}
                           </a>
                           <hr class="line">
-                          <a class="dropdown-item" href="{{ url('/review/employee/fixed') }}">
+                          <a class="dropdown-item" href="{{ url('/review/employees/base') }}">
                               {{ __('Documentos bases de empleados') }}
                           </a>
-                          <a class="dropdown-item" href="{{ url('/review/employee/monthly') }}">
+                          <a class="dropdown-item" href="{{ url('/review/employees/monthly') }}">
                               {{ __('Documentos mensuales de empleados') }}
                           </a>
                       </div>
