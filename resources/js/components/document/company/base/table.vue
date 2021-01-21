@@ -32,19 +32,19 @@
         />
         <el-table-column
           v-if="auth.user_type_id == 1"
-          prop="service.company.business_name"
-          sortable
-          label="Contratista"
-          :filters="valuesFilter(tableData, 'business_name')"
-          :filter-method="filterRow('business_name')"
-        />
-        <el-table-column
-          v-if="auth.user_type_id == 1"
           prop="service.branch_office.name"
           label="Sucursal"
           sortable
           :filters="valuesFilter(tableData, 'branch_name')"
           :filter-method="filterRow('branch_name')"
+        />
+        <el-table-column
+          v-if="auth.user_type_id == 1"
+          prop="service.company.business_name"
+          sortable
+          label="Contratista"
+          :filters="valuesFilter(tableData, 'business_name')"
+          :filter-method="filterRow('business_name')"
         />
         <el-table-column
           prop="service.description"
@@ -116,7 +116,9 @@
               @click="
                 downloadZip(
                   scope.row.service.id,
-                  `service_${scope.row.service.description}`
+                  `${scope.row.rut}_${
+                    scope.row.service.description
+                  }_${scope.row.business_name.toCamelCase()}_all`
                 )
               "
               type="info"

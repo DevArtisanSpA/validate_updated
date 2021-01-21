@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Constants;
-use App\Models\Area;
 use App\Models\Company;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Service;
-use App\Models\Temporality;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -54,13 +53,14 @@ class DocumentController extends Controller
   }
   public function companyMonthlyIndex($monthYear)
   {
+    $monthYear= explode("-",  $monthYear);
     $authData = Auth::user();
     $companies = Company::with([
       'services' => function ($query) {
         return $query->complete();
       },
       'services.documents' => function ($query) use ($monthYear) {
-        return $query->basic()->where('month_year_registry', $monthYear)
+        return $query->basic()->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0])
           ->whereHas('type', function (Builder $query) {
             return $query->where('area_id', 2)->where('temporality_id', 2);
           });
@@ -114,6 +114,7 @@ class DocumentController extends Controller
   }
   public function employeeMonthlyIndex($monthYear)
   {
+    $monthYear= explode("-",  $monthYear);
     $authData = Auth::user();
     $employees = Employee::with([
       'services' => function ($query) {
@@ -129,7 +130,7 @@ class DocumentController extends Controller
           $employee = clone $employeeLocal;
           $employee->service = clone ($service);
           $employee->service->documents = Document::where('service_id', $service->id)
-            ->where('employee_id', $employee->id)->basic()->where('month_year_registry', $monthYear)
+            ->where('employee_id', $employee->id)->basic()->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0])
             ->whereHas('type', function (Builder $query) {
               return $query->where('area_id', 1)->where('temporality_id', 2);
             })->get();
@@ -144,7 +145,6 @@ class DocumentController extends Controller
       'monthYear' => $monthYear
     ]);
   }
-
   public function createEdit($id_service, $id, $monthYear = null)
   {
     $path_split = explode("/",  URL::current());
@@ -160,7 +160,8 @@ class DocumentController extends Controller
       ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
         $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
         if (!is_null($monthYear)) {
-          $Q = $Q->where('month_year_registry', $monthYear);
+          $monthYear= explode("-",  $monthYear);
+          $Q = $Q->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0]);
         }
         return $Q;
       });
@@ -225,7 +226,6 @@ class DocumentController extends Controller
       });
     }
   }
-
   public function destroy(Request $request)
   {
     $input = $request->all();
@@ -233,16 +233,23 @@ class DocumentController extends Controller
       Document::destroy(collect($input['ids']));
     });
   }
-
   public function download($id)
   {
     $document = Document::find($id);
+    $company = $document->service->company;
+    $employee = $document->employee;
+    if (is_null($employee)) {
+      $numID = $company->rut;
+    } else {
+      $numID = $employee->identification_id;
+    }
     $headers = [
       'Content-Type' => 'multipart/form-data',
     ];
     $split = explode(".", $document->path_data);
     $ext = $split[count($split) - 1];
-    return Storage::disk('s3')->download($document->path_data, $document->type->name.'.'.$ext, $headers);
+    $name = $numID . "_" . strtr($document->type->name, array(' ' => '_')) . '_' . $document->updated_at->toDateString() . '.' . $ext;
+    return Storage::disk('s3')->download($document->path_data, $name, $headers);
   }
   public function downloadZip(Request $request)
   {
@@ -272,10 +279,11 @@ class DocumentController extends Controller
     } catch (\Throwable $th) {
       $employee = null;
     }
-    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp,$service, $monthYear,$employee) {
-      $Q = $query->where('area_id', $area)->where('temporality_id', $temp)->where('service_id',$service);
+    $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp, $service, $monthYear, $employee) {
+      $Q = $query->where('area_id', $area)->where('temporality_id', $temp)->where('service_id', $service);
       if (!is_null($monthYear)) {
-        $Q = $Q->where('month_year_registry', $monthYear);
+        $monthYear= explode("-",  $monthYear);
+        $Q = $Q->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0]);
       }
       if (!is_null($employee)) {
         $Q = $Q->where('employee_id', $employee);
@@ -295,7 +303,14 @@ class DocumentController extends Controller
           $file = Storage::disk('s3')->get($document->path_data);
           $split = explode(".", $document->path_data);
           $ext = $split[count($split) - 1];
-          $name = strtr($document->type->name, array(' ' => '_')).'.' . $key . '.' . $ext;
+          $company = $document->service->company;
+          $employee = $document->employee;
+          if (is_null($employee)) {
+            $numID = $company->rut;
+          } else {
+            $numID = $employee->identification_id;
+          }
+          $name = $numID . "_" . strtr($document->type->name, array(' ' => '_')) . '_' . $document->updated_at->toDateString() . '.' . $ext;
           $temporality = ($temp === 2) ? $document->month_year_registry . '/' : '';
           $filename = $temporality . Constants::$BASE_URL_ZIP[$document->validation_state_id - 1] . $name;
           $zip->put($filename, $file);
@@ -310,5 +325,33 @@ class DocumentController extends Controller
     } else {
       return response()->json([], 204);
     }
+  }
+  public function update(Request  $request)
+  {
+    $inputs = $request->all();
+    foreach ($inputs['documents'] as $key => $input) {
+      $obs = $inputs['observations'][$key];
+      $document = Document::find($input['id']);
+      $update = false;
+      if ($document->validation_state_id !== $input['validation_state_id']) { //estados distintos
+        $document->validation_state_id = $input['validation_state_id'];
+        $update = true;
+      }
+      if ($input['validation_state_id'] == 4 && !is_null($obs) && trim($obs) != '') { // tenga observaciones no null o vacias
+        $update = true;
+        $fecha = Carbon::now()->timezone('America/Santiago')->format('Y-m-d H:i');
+        $obs =  $fecha . '\\n' . $obs . "</div>";
+        $document->observations = $obs . $document->observations;
+      }
+      $result = true;
+      if ($update) {
+        // \Debugbar::info($document->toArray());
+        $result = $document->save();
+      }
+      if (!$result) {
+        return response()->json(["message" => "Error al intentar modificar el documento, por favor intentar nuevamente"], 400);
+      }
+    }
+    return response()->json(["message" => "Documentos modificados exitosamente"], 200);
   }
 }

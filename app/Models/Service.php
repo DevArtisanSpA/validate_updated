@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\ActiveServicesScope;
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,19 +25,23 @@ class Service extends Model
         static::addGlobalScope(new ActiveServicesScope);
     }
 
-    public function company() {
+    public function company()
+    {
         return $this->belongsTo(Company::class);
     }
 
-    public function documents() {
+    public function documents()
+    {
         return $this->hasMany(Document::class);
     }
 
-    public function serviceType() {
+    public function serviceType()
+    {
         return $this->belongsTo(ServiceType::class);
     }
 
-    public function branchOffice() {
+    public function branchOffice()
+    {
         return $this->belongsTo(BranchOffice::class);
     }
 
@@ -76,6 +80,48 @@ class Service extends Model
             'serviceType:id,name',
             'branchOffice:id,company_id,name',
             'branchOffice.company:id,business_name'
+        ]);
+    }
+    public function scopeCountDocuments($query, $area, $temp, $monthYear = null,$employee=null)
+    {
+        return $query->withCount([
+            'documents as pending' => function ($query) use ($area, $temp, $monthYear,$employee) {
+                $Q = $query->where('validation_state_id', 2)
+                    ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
+                        return $query->where('area_id', $area)->where('temporality_id', $temp);
+                    });
+                if (!is_null($monthYear)) {
+                    $Q = $Q->where('month_year_registry', $monthYear);
+                }
+                if (!is_null($employee)) {
+                    $Q = $Q->where('employee_id', $employee);
+                }
+                return $Q;
+            }, 'documents as approved' => function ($query) use ($area, $temp, $monthYear,$employee) {
+                $Q = $query->where('validation_state_id', 3)
+                    ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
+                        return $query->where('area_id', $area)->where('temporality_id', $temp);
+                    });
+                if (!is_null($monthYear)) {
+                    $Q = $Q->where('month_year_registry', $monthYear);
+                }
+                if (!is_null($employee)) {
+                    $Q = $Q->where('employee_id', $employee);
+                }
+                return $Q;
+            }, 'documents as rejected' => function ($query) use ($area, $temp, $monthYear,$employee) {
+                $Q = $query->where('validation_state_id', 4)
+                    ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
+                        return $query->where('area_id', $area)->where('temporality_id', $temp);
+                    });
+                if (!is_null($monthYear)) {
+                    $Q = $Q->where('month_year_registry', $monthYear);
+                }
+                if (!is_null($employee)) {
+                    $Q = $Q->where('employee_id', $employee);
+                }
+                return $Q;
+            }
         ]);
     }
 }
