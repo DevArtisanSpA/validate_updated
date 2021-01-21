@@ -94,9 +94,9 @@ Route::group(['middleware' => ['auth']], function () {
     // });
 
     Route::get('review/{id_service}/documents/companies/{id}/base', [ReviewController::class, 'edit']);
-    Route::get('review/{id_service}/documents/companies/{id}/monthly/{monthYear}', [ReviewController::class, 'edit'])->name('createEditCompanyMonthly');
+    Route::get('review/{id_service}/documents/companies/{id}/monthly/{monthYear}', [ReviewController::class, 'edit'])->name('reviewCompanyMonthly');
     Route::get('review/{id_service}/documents/companies/{id}/monthly', function ($id_service,$id) {
-        return redirect()->route('createEditCompanyMonthly', [
+        return redirect()->route('reviewCompanyMonthly', [
             $id_service,$id, 'monthYear' => Carbon::now()->format('Y-m')
         ]);
     });
