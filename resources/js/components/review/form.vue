@@ -227,7 +227,7 @@ export default {
         ? urlBack + "monthly"
         : (urlBack = urlBack + "base");
       axios
-        .put(url, {
+        .post(url, {
           documents: this.tableData,
           observations: this.observations,
         })
