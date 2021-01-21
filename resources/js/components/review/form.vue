@@ -216,7 +216,7 @@ export default {
       this.observations = new Array(this.$props.data.length);
     },
     submit() {
-      let url = `${window.location.origin}/documents/`;
+      let url = `${window.location.origin}/documents/update`;
       let promises = [];
       this.send = true;
       let urlBack = window.location.origin + "/review/";
