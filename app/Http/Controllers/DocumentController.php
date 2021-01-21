@@ -345,7 +345,7 @@ class DocumentController extends Controller
       }
       $result = true;
       if ($update) {
-        \Debugbar::info($document->toArray());
+        // \Debugbar::info($document->toArray());
         $result = $document->save();
       }
       if (!$result) {

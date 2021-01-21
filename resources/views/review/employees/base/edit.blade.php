@@ -7,12 +7,12 @@
         <h3>Validar documentos base de empleado</h3>
 </div>
 
-<h5 class="text-secondary">Para el servicio
+<!-- <h5 class="text-secondary">Para el servicio
   <strong>{{ $service->description }}</strong> entregado por la empresa contratista
   <strong>{{ $service->company->business_name }}</strong> para la sucursal
   <strong>{{ $service->branchOffice->name }}</strong> de la empresa principal
   <strong>{{ $service->branchOffice->company->business_name }}</strong>
-</h5>
+</h5> -->
 @csrf
 <review-form :auth="{{ $auth }}" :service="{{$service}}" 
 :documents=" {{$documents}}" 
