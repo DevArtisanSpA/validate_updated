@@ -59,7 +59,7 @@ class ReviewController extends Controller
                     $GroupsDocument = Document::where('service_id', $service->id)
                         ->whereHas('type', function (Builder $query) {
                             return $query->where('area_id', 2)->where('temporality_id', 2);
-                        })->select('id', 'month_year_registry', 'validation_state_id')->get()->groupBy('month_year_registry');
+                        })->select('id', 'month_year_registry','start','finish', 'validation_state_id')->get()->groupBy('month_year_registry');
                     foreach ($GroupsDocument as $key => $group) {
                         $company = clone $companyLocal;
                         $company->service = clone ($service);
@@ -139,7 +139,7 @@ class ReviewController extends Controller
                         ->where('employee_id', $employeeLocal->id)
                         ->whereHas('type', function (Builder $query) {
                             return $query->where('area_id', 1)->where('temporality_id', 2);
-                        })->select('id', 'month_year_registry', 'validation_state_id')->get()->groupBy('month_year_registry');
+                        })->select('id', 'month_year_registry','start','finish', 'validation_state_id')->get()->groupBy('month_year_registry');
                     foreach ($GroupsDocument as $key => $group) {
                         $employee = clone $employeeLocal;
                         $employee->service = clone ($service);
@@ -186,7 +186,8 @@ class ReviewController extends Controller
             ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
                 $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
                 if (!is_null($monthYear)) {
-                    $Q = $Q->where('month_year_registry', $monthYear);
+                    $monthYear= explode("-",  $monthYear);
+                    $Q = $Q->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0]);
                 }
                 return $Q;
             });

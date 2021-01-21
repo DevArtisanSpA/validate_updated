@@ -53,13 +53,14 @@ class DocumentController extends Controller
   }
   public function companyMonthlyIndex($monthYear)
   {
+    $monthYear= explode("-",  $monthYear);
     $authData = Auth::user();
     $companies = Company::with([
       'services' => function ($query) {
         return $query->complete();
       },
       'services.documents' => function ($query) use ($monthYear) {
-        return $query->basic()->where('month_year_registry', $monthYear)
+        return $query->basic()->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0])
           ->whereHas('type', function (Builder $query) {
             return $query->where('area_id', 2)->where('temporality_id', 2);
           });
@@ -113,6 +114,7 @@ class DocumentController extends Controller
   }
   public function employeeMonthlyIndex($monthYear)
   {
+    $monthYear= explode("-",  $monthYear);
     $authData = Auth::user();
     $employees = Employee::with([
       'services' => function ($query) {
@@ -128,7 +130,7 @@ class DocumentController extends Controller
           $employee = clone $employeeLocal;
           $employee->service = clone ($service);
           $employee->service->documents = Document::where('service_id', $service->id)
-            ->where('employee_id', $employee->id)->basic()->where('month_year_registry', $monthYear)
+            ->where('employee_id', $employee->id)->basic()->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0])
             ->whereHas('type', function (Builder $query) {
               return $query->where('area_id', 1)->where('temporality_id', 2);
             })->get();
@@ -158,7 +160,8 @@ class DocumentController extends Controller
       ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
         $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
         if (!is_null($monthYear)) {
-          $Q = $Q->where('month_year_registry', $monthYear);
+          $monthYear= explode("-",  $monthYear);
+          $Q = $Q->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0]);
         }
         return $Q;
       });
@@ -279,7 +282,8 @@ class DocumentController extends Controller
     $documents = Document::whereHas('type', function (Builder $query) use ($area, $temp, $service, $monthYear, $employee) {
       $Q = $query->where('area_id', $area)->where('temporality_id', $temp)->where('service_id', $service);
       if (!is_null($monthYear)) {
-        $Q = $Q->where('month_year_registry', $monthYear);
+        $monthYear= explode("-",  $monthYear);
+        $Q = $Q->whereMonth('start',$monthYear[1])->whereYear('start',$monthYear[0]);
       }
       if (!is_null($employee)) {
         $Q = $Q->where('employee_id', $employee);

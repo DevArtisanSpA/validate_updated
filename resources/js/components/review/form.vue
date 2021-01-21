@@ -34,34 +34,45 @@
       </b-row>
     </div>
     <div v-else>
-<b-row>
-      <b-col>
-        <p><strong>Contratista:</strong> {{service.company.business_name}}</p>
-      </b-col>
-      <b-col v-if="$truthty(service.month_year_registry)">
+      <b-row>
+        <b-col>
+          <p>
+            <strong>Principal:</strong>
+            {{ service.branch_office.company.business_name }}
+          </p>
+        </b-col>
+        <b-col>
+          <p>
+            <strong>Sucursal:</strong> {{ service.branch_office.name }}
+          </p> </b-col
+        ><b-col>
+          <p>
+            <strong>Contratista:</strong> {{ service.company.business_name }}
+          </p>
+        </b-col>
+      </b-row>
+
+      <b-row>
+        <b-col>
+          <p>
+            <strong>Apellidos:</strong> {{ employee.surname }}
+            {{ employee.second_surname }}
+          </p>
+        </b-col>
+        <b-col>
+          <p><strong>Nombres:</strong> {{ employee.name }}</p>
+        </b-col>
+        <b-col>
+          <p>
+            <strong>N° identificación:</strong> {{ employee.identification_id }}
+          </p>
+        </b-col>
+      </b-row>
+      <b-row v-if="$truthty(service.month_year_registry)">
+        <b-col>
           <p><strong>Periodo:</strong> {{ service.month_year_registry }}</p>
         </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <p><strong>Principal:</strong> {{service.branch_office.company.business_name}}</p>
-      </b-col>
-      <b-col>
-        <p><strong>Sucursal:</strong> {{service.branch_office.name}}</p>
-      </b-col>
-    </b-row>
-
-    <b-row>
-      <b-col>
-        <p><strong>Apellidos:</strong> {{employee.surname}} {{employee.second_surname}}</p>
-      </b-col>
-      <b-col>
-        <p><strong>Nombres:</strong> {{employee.name}}</p>
-      </b-col>
-      <b-col>
-        <p><strong>N° identificación:</strong> {{employee.identification_id}}</p>
-      </b-col>
-    </b-row>
+      </b-row>
     </div>
     <hr class="my-0" />
     <b-modal
