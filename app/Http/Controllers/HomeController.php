@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\Company;
 use App\Models\Document;
@@ -11,7 +12,7 @@ use stdClass;
 
 class HomeController extends Controller
 {
-        /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -25,23 +26,31 @@ class HomeController extends Controller
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
-     */    
-    public function index() {
+     */
+    public function index()
+    {
 
         $times = new stdClass();
         $times->company = new stdClass();
         $times->employee = new stdClass();
-        //if (Auth::user()->user_type_id == 1) {
-            $total_users = User::all()->count();
+        $auth = Auth::user();
+        $total_users = User::all()->count();
+        if ($auth->user_type_id == 1) {
             $total_companies = Company::all()->count();
             $total_employees = Employee::all()->count();
             /*
             $times->company->fixed = date_format(date_create(Document::getDocCompany(0)->max('documents.updated_at')), 'd/m/Y');
             $times->company->monthly = date_format(date_create(Document::getDocCompany(1)->max('documents.updated_at')), 'd/m/Y');
             $times->employee->fixed = date_format(date_create(Document::getDocEmployee(0)->max('documents.updated_at')), 'd/m/Y');
-            $times->employee->monthly = date_format(date_create(Document::getDocEmployee(1)->max('documents.updated_at')), 'd/m/Y');
+            $times->employee->monthly = date_format(date_create(Document::getDocEmployee(1)->max('documents.updated_at')), 'd/m/Y');*/
         } else {
-            $my_company_id = Auth::user()->id_company;
+            $total_companies = Company::wherehas('branchOffices.services.company', function ($query) use ($auth) {
+                return $query->where('id', $auth->company_id);
+            })->count();
+            $total_employees = Employee::wherehas('services.company', function ($query) use ($auth) {
+                return $query->where('id', $auth->company_id);
+            })->count();
+            /*$my_company_id = Auth::user()->id_company;
             $my_company = Company::find($my_company_id);
             $total_users = $my_company->Users()->count();
             $total_companies =  1 + $my_company->Companies_c()->count();
@@ -52,9 +61,9 @@ class HomeController extends Controller
             $times->company->fixed = date_format(date_create(Document::getDocCompany(0, Auth::user()->id_company)->max('documents.updated_at')), 'd/m/Y');
             $times->company->monthly = date_format(date_create(Document::getDocCompany(1, Auth::user()->id_company)->max('documents.updated_at')), 'd/m/Y');
             $times->employee->fixed = date_format(date_create(Document::getDocEmployee(0, Auth::user()->id_company)->max('documents.updated_at')), 'd/m/Y');
-            $times->employee->monthly = date_format(date_create(Document::getDocEmployee(1, Auth::user()->id_company)->max('documents.updated_at')), 'd/m/Y');
-        }*/
-        
+            $times->employee->monthly = date_format(date_create(Document::getDocEmployee(1, Auth::user()->id_company)->max('documents.updated_at')), 'd/m/Y');*/
+        }
+
 
         return view('home', ['total_users' => $total_users, 'total_companies' => $total_companies, 'total_employees' => $total_employees, 'times' => $times]);
     }

@@ -16,7 +16,7 @@ class ServiceTypeSeeder extends Seeder
     {
         $types = ["Fijo", "Eventual", "Mantenimiento"];
         foreach($types as $index => $type) {
-            DB::table('service_types')->insert([
+            DB::table('service_types')->updateOrInsert([
                 'id' => $index + 1,
                 'name' => $type
             ]);

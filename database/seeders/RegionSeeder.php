@@ -33,7 +33,7 @@ class RegionSeeder extends Seeder
             [12, 'Magallanes y de la Antártica Chilena', 'XII']
         ];
         foreach ($regions as $region) {
-            DB::table('regions')->insert([
+            DB::table('regions')->updateOrInsert([
                 'id' => $region[0],
                 'name' => $region[1],
                 'number_region' => $region[2]

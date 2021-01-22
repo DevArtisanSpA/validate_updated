@@ -38,7 +38,7 @@ class DocumentController extends Controller
       },
     ]);
     if ($authData->user_type_id != 1) {
-      $companies->where('id', $authData->company->id);
+      $companies->where('id', $authData->company_id);
     }
     $companies = $companies->get();
     $companies2 = [];
@@ -73,7 +73,7 @@ class DocumentController extends Controller
       return $query->where('service_type_id', 1);
     });
     if ($authData->user_type_id != 1) {
-      $companies->where('id', $authData->company->id);
+      $companies->where('id', $authData->company_id);
     }
     $companies = $companies->get();
     $companies2 = [];
@@ -100,7 +100,7 @@ class DocumentController extends Controller
       'services' => function ($query) use ($authData) {
         if ($authData->user_type_id != 1) {
           $query = $query->whereHas('company', function (Builder $query) use ($authData) {
-            return $query->where('id', $authData->company->id);
+            return $query->where('id', $authData->company_id);
           });
         }
         return $query->complete();
@@ -108,7 +108,7 @@ class DocumentController extends Controller
     ]);
     if ($authData->user_type_id != 1) {
       $employees->whereHas('services.company', function (Builder $query) use ($authData) {
-        return $query->where('id', $authData->company->id);
+        return $query->where('id', $authData->company_id);
       });
     }
     $employees = $employees->get();
@@ -139,7 +139,7 @@ class DocumentController extends Controller
       'services' => function ($query) use ($authData) {
         if ($authData->user_type_id != 1) {
           $query = $query->whereHas('company', function (Builder $query) use ($authData) {
-            return $query->where('id', $authData->company->id);
+            return $query->where('id', $authData->company_id);
           });
         }
         return $query->complete();
@@ -149,7 +149,7 @@ class DocumentController extends Controller
     });
     if ($authData->user_type_id != 1) {
       $employees->whereHas('services.company', function (Builder $query) use ($authData) {
-        return $query->where('id', $authData->company->id);
+        return $query->where('id', $authData->company_id);
       });
     }
     $employees = $employees->get();

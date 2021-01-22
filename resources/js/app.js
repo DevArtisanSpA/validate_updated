@@ -71,15 +71,18 @@ Vue.component(
   "employee-form",
   require("./components/employee/form.vue").default
 );
-// Vue.component(
-//   "company-search",
-//   require("./components/company/search.vue").default
-// );
+Vue.component(
+  "employee-search",
+  require("./components/employee/search.vue").default
+);
 Vue.component(
   "employee-table",
   require("./components/employee/table.vue").default
 );
-
+Vue.component(
+  "terminate-employee",
+  require("./components/employee/terminate.vue").default
+);
 //Document
 Vue.component(
   "document-input",

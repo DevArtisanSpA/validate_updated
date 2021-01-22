@@ -128,7 +128,7 @@ class DocumentTypeSeeder extends Seeder
 
         ];
         foreach ($types as $index => $type) {
-            DB::table('document_types')->insert([
+            DB::table('document_types')->updateOrInsert([
                 'id' => $index + 1,
                 'name' => $type[0],
                 'temporality_id' => $type[1],

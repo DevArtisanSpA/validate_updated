@@ -19,9 +19,9 @@ class CommercialBusinessSeeder extends Seeder
             'Industriales',
             'Comerciales',
             'Servicios',
-            'Mineria',
-            'Vienes raices',
-            'Contruccion',
+            'Minería',
+            'Bienes raíces',
+            'Construcción',
             'Metalurgia',
             'Telecomunicaciones',
             'Seguridad',
@@ -29,10 +29,15 @@ class CommercialBusinessSeeder extends Seeder
             'Trasporte',
         ];
         foreach ($businesses as $index => $business) {
-            DB::table('commercial_businesses')->insert([
-                'id' => $index + 1,
-                'name' => $business,
-            ]);
+            try {
+                DB::table('commercial_businesses')->updateOrInsert([
+                    'id' => $index + 1,
+                    'name' => $business,
+                ]);
+            } catch (\Throwable $th) {
+                DB::table('commercial_businesses')->where('id', $index + 1)
+                    ->update(['name' => $business]);
+            }
         }
     }
 }
