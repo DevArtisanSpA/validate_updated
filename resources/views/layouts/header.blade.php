@@ -80,9 +80,9 @@
                             <a class="dropdown-item" href="{{ url('/employees') }}">
                                 {{ __('Lista de empleados') }}
                             </a>
-                            <a class="dropdown-item" href="{{ url('/employees/create') }}">
+                            <!-- <a class="dropdown-item" href="{{ url('/employees/create') }}">
                                 {{ __('Agregar empleado') }}
-                            </a>
+                            </a> -->
                             <a class="dropdown-item" href="{{ url('/employee/terminate') }}">
                                 {{ __('Finiquitar Empleado') }}
                             </a>

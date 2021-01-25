@@ -27,21 +27,27 @@ class EmployeeController extends Controller
 
   public function index()
   {
-    $my_company = new stdClass;
-    $employees = Employee::table()->active()->get();
-    if (Auth::user()->user_type_id == 1) {
-      $user = Auth::user();
-    } else {
+    // $my_company = new stdClass;
+    $user = Auth::user();
+    $employees = Employee::table()->active();
+    if ($user->user_type_id != 1) {
+      $employees = $employees->wherehas('services', function ($query) use ($user) {
+        return $query->where('company_id', $user->company_id);
+      });
     }
-
+    $employees = $employees->get();
     $employees2 = [];
     foreach ($employees as $key => $employeeLocal) {
       foreach ($employeeLocal->documents as $key => $document) {
-        $employee = clone $employeeLocal;
-        // $employee->document = clone $document;
-        $employee->service = clone ($document->service);
-        unset($employee->documents);
-        array_push($employees2, $employee);
+        if (($user->user_type_id != 1 &&
+            $document->service->company_id == $user->company_id)
+          || $user->user_type_id == 1
+        ) {
+          $employee = clone $employeeLocal;
+          $employee->service = clone ($document->service);
+          unset($employee->documents);
+          array_push($employees2, $employee);
+        }
       }
     }
     return view('employees/index', [

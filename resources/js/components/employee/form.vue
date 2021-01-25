@@ -123,6 +123,7 @@
             @input="inputFile(...arguments)"
             :state="states.file"
             :fileExt="document"
+            text="haz clic para subir documento de identificación"
           />
         </b-col>
       </b-row>
