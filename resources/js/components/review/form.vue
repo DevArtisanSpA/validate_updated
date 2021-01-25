@@ -167,7 +167,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="text-right">
+      <b-col class="text-right">
         <b-button
           v-if="auth.user_type_id == 1"
           class="my-4"
@@ -182,7 +182,7 @@
           variant="success"
           >Guardar</b-button
         >
-      </div>
+      </b-col>
     </form>
   </div>
 </template>

@@ -6,13 +6,22 @@
         <div slot="modal-title"><h5>IMPORTANTE</h5></div>
 
         <div class="d-block text-center mt-2 mb-4">
-          <span>¿Estás seguro de {{!is_update ? 'crear' : 'modificar'}} esta oficina?</span>
+          <span
+            >¿Estás seguro de {{ !is_update ? "crear" : "modificar" }} esta
+            oficina?</span
+          >
         </div>
         <div v-if="!send" class="float-right">
-          <b-button @click.prevent="hideModal" variant="outline-secondary">Cancelar</b-button>
+          <b-button @click.prevent="hideModal" variant="outline-secondary"
+            >Cancelar</b-button
+          >
           <b-button variant="primary" @click="submit">Aceptar</b-button>
         </div>
-        <div v-else class="d-flex justify-content-center" style="font-size:36px">
+        <div
+          v-else
+          class="d-flex justify-content-center"
+          style="font-size: 36px"
+        >
           <i class="el-icon-loading"></i>
         </div>
       </b-modal>
@@ -38,11 +47,12 @@
           <label for="input-company">
             <span class="text-danger">*</span> Empresa
           </label>
-          <b-form-select 
-            id="input-company" 
+          <b-form-select
+            id="input-company"
             v-model="formData.company_id"
             :disabled="disabledCompany"
-            :state="states.company">
+            :state="states.company"
+          >
             <template v-slot:first>
               <option :value="null" disabled>Selecciona una opción</option>
             </template>
@@ -50,22 +60,24 @@
               v-for="company in this.$props.companies"
               v-bind:key="company.id"
               :value="company.id"
-            >{{ company.business_name.toUpperCase()  }}</option>
+            >
+              {{ company.business_name.toUpperCase() }}
+            </option>
           </b-form-select>
         </b-col>
         <b-col md="6">
           <label for="input-name">
             <span class="text-danger">*</span> Nombre Sucursal
           </label>
-          <b-form-input 
-            id="input-name" 
-            type="text" 
+          <b-form-input
+            id="input-name"
+            type="text"
             v-model="formData.name"
             :formatter="(e) => formatter('name', e)"
             :state="this.states.name"
           />
           <b-form-invalid-feedback id="input-live-feedback">
-            {{this.message.name}}
+            {{ this.message.name }}
           </b-form-invalid-feedback>
         </b-col>
       </b-row>
@@ -168,11 +180,13 @@
           }}</b-form-invalid-feedback>
         </b-col>
       </b-row>
-      <b-button
-        class="my-4"
-        type="submit"
-        variant="success"
-      >{{!is_update ? 'Crear' : 'Actualizar'}}</b-button>
+      <b-row
+        ><b-col class="text-right">
+          <b-button class="my-4" type="submit" variant="success">{{
+            !is_update ? "Crear" : "Actualizar"
+          }}</b-button>
+        </b-col></b-row
+      >
     </form>
   </div>
 </template>
@@ -194,11 +208,20 @@ export default {
             ? this.$props.auth.company_id
             : this.$props.branch.company_id,
         name: this.$props.branch === undefined ? null : this.$props.branch.name,
-        region_id: this.$props.branch === undefined ? null : this.$props.branch.commune.region_id,
-        commune_id: this.$props.branch === undefined ? null : this.$props.branch.commune.id,
-        address: this.$props.branch === undefined ? null : this.$props.branch.address,
-        phone1: this.$props.branch === undefined ? null : this.$props.branch.phone1,
-        phone2: this.$props.branch === undefined ? null : this.$props.branch.phone2,
+        region_id:
+          this.$props.branch === undefined
+            ? null
+            : this.$props.branch.commune.region_id,
+        commune_id:
+          this.$props.branch === undefined
+            ? null
+            : this.$props.branch.commune.id,
+        address:
+          this.$props.branch === undefined ? null : this.$props.branch.address,
+        phone1:
+          this.$props.branch === undefined ? null : this.$props.branch.phone1,
+        phone2:
+          this.$props.branch === undefined ? null : this.$props.branch.phone2,
       },
       states: {
         name: null,
@@ -207,36 +230,38 @@ export default {
         region_id: null,
         address: null,
         phone1: null,
-        phone2: null
+        phone2: null,
       },
       message: {
-        name: '',
-        company_id: '',
-        commune_id: '',
-        region_id: '',
-        address: '',
-        phone1: '',
-        phone2: ''
+        name: "",
+        company_id: "",
+        commune_id: "",
+        region_id: "",
+        address: "",
+        phone1: "",
+        phone2: "",
       },
-      disabledCompany: this.$props.is_update || this.$props.auth.user_type_id > 1 ? true: false
+      disabledCompany:
+        this.$props.is_update || this.$props.auth.user_type_id > 1
+          ? true
+          : false,
     };
   },
   methods: {
-    checkForm(){
-        this.error = 0;
-        this.errors = [];
-        this.checkCompany();
-        this.checkBranchName();
-        this.checkPhone1();
-        if(this.error === 0){
-            this.$refs['modal-confirm'].show();
-        }
-        else{
-            return false;
-        }
+    checkForm() {
+      this.error = 0;
+      this.errors = [];
+      this.checkCompany();
+      this.checkBranchName();
+      this.checkPhone1();
+      if (this.error === 0) {
+        this.$refs["modal-confirm"].show();
+      } else {
+        return false;
+      }
     },
     loadCommunes($region_id, reset = true) {
-      console.log($region_id)
+      console.log($region_id);
       if (this.$truthty($region_id)) {
         let regions = this.$props.regions;
         let communesLocal = regions.find((region) => {
@@ -247,117 +272,124 @@ export default {
       if (reset) {
         this.formData.branchOffice.commune_id = null;
       }
-    },    
-    checkPhone1(){
+    },
+    checkPhone1() {
       this.states.phone1 = true;
 
-      switch(this.formData.phone1) {
+      switch (this.formData.phone1) {
         case null:
-        case '':
+        case "":
           this.error = 1;
           this.states.phone1 = false;
           this.message.phone1 = "Teléfono de sucursal requerido.";
           break;
         default:
-          if(this.formData.phone1.length < 8){
+          if (this.formData.phone1.length < 8) {
             this.error = 1;
             this.states.phone1 = false;
-            this.message.phone1 = "Teléfono de sucursal no cumple con el mínimo de números";
+            this.message.phone1 =
+              "Teléfono de sucursal no cumple con el mínimo de números";
           }
       }
     },
-    checkBranchName(){
+    checkBranchName() {
       this.states.name = true;
 
-      switch(this.formData.name) {
+      switch (this.formData.name) {
         case null:
-        case '':
+        case "":
           this.error = 1;
           this.states.name = false;
           this.message.name = "Nombre de sucursal requerido.";
           break;
         default:
-          if(this.formData.name.length < 3){
+          if (this.formData.name.length < 3) {
             this.error = 1;
             this.states.name = false;
-            this.message.name = "Nombre de sucursal requiere mínimo de 3 letras.";
+            this.message.name =
+              "Nombre de sucursal requiere mínimo de 3 letras.";
           }
       }
     },
-    checkCompany(){
-      if(this.formData.company_id === null && this.disabledCompany) {
-          this.error = 1;
-          this.states.company_id = false;
-          this.message.company_id = "Se debe seleccionar una compañía";
+    checkCompany() {
+      if (this.formData.company_id === null && this.disabledCompany) {
+        this.error = 1;
+        this.states.company_id = false;
+        this.message.company_id = "Se debe seleccionar una compañía";
       }
     },
     formatter(label, value) {
-        if(value.length < 3){
-          this.error = 1;
-          if(label === 'name'){
-            this.states.name = false;
-            this.message.name = "Nombre de sucursal requiere mínimo de 3 letras.";
-          }
-          if(label === 'address'){
-            this.states.address = false;
-            this.message.address = "Dirección requiere mínimo de 3 letras.";
-          }
-        } else {
-          if(label === 'name'){
-            this.states.name = true;
-            this.message.name = "";
-          }
-          if(label === 'address'){
-            this.states.address = true;
-            this.message.address = "";
-          }
+      if (value.length < 3) {
+        this.error = 1;
+        if (label === "name") {
+          this.states.name = false;
+          this.message.name = "Nombre de sucursal requiere mínimo de 3 letras.";
         }
-        return value;
+        if (label === "address") {
+          this.states.address = false;
+          this.message.address = "Dirección requiere mínimo de 3 letras.";
+        }
+      } else {
+        if (label === "name") {
+          this.states.name = true;
+          this.message.name = "";
+        }
+        if (label === "address") {
+          this.states.address = true;
+          this.message.address = "";
+        }
+      }
+      return value;
     },
     submit() {
       this.send = true;
       if (this.$props.is_update) {
         const url = `${window.location.origin}/branch_offices/${this.formData.id}`;
-        axios.patch(url, this.formData)
-          .then(res => {
-            if(res.status === 200){
-              window.location.href = window.location.origin + '/branch_offices';
+        axios
+          .patch(url, this.formData)
+          .then((res) => {
+            if (res.status === 200) {
+              window.location.href = window.location.origin + "/branch_offices";
             } else {
               this.$refs["modal-confirm"].hide();
               this.errors = [];
-              res.data.forEach( row => this.errors.push({message: row}));
+              res.data.forEach((row) => this.errors.push({ message: row }));
               this.error = 1;
             }
           })
-          .catch(err => {
+          .catch((err) => {
             this.$refs["modal-confirm"].hide();
             this.errors = [];
             this.errors.push({ message: err.response.data.message });
             this.error = 1;
-        });
+          });
       } else {
         const url = `${window.location.origin}/branch_offices`;
-        axios.post(url, this.formData)
-          .then(res => {
-            if(res.status === 200){
-              window.location.href = window.location.origin + '/branch_offices';
+        axios
+          .post(url, this.formData)
+          .then((res) => {
+            if (res.status === 200) {
+              window.location.href = window.location.origin + "/branch_offices";
             } else {
               this.$refs["modal-confirm"].hide();
               this.errors = [];
-              res.data.forEach( row => this.errors.push({message: row}));
+              res.data.forEach((row) => this.errors.push({ message: row }));
               this.error = 1;
             }
           })
-          .catch(err => {
+          .catch((err) => {
             this.$refs["modal-confirm"].hide();
             this.errors = [];
-            if(err.response.status !== 500){
+            if (err.response.status !== 500) {
               this.errors.push({ message: err.response.data.message });
             } else {
-              this.errors.push({ message: "Error de base de datos. Por favor contactar con el equipo de soporte." });
+              this.errors.push({
+                message:
+                  "Error de base de datos. Por favor contactar con el equipo de soporte.",
+              });
             }
             this.error = 1;
-        });
+          });
       }
     },
     hideModal() {

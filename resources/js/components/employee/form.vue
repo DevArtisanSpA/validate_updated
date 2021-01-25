@@ -493,10 +493,12 @@
           }}</b-form-invalid-feedback>
         </b-col>
       </b-row> -->
-      <b-row
-        ><b-button class="button-create" type="submit" variant="success">{{
-          !this.$truthty(this.$props.employee) ? "Crear" : "Actualizar"
-        }}</b-button>
+      <b-row>
+        <b-col class="text-right">
+          <b-button class="button-create" type="submit" variant="success">{{
+            !this.$truthty(this.$props.employee) ? "Crear" : "Actualizar"
+          }}</b-button>
+        </b-col>
       </b-row>
     </form>
   </div>
@@ -538,7 +540,7 @@ export default {
       validation_state_id: 2,
       id: null,
       file: null,
-      name:null,
+      name: null,
     };
     let region = null;
     let communes = [];
@@ -908,7 +910,6 @@ export default {
         this.states.file = null;
         this.message.file = null;
         this.document.name = "Cédula de Identidad";
-
       }
       this.document.file = file;
       console.log(this.document.file);

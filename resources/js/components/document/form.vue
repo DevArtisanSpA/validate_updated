@@ -182,7 +182,7 @@
           ></b-row>
         </div>
       </div>
-      <div>
+      <b-col class="text-right">
         <b-button
           class="my-4"
           @click.prevent="discard"
@@ -209,7 +209,7 @@
           "
           >Guardar</b-button
         >
-      </div>
+      </b-col>
     </form>
   </div>
 </template>
