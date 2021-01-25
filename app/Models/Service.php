@@ -44,7 +44,9 @@ class Service extends Model
     {
         return $this->belongsTo(BranchOffice::class);
     }
-
+    public function employees(){
+        return $this->belongsToMany(Employee::class,'documents')->distinct();
+      }
     /**
      * Scope a query to only include pending (unaccepted) services.
      *

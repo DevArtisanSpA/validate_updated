@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Constants;
+use App\Models\Company;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\Employee;
@@ -10,6 +11,8 @@ use App\Models\JobType;
 use App\Models\Region;
 use App\Models\Service;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -24,21 +27,27 @@ class EmployeeController extends Controller
 
   public function index()
   {
-    $my_company = new stdClass;
-    $employees = Employee::table()->active()->get();
-    if (Auth::user()->user_type_id == 1) {
-      $user = Auth::user();
-    } else {
+    // $my_company = new stdClass;
+    $user = Auth::user();
+    $employees = Employee::table()->active();
+    if ($user->user_type_id != 1) {
+      $employees = $employees->wherehas('services', function ($query) use ($user) {
+        return $query->where('company_id', $user->company_id);
+      });
     }
-
+    $employees = $employees->get();
     $employees2 = [];
     foreach ($employees as $key => $employeeLocal) {
       foreach ($employeeLocal->documents as $key => $document) {
-        $employee = clone $employeeLocal;
-        // $employee->document = clone $document;
-        $employee->service = clone ($document->service);
-        unset($employee->documents);
-        array_push($employees2, $employee);
+        if (($user->user_type_id != 1 &&
+            $document->service->company_id == $user->company_id)
+          || $user->user_type_id == 1
+        ) {
+          $employee = clone $employeeLocal;
+          $employee->service = clone ($document->service);
+          unset($employee->documents);
+          array_push($employees2, $employee);
+        }
       }
     }
     return view('employees/index', [
@@ -221,6 +230,133 @@ class EmployeeController extends Controller
       return response()->json([
         "message" => "Error al desactivar empleado, intente más tarde",
       ], 400);
+    }
+  }
+  public function terminate(Request $request, $id)
+  {
+    $input = $request->all();
+    if ($request->hasFile('file') && $request->file('file')->isValid()) {
+      $inputDocument = (array)(json_decode($input["document"]));
+      $validationDocument = Validator::make($inputDocument, [
+        "document_type_id" => ['required', 'integer'],
+        "employee_id" => ['required', 'integer'],
+        "service_id" => ['required', 'integer'],
+        "start" => ['required', 'date'],
+        "finish" => ['required', 'date'],
+        "validation_state_id" => ['required', 'integer'],
+      ]);
+      $error_array = array();
+      if ($validationDocument->fails()) {
+        foreach ($validationDocument->messages()->getMessages() as $field_name => $messages) {
+          $error_array[] = $messages[0];
+        }
+        return response()->json($error_array, 400);
+      } else {
+        return DB::transaction(function () use ($inputDocument, $id, $request) {
+          try {
+            $file_path = $request->file('file')->store('uploads', 's3');
+            $inputDocument['path_data'] = $file_path;
+            $document = Document::create($inputDocument);
+            if ($document) {
+              $employee = Employee::find($id);
+              $employee->active = false;
+              $employee->save();
+              return response()->json(["message" => "Finiquito creado con exito"], 200);
+            } else {
+              return response()->json(["message" => "Error al intentar crear Finiquito. Por favor intente nuevamente"], 400);
+            }
+          } catch (\Throwable $th) {
+            return response()->json(["message" => "Error al intentar crear Finiquito. Por favor intente nuevamente", "catch" => "catch"], 400);
+          }
+        });
+      }
+    }
+  }
+
+
+  /**
+   * Terminate a employee.
+   */
+
+  public function terminateEmployee()
+  {
+    $authData = Auth::user();
+    $services = Service::where('service_type_id', 1)->active()
+      ->whereHas('company', function ($query) use ($authData) {
+        if ($authData->user_type_id != 1) {
+          return $query->where('id', $authData->company_id);
+        }
+        return $query;
+      })->with('employees', function ($query) {
+        return $query->where('active', 1);
+      })->get();
+    // foreach ($companies as $company) {
+    //     $branches = $company->Branch_offices;
+    //     $totalEmployees = new Collection();
+    //     foreach ($branches as $key => $branch) {
+    //         $employees = $branch->Employees;
+    //         $totalEmployees = $totalEmployees->concat($employees);
+    //     }
+    //     $company->employees = $totalEmployees;
+    // }
+    return view('employees/terminate', [
+      'auth' => Auth::user(),
+      'datas_list' =>
+      json_encode([
+        'services' => $services
+      ])
+    ]);
+  }
+  public function getEmployeeState(Request $request)
+  {
+    //get employee data
+
+    $document_id = str_replace(".", "", $request->number_identification);
+    $company_id = Auth::user()->company_id;
+    $employee = Employee::where(function ($query) use ($document_id) {
+      return $query->where('identification_id', $document_id)
+        ->orWhere('identification_id', 'regexp', $document_id . '.');
+    })->wherehas('services', function ($query) use ($company_id) {
+      return $query->where('company_id', $company_id);
+    })->active()->first();
+    //get principal contractor branch office data
+    try {
+      $documents = Document::where('employee_id', $employee->id)
+        ->wherehas([
+          'service' =>
+          function ($query) use ($company_id) {
+            return $query->where('company_id', $company_id);
+          },
+          'type' =>
+          function ($query) {
+            return $query->where('temporality_id', 1);
+          },
+        ]);
+    } catch (\Throwable $th) {
+      $documents = null;
+    }
+    //get employee document state
+    try {
+      $document_company = Document::wherehas([
+        'service' =>
+        function ($query) use ($company_id) {
+          return $query->where('company_id', $company_id);
+        },
+        'type' =>
+        function ($query) {
+          return $query->where('temporality_id', 1);
+        },
+      ]);
+    } catch (\Throwable $th) {
+      $document_company = null;
+    }
+    if (
+      $employee
+      && $documents && $document_company
+    ) {
+      return response()->json(true, 200);
+    } else {
+      return response()->json(false, 200);
     }
   }
 }

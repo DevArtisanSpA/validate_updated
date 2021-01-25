@@ -39,28 +39,26 @@
       >
         <!-- <el-table-column type="selection" width="30"> </el-table-column> -->
         <el-table-column
-          v-if="auth.user_type_id == 1"
           prop="service.branch_office.company.business_name"
           label="Principal"
           sortable
-          :filters="valuesFilter(tableData, 'name_parent')"
-          :filter-method="filterRow('name_parent')"
+          :filters="valuesFilter(tableData, 'service.branch_office.company.business_name')"
+          :filter-method="filterRow('service.branch_office.company.business_name')"
         />
         <el-table-column
-          v-if="auth.user_type_id == 1"
           prop="service.branch_office.name"
           label="Sucursal"
           sortable
-          :filters="valuesFilter(tableData, 'branch_name')"
-          :filter-method="filterRow('branch_name')"
+          :filters="valuesFilter(tableData, 'service.branch_office.name')"
+          :filter-method="filterRow('service.branch_office.name')"
         />
         <el-table-column
           v-if="auth.user_type_id == 1"
           prop="service.company.business_name"
           sortable
           label="Contratista"
-          :filters="valuesFilter(tableData, 'business_name')"
-          :filter-method="filterRow('business_name')"
+          :filters="valuesFilter(tableData, 'service.company.business_name')"
+          :filter-method="filterRow('service.company.business_name')"
         />
         <el-table-column prop="service.description" label="Servicio" sortable />
 
@@ -126,7 +124,7 @@
         <el-table-column label="Acciones" width="120">
           <template slot-scope="scope">
             <el-button
-              v-if="auth.user_type_id == 1 || auth.id_company === scope.row.id"
+              v-if="auth.user_type_id == 1 || auth.company_id === scope.row.id"
               v-on:click="edit(scope.row.service.id, scope.row.id)"
               type="primary"
               icon="el-icon-edit"
@@ -135,7 +133,7 @@
               circle
             ></el-button>
             <el-button
-              v-if="auth.user_type_id != 1 && auth.id_company !== scope.row.id"
+              v-if="auth.user_type_id != 1 && auth.company_id !== scope.row.id"
               type="warning"
               icon="el-icon-view"
               title="Verificar"
@@ -186,10 +184,15 @@ export default {
     };
   },
   methods: {
-    valuesFilter(tableData, e) {
+     valuesFilter(tableData, e) {
       let names = [];
+      let access=e.split('.');
       tableData.map((data) => {
-        names.push(data[e]);
+        let add=data;
+        access.map(x=>{
+          add=add[x];
+        });
+        names.push(add);
       });
       names = names.unique();
       names.sort();
@@ -201,7 +204,11 @@ export default {
     },
     filterRow(e) {
       return (value, row) => {
-        return row[e] == value;
+        let add=row;
+        access.map(x=>{
+          add=add[x];
+        });
+        return add == value;
       };
     },
     downloadZip(id_service, id_employee, label) {
@@ -238,7 +245,7 @@ export default {
     },
     goTo(row) {},
     edit(id_service, id_employee) {
-      window.location.href = `${window.location.origin}/services/${id_service}/documents/employees/${id_employee}/monthly/${this.monthYear}/edit`;
+      window.location.href = `${window.location.origin}/services/${id_service}/documents/employees/${id_employee}/monthly/${this.monthYear}`;
     },
     filterSearch() {
       this.loading = true;

@@ -137,6 +137,9 @@
                     <p class="mb-2">{{ observation.split("\\n")[1] }}</p>
                   </div>
                 </div>
+                <div v-else>
+                  <p class="mb-2">Sin observaciones</p>
+                </div>
               </div>
             </b-col>
           </b-row>
@@ -168,6 +171,9 @@
                     <p class="mb-2">{{ observation.split("\\n")[1] }}</p>
                   </div>
                 </div>
+                <div v-else>
+                  <p class="mb-2">Sin observaciones</p>
+                </div>
               </div>
             </b-col>
             <b-col class="d-flex align-items-center" md="1">
@@ -182,34 +188,36 @@
           ></b-row>
         </div>
       </div>
-      <div>
-        <b-button
-          class="my-4"
-          @click.prevent="discard"
-          variant="outline-secondary"
-          :disabled="
-            !(
-              $truthty(formData.documents) ||
-              JSON.stringify(prevDocument) !==
-                JSON.stringify(formData.documents)
-            )
-          "
-          >Descartar</b-button
-        >
-        <b-button
-          class="my-4"
-          type="submit"
-          variant="success"
-          :disabled="
-            !(
-              $truthty(formData.documents) ||
-              JSON.stringify(prevDocument) !==
-                JSON.stringify(formData.documents)
-            )
-          "
-          >Guardar</b-button
-        >
-      </div>
+      <b-row>
+        <b-col class="d-flex justify-content-end">
+          <b-button
+            class="my-4"
+            @click.prevent="discard"
+            variant="outline-secondary"
+            :disabled="
+              !(
+                $truthty(formData.documents) ||
+                JSON.stringify(prevDocument) !==
+                  JSON.stringify(formData.documents)
+              )
+            "
+            >Descartar</b-button
+          >
+          <b-button
+            class="my-4"
+            type="submit"
+            variant="success"
+            :disabled="
+              !(
+                $truthty(formData.documents) ||
+                JSON.stringify(prevDocument) !==
+                  JSON.stringify(formData.documents)
+              )
+            "
+            >Guardar</b-button
+          >
+        </b-col></b-row
+      >
     </form>
   </div>
 </template>
@@ -523,7 +531,6 @@ export default {
   },
   mounted() {
     this.init();
-    console.log(this.$props);
   },
 };
 </script>

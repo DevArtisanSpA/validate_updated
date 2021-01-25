@@ -13,9 +13,8 @@
     <b-modal ref="modal-confirm" hide-footer>
       <div slot="modal-title">
         <span
-          >Se
-          {{ !is_update ? "creará" : "modificará" }} un
-          registro de empresa</span
+          >Se {{ !is_update ? "creará" : "modificará" }} un registro de
+          empresa</span
         >
       </div>
       <p class="d-block text-center mt-3 mb-5">
@@ -98,8 +97,7 @@
         }}</b-form-invalid-feedback>
       </b-col>
     </b-row>
-    <b-row>
-    </b-row>
+    <b-row> </b-row>
     <b-row>
       <b-col md="6">
         <label for="input-contact">
@@ -284,9 +282,11 @@
         !is_update
       "
     >
-      <b-button class="m-3" type="submit" variant="success">{{
-        !is_update ? "Crear" : "Actualizar"
-      }}</b-button>
+      <b-col class="d-flex justify-content-end">
+        <b-button class="m-3" type="submit" variant="success">{{
+          !is_update ? "Crear" : "Actualizar"
+        }}</b-button>
+      </b-col>
     </b-row>
   </form>
 </template>
@@ -311,10 +311,7 @@ const labels = {
 export default {
   props: ["company", "dataList", "is_update", "auth", "rut", "is_for_service"],
   data() {
-    const {
-      company,
-      rut
-    } = this.$props;
+    const { company, rut } = this.$props;
     const truthty = this.$truthty;
     return {
       send: false,
@@ -326,7 +323,7 @@ export default {
       formData: {
         company: {
           id: !truthty(company) ? null : company.id,
-          rut: !truthty(company) ? truthty(rut) ? rut : null : company.rut,
+          rut: !truthty(company) ? (truthty(rut) ? rut : null) : company.rut,
           business_name: !truthty(company) ? null : company.business_name,
           commercial_business_id: !truthty(company)
             ? null
@@ -341,8 +338,8 @@ export default {
           commune_id: null,
           address: null,
           phone1: null,
-          phone2: null
-        }
+          phone2: null,
+        },
       },
       states: {
         rut: null,
@@ -453,7 +450,7 @@ export default {
       }
     },
     loadCommunes($region_id, reset = true) {
-      console.log($region_id)
+      console.log($region_id);
       if (this.$truthty($region_id)) {
         let regions = this.$props.dataList.regions;
         let communesLocal = regions.find((region) => {
@@ -474,8 +471,7 @@ export default {
           this.states[label] = true;
         }
         return String(value).substring(0, 10);
-      }
-      else {
+      } else {
         if (value.length < 3) {
           this.states[label] = false;
           this.message[label] = labels[label] + " debe ser informado.";
@@ -496,10 +492,8 @@ export default {
       this.send = true;
       if (this.$props.is_update) {
         const {
-          formData: {
-            company
-          }
-        } = this
+          formData: { company },
+        } = this;
         const url = `${window.location.origin}/companies/${this.formData.company.id}`;
         axios
           .patch(url, company)
@@ -524,21 +518,17 @@ export default {
               if (this.$truthty(res.data.company)) {
                 const {
                   data: {
-                    company: {
-                      id,
-                      rut
-                    }
-                  }
-                } = res
+                    company: { id, rut },
+                  },
+                } = res;
                 if (this.$props.is_for_service) {
                   const companyData = {
                     id: id,
-                    rut: rut
-                  }
-                  this.$emit("setCompanyData", companyData)
-                  this.$emit("setStage", 3)
-                }
-                else {
+                    rut: rut,
+                  };
+                  this.$emit("setCompanyData", companyData);
+                  this.$emit("setStage", 3);
+                } else {
                   window.location.href = window.location.origin + "/companies";
                 }
               }
@@ -574,7 +564,7 @@ export default {
         axios
           .get(`${window.location.origin}/companies/rut/${value}`)
           .then((response) => {
-            if(response.status==200){
+            if (response.status == 200) {
               const { company } = response.data;
               if (this.$truthty(company)) {
                 //document.getElementById("input-rut").focus();
@@ -586,8 +576,7 @@ export default {
                   //rut ya existe, no puede ser utilizado.
                 }
               }
-            }
-            else {
+            } else {
               this.error = 0;
               this.errorRutDuplicate = 0;
               this.states.rut = true;
@@ -615,7 +604,7 @@ export default {
   mounted() {
     console.log(this.$props);
     if (this.$props.setStage) {
-      alert("Aaaaa")
+      alert("Aaaaa");
     }
     this.init();
   },

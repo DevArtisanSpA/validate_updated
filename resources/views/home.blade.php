@@ -33,7 +33,7 @@
     <hr class="mt-5 mb-3">
     <div class="row">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card h-100">
                 <div class="card-body row mb-0">
                     <div class="col-md-8">
                         <h4 class="card-title">Consultar estado de pago</h4>

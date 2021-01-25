@@ -16,7 +16,7 @@ class UserTypeSeeder extends Seeder
     {
         $types = ['Administrador', 'Usuario'];
         foreach ($types as $index => $type) {
-            DB::table('user_types')->insert([
+            DB::table('user_types')->updateOrInsert([
                 'id' => $index + 1,
                 'name' => $type
             ]);

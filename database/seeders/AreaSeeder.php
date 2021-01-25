@@ -16,7 +16,7 @@ class AreaSeeder extends Seeder
     {
         $areas = ["Empleado", "Empresa"];
         foreach($areas as $index => $area) {
-            DB::table('areas')->insert([
+            DB::table('areas')->updateOrInsert([
                 'id' => $index + 1,
                 'name' => $area
             ]);

@@ -46,47 +46,6 @@
           </strong>
         </b-col>
       </b-row>
-      <!-- <b-row>
-        <b-col md="4">
-          <label for="input-company">
-            <span class="text-danger">*</span> Compañía
-          </label>
-          <b-form-select id="input-company">
-            <template v-slot:first>
-              <option :value="null" disabled>Selecciona una opción</option>
-            </template>
-          </b-form-select>
-          <b-form-invalid-feedback
-            id="input-live-feedback"
-            >{{
-          }}</b-form-invalid-feedback>
-        </b-col>
-        <b-col md="4">
-          <label for="input-parent"> Principal </label>
-          <b-form-select id="input-parent">
-            <template v-slot:first>
-              <option :value="null" disabled>Selecciona una opción</option>
-            </template>
-          </b-form-select>
-          <b-form-invalid-feedback
-            id="input-live-feedback"
-            >{{
-          }}</b-form-invalid-feedback>
-        </b-col>
-        <b-col md="4">
-          <label for="input-branch"> Sucursal (Instalación) </label>
-          <b-form-select id="input-branch">
-            <template v-slot:first>
-              <option :value="null" disabled>Selecciona una opción</option>
-            </template>
-          </b-form-select>
-          <b-form-invalid-feedback
-            id="input-live-feedback"
-            >{{
-          }}</b-form-invalid-feedback>
-        </b-col>
-      </b-row> -->
-
       <b-row>
         <b-col md="3">
           <span class="text-danger">*</span>
@@ -164,6 +123,7 @@
             @input="inputFile(...arguments)"
             :state="states.file"
             :fileExt="document"
+            text="haz clic para subir documento de identificación"
           />
         </b-col>
       </b-row>
@@ -493,10 +453,12 @@
           }}</b-form-invalid-feedback>
         </b-col>
       </b-row> -->
-      <b-row
-        ><b-button class="button-create" type="submit" variant="success">{{
-          !this.$truthty(this.$props.employee) ? "Crear" : "Actualizar"
-        }}</b-button>
+      <b-row>
+        <b-col class="d-flex justify-content-end">
+          <b-button class="button-create" type="submit" variant="success">{{
+            !this.$truthty(this.$props.employee) ? "Crear" : "Actualizar"
+          }}</b-button>
+        </b-col>
       </b-row>
     </form>
   </div>
@@ -538,7 +500,7 @@ export default {
       validation_state_id: 2,
       id: null,
       file: null,
-      name:null,
+      name: null,
     };
     let region = null;
     let communes = [];
@@ -908,7 +870,6 @@ export default {
         this.states.file = null;
         this.message.file = null;
         this.document.name = "Cédula de Identidad";
-
       }
       this.document.file = file;
       console.log(this.document.file);

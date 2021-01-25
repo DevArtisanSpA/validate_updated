@@ -167,22 +167,24 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="text-right">
-        <b-button
-          v-if="auth.user_type_id == 1"
-          class="my-4"
-          @click.prevent="discard"
-          variant="outline-secondary"
-          >Descartar</b-button
-        >
-        <b-button
-          v-if="auth.user_type_id == 1"
-          class="my-4"
-          type="submit"
-          variant="success"
-          >Guardar</b-button
-        >
-      </div>
+      <b-row>
+        <b-col class="d-flex justify-content-end">
+          <b-button
+            v-if="auth.user_type_id == 1"
+            class="my-4"
+            @click.prevent="discard"
+            variant="outline-secondary"
+            >Descartar</b-button
+          >
+          <b-button
+            v-if="auth.user_type_id == 1"
+            class="my-4"
+            type="submit"
+            variant="success"
+            >Guardar</b-button
+          >
+        </b-col></b-row
+      >
     </form>
   </div>
 </template>

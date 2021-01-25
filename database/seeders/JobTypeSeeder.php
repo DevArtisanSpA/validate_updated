@@ -33,7 +33,7 @@ class JobTypeSeeder extends Seeder
             'Otro'
         ];
         foreach ($types as $index =>$type) {
-            DB::table('job_types')->insert([
+            DB::table('job_types')->updateOrInsert([
                 'id' => $index + 1,
                 'name' => $type,
             ]);

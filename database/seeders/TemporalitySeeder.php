@@ -16,7 +16,7 @@ class TemporalitySeeder extends Seeder
     {
         $temporalities = ["Base", "Mensual"];
         foreach($temporalities as $index => $temporality) {
-            DB::table('temporalities')->insert([
+            DB::table('temporalities')->updateOrInsert([
                 'id' => $index + 1,
                 'name' => $temporality
             ]);
