@@ -364,7 +364,7 @@ class CommuneSeeder extends Seeder
 		];
 
 		foreach ($communes as $index =>$commune) {
-			DB::table('communes')->insert([
+			DB::table('communes')->updateOrInsert([
 				'id' => $index + 1,
 				'region_id' => $commune[1],
 				'name' => $commune[0],

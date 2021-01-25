@@ -16,7 +16,7 @@ class ValidationStateSeeder extends Seeder
     {
         $types = ['Sin documento', 'Enviando (sin revisar)', 'Aprobado', 'Rechazado'];
         foreach ($types as $index => $type) {
-            DB::table('validation_states')->insert([
+            DB::table('validation_states')->updateOrInsert([
                 'id' => $index + 1,
                 'name' => $type
             ]);

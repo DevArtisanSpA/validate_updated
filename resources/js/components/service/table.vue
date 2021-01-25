@@ -126,12 +126,22 @@
           
           <el-button
             v-if="auth.user_type_id != 1 && auth.company_id == props.row.company.id"
-            v-on:click="addDocuments(props.row.id, tableData)"
+            v-on:click="addDocuments(props.row.id, auth.company_id,'base')"
             type="warning"
             icon="el-icon-upload2"
             v-b-tooltip.hover
-            title="Subir documentos"
+            title="Subir documentos fijos"
             circle
+          ></el-button>
+          <el-button
+            v-if="auth.user_type_id != 1 && auth.company_id == props.row.company.id && props.row.service_type_id==1"
+            v-on:click="addDocuments(props.row.id,auth.company_id ,'monthly')"
+            type="warning"
+            icon="el-icon-upload2"
+            v-b-tooltip.hover
+            title="Subir documentos mensuales"
+            circle
+            plain
           ></el-button>
           <el-button
             v-if="auth.user_type_id == 1 || auth.company_id == props.row.branch_office.company.id"
@@ -196,8 +206,8 @@ export default {
       window.location.href =
         window.location.origin + "/services/" + id + "/edit";
     },
-    addDocuments(id) {
-      window.location.href = window.location.origin + "/home";
+    addDocuments(service_id,company_id,temp) {
+      window.location.href = `${window.location.origin}/services/${service_id}/documents/companies/${company_id}/${temp}/edit`;
     },
     addEmployee(id){
       window.location.href = window.location.origin + "/services/"+id+"/employees/create";

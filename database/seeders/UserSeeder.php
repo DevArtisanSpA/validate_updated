@@ -15,7 +15,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-      DB::table('users')->insert([
+      try {
+        DB::table('users')->updateOrInsert([
         'name' => 'admin',
         'email' => 'admin@admin.cl',
         'user_type_id' => 1,
@@ -23,5 +24,9 @@ class UserSeeder extends Seeder
         'password' => bcrypt('123456789'),
         'remember_token' => Str::random(10),
       ]);
+      } catch (\Throwable $th) {
+        //throw $th;
+      }
+      
     }
 }

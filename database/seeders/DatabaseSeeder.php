@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->truncateTablas();
+        // $this->truncateTablas();
 
         $this->call(UserTypeSeeder::class);
         $this->call(RegionSeeder::class);

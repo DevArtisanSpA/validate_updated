@@ -5,12 +5,21 @@
       <div slot="modal-title"><h5>IMPORTANTE</h5></div>
 
       <div class="d-block text-center mt-2 mb-4">
-        <span>¿Estás seguro de {{this.$props.user === undefined ? 'crear' : 'modificar'}} este usuario?</span>
+        <span
+          >¿Estás seguro de
+          {{ this.$props.user === undefined ? "crear" : "modificar" }} este
+          usuario?</span
+        >
       </div>
 
-      <div class="float-right">
-        <b-button @click="hideModal">Cancelar</b-button>
+      <div v-if="!send" class="float-right">
+        <b-button @click.prevent="hideModal" variant="outline-secondary"
+          >Cancelar</b-button
+        >
         <b-button variant="primary" @click="submit">Aceptar</b-button>
+      </div>
+      <div v-else class="d-flex justify-content-center" style="font-size: 36px">
+        <i class="el-icon-loading"></i>
       </div>
     </b-modal>
 
@@ -58,7 +67,9 @@
         ></b-form-input>
       </b-col>
       <b-col md="4">
-        <label for="input-company"><span class="text-danger">*</span>Empresa</label>
+        <label for="input-company"
+          ><span class="text-danger">*</span>Empresa</label
+        >
         <b-form-select
           id="input-company"
           type="text"
@@ -73,7 +84,9 @@
             v-for="company in this.$props.create.companies"
             v-bind:key="company.id"
             :value="company.id"
-          >{{ company.business_name.toUpperCase() }}</option>
+          >
+            {{ company.business_name.toUpperCase() }}
+          </option>
         </b-form-select>
       </b-col>
     </b-row>
@@ -102,8 +115,9 @@ export default {
         id: this.$props.user === undefined ? null : this.$props.user.id,
         name: this.$props.user === undefined ? null : this.$props.user.name,
         email: this.$props.user === undefined ? null : this.$props.user.email,
-        company_id: this.$props.user === undefined ? null : this.$props.user.company_id,
-        user_type_id: 2
+        company_id:
+          this.$props.user === undefined ? null : this.$props.user.company_id,
+        user_type_id: 2,
       },
     };
   },
@@ -139,7 +153,7 @@ export default {
       }
 
       if (this.formdata.email === null || this.formdata.email === "") {
-        this.errors.push({ message: "Email requerido.", });
+        this.errors.push({ message: "Email requerido." });
         this.error = 1;
         this.email_state = false;
       }
@@ -150,50 +164,60 @@ export default {
         this.user_type_state = false;
       }
 
-      if(this.error === 0){
-          this.$refs['modal-confirm'].show();
-      }
-      else{
-          return false;
+      if (this.error === 0) {
+        this.$refs["modal-confirm"].show();
+      } else {
+        return false;
       }
     },
     submit() {
+      this.sent = true;
       if (this.$props.is_update) {
-
         const url = `${window.location.origin}/users/${this.formdata.id}`;
-        axios.patch(url, this.formdata)
-          .then(res => {
-            if(res.status === 200){
-              window.location.href = window.location.origin + '/users';
-            } else {
-              this.$refs["modal-confirm"].hide();
-              this.errors = [];
-              res.data.forEach( row => this.errors.push({message: row}));
-              this.error = 1;
-            }
-          })
-          .catch(err => {
-            this.$refs["modal-confirm"].hide();
-            this.errors = [];
-            this.errors.push({ message: err.response.data.message });
-            this.error = 1;
-        });
-      } else {
-        const url = `${window.location.origin}/users`;
         axios
-          .post(url, this.formdata )
+          .patch(url, this.formdata)
           .then((res) => {
-            if(res.status === 200){
-              window.location.href = window.location.origin + '/users';
+            if (res.status === 200) {
+              window.location.href = window.location.origin + "/users";
             } else {
+              this.sent = false;
               this.$refs["modal-confirm"].hide();
               this.errors = [];
-              res.data.forEach( row => this.errors.push({message: row}));
+              res.data.forEach((row) => this.errors.push({ message: row }));
               this.error = 1;
             }
           })
           .catch((err) => {
-            this.errors = [{message: "Ha ocurrido un error creando el usuario. Inténtelo más tarde."}];
+            this.sent = false;
+            this.$refs["modal-confirm"].hide();
+            this.errors = [];
+            this.errors.push({ message: err.response.data.message });
+            this.error = 1;
+          });
+      } else {
+        const url = `${window.location.origin}/users`;
+        axios
+          .post(url, this.formdata)
+          .then((res) => {
+            if (res.status === 200) {
+              window.location.href = window.location.origin + "/users";
+            } else {
+              this.sent = false;
+
+              this.$refs["modal-confirm"].hide();
+              this.errors = [];
+              res.data.forEach((row) => this.errors.push({ message: row }));
+              this.error = 1;
+            }
+          })
+          .catch((err) => {
+            this.sent = false;
+            this.errors = [
+              {
+                message:
+                  "Ha ocurrido un error creando el usuario. Inténtelo más tarde.",
+              },
+            ];
             this.error = 1;
           });
       }
@@ -201,8 +225,7 @@ export default {
     hideModal() {
       this.$refs["modal-confirm"].hide();
     },
-    init() {
-    },
+    init() {},
   },
   mounted() {
     this.init();

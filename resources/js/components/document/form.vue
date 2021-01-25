@@ -137,6 +137,9 @@
                     <p class="mb-2">{{ observation.split("\\n")[1] }}</p>
                   </div>
                 </div>
+                <div v-else>
+                  <p class="mb-2">Sin observaciones</p>
+                </div>
               </div>
             </b-col>
           </b-row>
@@ -167,6 +170,9 @@
                     <small>{{ observation.split("\\n")[0] }} </small>
                     <p class="mb-2">{{ observation.split("\\n")[1] }}</p>
                   </div>
+                </div>
+                <div v-else>
+                  <p class="mb-2">Sin observaciones</p>
                 </div>
               </div>
             </b-col>
@@ -523,7 +529,6 @@ export default {
   },
   mounted() {
     this.init();
-    console.log(this.$props);
   },
 };
 </script>

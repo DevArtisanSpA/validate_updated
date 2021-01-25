@@ -46,47 +46,6 @@
           </strong>
         </b-col>
       </b-row>
-      <!-- <b-row>
-        <b-col md="4">
-          <label for="input-company">
-            <span class="text-danger">*</span> Compañía
-          </label>
-          <b-form-select id="input-company">
-            <template v-slot:first>
-              <option :value="null" disabled>Selecciona una opción</option>
-            </template>
-          </b-form-select>
-          <b-form-invalid-feedback
-            id="input-live-feedback"
-            >{{
-          }}</b-form-invalid-feedback>
-        </b-col>
-        <b-col md="4">
-          <label for="input-parent"> Principal </label>
-          <b-form-select id="input-parent">
-            <template v-slot:first>
-              <option :value="null" disabled>Selecciona una opción</option>
-            </template>
-          </b-form-select>
-          <b-form-invalid-feedback
-            id="input-live-feedback"
-            >{{
-          }}</b-form-invalid-feedback>
-        </b-col>
-        <b-col md="4">
-          <label for="input-branch"> Sucursal (Instalación) </label>
-          <b-form-select id="input-branch">
-            <template v-slot:first>
-              <option :value="null" disabled>Selecciona una opción</option>
-            </template>
-          </b-form-select>
-          <b-form-invalid-feedback
-            id="input-live-feedback"
-            >{{
-          }}</b-form-invalid-feedback>
-        </b-col>
-      </b-row> -->
-
       <b-row>
         <b-col md="3">
           <span class="text-danger">*</span>
@@ -164,6 +123,7 @@
             @input="inputFile(...arguments)"
             :state="states.file"
             :fileExt="document"
+            text="haz clic para subir documento de identificación"
           />
         </b-col>
       </b-row>
