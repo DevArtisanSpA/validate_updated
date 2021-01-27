@@ -234,9 +234,15 @@ export default {
     "service",
     "employee",
     "monthly",
+    "required",
   ],
   data() {
+    let aux = window.location.pathname.split("/");
+
     return {
+      month_year_registry: this.$truthty(this.monthly)
+        ? aux[aux.length - 2]
+        : null,
       send: false,
       texts: [],
       document_type: null,
@@ -489,8 +495,10 @@ export default {
           formData.append("file" + (index + 1), document.file);
         }
       });
+
       promises.push(axios.post(url, formData, config));
       promises.push(axios.post(url + "/delete", { ids: this.idsDelete }));
+
       this.send = true;
       let urlBack = window.location.origin + "/documents/";
       urlBack = this.$truthty(this.employee)
@@ -499,6 +507,43 @@ export default {
       urlBack = this.$truthty(this.monthly)
         ? urlBack + "monthly"
         : (urlBack = urlBack + "base");
+
+      let mail = true;
+      let validarCheck = this.formData.documents.filter((doc) => {
+        return doc.validation_state_id == 3;
+      });
+      let validarWrong = this.formData.documents.filter((doc) => {
+        return doc.validation_state_id == 4;
+      });
+      try {
+        this.required.forEach((x) => {
+          let exist = this.formData.documents.find((doc) => {
+            return doc.document_type_id == x;
+          });
+          if (!this.$truthty(exist)) {
+            throw BreakException;
+          }
+        });
+      } catch (e) {
+        mail = false;
+      }
+      if (
+        mail &&
+        !this.$truthty(this.employee) &&
+        validarCheck.length != this.formData.documents.length &&
+        validarWrong.length != this.formData.documents.length
+      ) {
+        promises.push(
+          axios.post(`${window.location.origin}/mail/documents/load`, {
+            documents: this.formData.documents,
+            service_id: this.service.id,
+            area: this.$truthty(this.employee) ? 1 : 2,
+            temp: this.$truthty(this.monthly) ? 2 : 1,
+            month_year_registry: this.month_year_registry,
+          })
+        );
+      }
+
       Promise.all(promises)
         .then((values) => {
           window.location.href = urlBack;
@@ -529,6 +574,7 @@ export default {
   },
   mounted() {
     this.init();
+    console.log(this.$props);
   },
 };
 </script>

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Constants;
+use App\Mail\DocumentsLoad;
+use App\Mail\DocumentsLoadCompanyBase;
+use App\Mail\DocumentsLoadCompanyMonthly;
+use App\Mail\DocumentsResponseCompanyBase;
+use App\Mail\DocumentsResponseCompanyMonthly;
 use App\Models\Company;
 use App\Models\Document;
 use App\Models\DocumentType;
@@ -14,12 +19,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\URL;
 use League\Flysystem\Filesystem;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use stdClass;
+use Symfony\Component\Finder\Finder;
 
 class DocumentController extends Controller
 {
@@ -186,6 +193,8 @@ class DocumentController extends Controller
     $document_types = DocumentType::with(['area:id,name', 'temporality:id,name'])
       ->where('area_id', $area)->where('temporality_id', $temp)
       ->where('service_type_id', $service->service_type_id)->orderby('name')->get();
+    $required = DocumentType::where('area_id', $area)->where('temporality_id', $temp)->where('optional', false)
+      ->where('service_type_id', $service->service_type_id)->get()->modelKeys();
     $Q = Document::where('service_id', $id_service)->basic()
       ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
         $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
@@ -207,6 +216,7 @@ class DocumentController extends Controller
       'documents' => collect($documents),
       'document_types' => collect($document_types),
       'monthYear' => strval($monthYear),
+      'required' => collect($required),
       'employee' => $employee,
     ]);
   }
@@ -383,5 +393,33 @@ class DocumentController extends Controller
       }
     }
     return response()->json(["message" => "Documentos modificados exitosamente"], 200);
+  }
+
+  public function loadMail(Request $request)
+  {
+
+    $input = $request->all();
+    $service_id = $input['service_id'];
+    $documents = $input['documents'];
+    $service = Service::where('id',$service_id)->complete()->first();
+    $area = $input['area'];
+    $temp = $input['temp'];
+    try {
+      $periodo = $input['periodo'];
+    } catch (\Throwable $th) {
+      $periodo = null;
+    }
+    // \Debugbar::info($input,Constants::getAdmin()->email, $service->company->contact_email, $service->branchOffice->company->contact_email);
+    // \Debugbar::info($service);
+    if ($area == 1 && $temp == 1) {
+    } else if ($area == 1 && $temp == 2) {
+    } else if ($area == 2 && $temp == 1) {
+      Mail::to([Constants::getAdmin()->email, $service->company->contact_email, $service->branchOffice->company->contact_email])
+        ->send(new DocumentsLoadCompanyBase($service, $documents));
+    } else if ($area == 2 && $temp == 2) {
+       \Debugbar::info($service, $documents, $periodo);
+      Mail::to([Constants::getAdmin()->email, $service->company->contact_email, $service->branchOffice->company->contact_email])
+        ->send(new DocumentsLoadCompanyMonthly($service, $documents, $periodo));
+    }
   }
 }

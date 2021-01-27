@@ -10,15 +10,17 @@ use Illuminate\Queue\SerializesModels;
 class DocumentsLoadCompanyBase extends Mailable
 {
     use Queueable, SerializesModels;
-
+    public $service;
+    public $documents;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($service,$documents)
     {
-        //
+        $this->service = $service;
+        $this->documents=$documents;
     }
 
     /**
@@ -28,6 +30,7 @@ class DocumentsLoadCompanyBase extends Mailable
      */
     public function build()
     {
-        return $this->subject("Carga de archivos base")->view('emails.load_documents_company_base');
+        return $this->subject("Carga de archivos bases del servicio " . strtoupper($this->service->description))
+        ->view('emails.load_documents_company_base');
     }
 }

@@ -73,27 +73,22 @@
       <hr  class="m-y-1"  />
       <div style="text-align: left; ">
         <h2>
-          Se han cargado los documentos fijos.
-        </h2>                <br>
-
-        <p>
-          Para la empresa principal <strong>
-            < bussiness_name parent>
-          </strong>, sucursal <strong>
-            < sucursal>
-          </strong>,
+          Se han cargado los documentos mensuales
+          <p>para el periodo <strong>{{$periodo}}</strong></p>.
+        </h2>                
+        <p><br>
+          Para el servicio  <strong>{{ strtoupper($service->description) }}</strong> de la empresa principal <strong>{{ strtoupper($service->branchOffice->company->business_name) }}</strong>, sucursal <strong>
+            {{ strtoupper($service->branchOffice->name) }}</strong>, se han cargado los siguientes documentos fijos de
           la empresa contratista <strong>
-            < bussiness_name>
-          </strong> ha cargado los documentos fijos para su revisión.
+            {{ strtoupper($service->company->business_name) }}
+          </strong>que serán revisados por validate.cl:
         </p>
 
         <p class="m-y-1">
-          <h4>Documentos</h4>
           <ul>
-            <li>doc1</li>
-            <li>doc2</li>
-            <li>doc3</li>
-            <li>doc4</li>
+            @foreach ($documents as $document)
+            <li>{{$document['name']}}</li>
+            @endforeach
           </ul>
         </p>
 

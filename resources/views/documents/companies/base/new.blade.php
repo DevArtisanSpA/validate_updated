@@ -14,6 +14,10 @@
   <strong>{{ $service->branchOffice->company->business_name }}</strong>
 </h5>
 @csrf
-<document-form :auth="{{ $auth }}" :service="{{$service}}" :documents=" {{$documents}}" :document_types="{{$document_types}}"></document-form>
+<document-form :auth="{{ $auth }}" :service="{{$service}}" 
+:documents=" {{$documents}}"
+:document_types="{{$document_types}}"
+:required="{{$required}}"
+ ></document-form>
 </div>
 @endsection

@@ -18,7 +18,7 @@
 <review-form :auth="{{ $auth }}" 
 :service="{{$service}}" 
 :documents=" {{$documents}}" 
-
+:required="{{$required}}"
 :monthly="{{true}}"
 ></review-form>
 </div>

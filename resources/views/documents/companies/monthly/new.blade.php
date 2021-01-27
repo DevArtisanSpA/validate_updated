@@ -20,6 +20,7 @@
 :documents=" {{$documents}}" 
 :document_types="{{$document_types}}"
 :monthly="{{true}}"
+:required="{{$required}}"
 ></document-form>
 </div>
 @endsection

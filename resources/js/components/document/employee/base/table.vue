@@ -54,7 +54,7 @@
         />
         <el-table-column prop="service.description" label="Servicio" sortable />
 
-        <el-table-column label="Nombre">
+        <!-- <el-table-column label="Nombre">
           <template slot-scope="props">
             {{
               `${
@@ -75,13 +75,13 @@
           prop="identification_id"
           label="N° de identificación"
           sortable
-        />
+        /> -->
         <el-table-column
           prop="service.service_type.name"
           label="Tipo"
           sortable
         />
-        <el-table-column label="Documentos" min-width="230">
+        <!-- <el-table-column label="Documentos" min-width="230">
           <template slot-scope="props">
             <div v-for="doc in props.row.service.documents" v-bind:key="doc.id">
               <p
@@ -112,7 +112,7 @@
               </p>
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="Acciones" width="120">
           <template slot-scope="scope">
             <el-button

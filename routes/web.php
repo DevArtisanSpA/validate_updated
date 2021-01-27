@@ -108,4 +108,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('review/{id_service}/documents/employees/{id}/monthly', function ($id_service,$id) {
         return redirect()->route('reviewEmployeeMonthly', [$id_service,$id, 'monthYear' => Carbon::now()->format('Y-m')]);
     });
+
+    Route::post('mail/documents/load',[DocumentController::class,'loadMail']);
+    Route::post('mail/documents/response',[ReviewController::class,'responseMail']);
 });

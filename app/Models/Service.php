@@ -78,10 +78,10 @@ class Service extends Model
     public function scopeComplete($query)
     {
         return $query->with([
-            'company:id,business_name,rut',
+            'company:id,business_name,rut,contact_email',
             'serviceType:id,name',
             'branchOffice:id,company_id,name',
-            'branchOffice.company:id,business_name'
+            'branchOffice.company:id,business_name,contact_email'
         ]);
     }
     public function scopeCountDocuments($query, $area, $temp, $monthYear = null,$employee=null)
