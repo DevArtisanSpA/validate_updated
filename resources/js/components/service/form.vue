@@ -48,7 +48,7 @@
       </b-col>
       <b-col md="3">
         <label for="input-company">
-          <span class="text-danger">*</span> Empresa que contrata</label
+          <span class="text-danger">*</span> Empresa principal</label
         >
         <b-form-select
           id="input-company"

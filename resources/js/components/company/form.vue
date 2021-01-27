@@ -97,10 +97,6 @@
         }}</b-form-invalid-feedback>
       </b-col>
     </b-row>
-<<<<<<< HEAD
-=======
-    <b-row> </b-row>
->>>>>>> feature/employee/settlement
     <b-row>
       <b-col md="6">
         <label for="input-contact">
