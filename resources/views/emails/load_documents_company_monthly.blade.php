@@ -73,8 +73,7 @@
       <hr  class="m-y-1"  />
       <div style="text-align: left; ">
         <h2>
-          Se han cargado los documentos mensuales
-          <p>para el periodo <strong>{{$periodo}}</strong></p>.
+          Se han cargado los documentos mensuales para el periodo <strong>{{$periodo}}</strong>.
         </h2>                
         <p><br>
           Para el servicio  <strong>{{ strtoupper($service->description) }}</strong> de la empresa principal <strong>{{ strtoupper($service->branchOffice->company->business_name) }}</strong>, sucursal <strong>

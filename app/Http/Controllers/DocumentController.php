@@ -225,6 +225,7 @@ class DocumentController extends Controller
     $creacted = [];
     $updated = [];
     $input = $request->all();
+    \Debugbar::info($input);
     for ($i = 0; $i < count($input) / 2; $i++) {
       $inputDocument = (array) json_decode($input['data' . ($i + 1)]);
       $validationDocument = Document::validator($inputDocument);
@@ -405,9 +406,9 @@ class DocumentController extends Controller
     $area = $input['area'];
     $temp = $input['temp'];
     try {
-      $periodo = $input['periodo'];
+      $period = $input['period'];
     } catch (\Throwable $th) {
-      $periodo = null;
+      $period = null;
     }
     // \Debugbar::info($input,Constants::getAdmin()->email, $service->company->contact_email, $service->branchOffice->company->contact_email);
     // \Debugbar::info($service);
@@ -417,9 +418,8 @@ class DocumentController extends Controller
       Mail::to([Constants::getAdmin()->email, $service->company->contact_email, $service->branchOffice->company->contact_email])
         ->send(new DocumentsLoadCompanyBase($service, $documents));
     } else if ($area == 2 && $temp == 2) {
-       \Debugbar::info($service, $documents, $periodo);
       Mail::to([Constants::getAdmin()->email, $service->company->contact_email, $service->branchOffice->company->contact_email])
-        ->send(new DocumentsLoadCompanyMonthly($service, $documents, $periodo));
+        ->send(new DocumentsLoadCompanyMonthly($service, $documents, $period));
     }
   }
 }

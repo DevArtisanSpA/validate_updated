@@ -75,7 +75,7 @@
             <hr class="m-y-1" />
             <div style="text-align: left; ">
                 <h2>
-                    Se han actualizado los estados de los documentos.
+                    Se han actualizado los estados de los documentos para el periodo <strong>{{$periodo}}</strong>..
                 </h2>
                 <p><br>
                     Estimados, les informamos que los documentos base del servicio

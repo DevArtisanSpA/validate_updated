@@ -238,7 +238,9 @@ export default {
   ],
   data() {
     let aux = window.location.pathname.split("/");
-
+console.log(this.$truthty(this.monthly)
+        ? aux[aux.length - 2]
+        : null);
     return {
       month_year_registry: this.$truthty(this.monthly)
         ? aux[aux.length - 2]
@@ -489,10 +491,12 @@ export default {
       let config = { headers: { "Content-Type": "multipart/form-data" } };
       let promises = [];
       let formData = new FormData();
-      this.formData.documents.map((document, index) => {
+      let index=1;
+      this.formData.documents.map((document) => {
         if (!this.idsIgnore.includes(document.id)) {
-          formData.append("data" + (index + 1), JSON.stringify(document));
-          formData.append("file" + (index + 1), document.file);
+          formData.append("data" + (index), JSON.stringify(document));
+          formData.append("file" + (index), document.file);
+          index++;
         }
       });
 
@@ -515,6 +519,7 @@ export default {
       let validarWrong = this.formData.documents.filter((doc) => {
         return doc.validation_state_id == 4;
       });
+      console.log(this.required);
       try {
         this.required.forEach((x) => {
           let exist = this.formData.documents.find((doc) => {
@@ -539,7 +544,7 @@ export default {
             service_id: this.service.id,
             area: this.$truthty(this.employee) ? 1 : 2,
             temp: this.$truthty(this.monthly) ? 2 : 1,
-            month_year_registry: this.month_year_registry,
+            period: this.month_year_registry,
           })
         );
       }

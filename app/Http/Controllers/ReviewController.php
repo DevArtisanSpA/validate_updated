@@ -230,9 +230,9 @@ class ReviewController extends Controller
         $area = $input['area'];
         $temp = $input['temp'];
         try {
-            $periodo = $input['periodo'];
+            $period = $input['period'];
         } catch (\Throwable $th) {
-            $periodo = null;
+            $period = null;
         }
         \Debugbar::info($service->company);
         \Debugbar::info($service->branchOffice->company);
@@ -254,7 +254,7 @@ class ReviewController extends Controller
                 ->send(new DocumentsResponseCompanyBase($service, $documents, $wrong));
         } else if ($area == 2 && $temp == 2) {
             Mail::to([Constants::getAdmin()->email, $service->company->contact_email, $service->branchOffice->company->contact_email])
-                ->send(new DocumentsResponseCompanyMonthly($service, $documents, $periodo, $wrong));
+                ->send(new DocumentsResponseCompanyMonthly($service, $documents, $period, $wrong));
         }
     }
 }
