@@ -504,10 +504,10 @@ console.log(this.$truthty(this.monthly)
       promises.push(axios.post(url + "/delete", { ids: this.idsDelete }));
 
       this.send = true;
-      let urlBack = window.location.origin + "/documents/";
+      let urlBack = window.location.origin;
       urlBack = this.$truthty(this.employee)
-        ? urlBack + "employees/"
-        : (urlBack = urlBack + "companies/");
+        ? urlBack + "/services/"+this.service.id+"/documents/employees/"
+        : (urlBack = urlBack + "/documents/companies/");
       urlBack = this.$truthty(this.monthly)
         ? urlBack + "monthly"
         : (urlBack = urlBack + "base");
@@ -519,7 +519,6 @@ console.log(this.$truthty(this.monthly)
       let validarWrong = this.formData.documents.filter((doc) => {
         return doc.validation_state_id == 4;
       });
-      console.log(this.required);
       try {
         this.required.forEach((x) => {
           let exist = this.formData.documents.find((doc) => {
@@ -539,7 +538,7 @@ console.log(this.$truthty(this.monthly)
         validarWrong.length != this.formData.documents.length
       ) {
         promises.push(
-          axios.post(`${window.location.origin}/mail/documents/load`, {
+          axios.post(`${window.location.origin}/mail/documents/load/`, {
             documents: this.formData.documents,
             service_id: this.service.id,
             area: this.$truthty(this.employee) ? 1 : 2,

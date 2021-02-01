@@ -130,10 +130,10 @@
             type="warning"
             icon="el-icon-upload2"
             v-b-tooltip.hover
-            title="Subir documentos fijos"
+            title="Subir documentos bases"
             circle
           ></el-button>
-          <el-button
+          <!-- <el-button
             v-if="auth.user_type_id != 1 && auth.company_id == props.row.company.id && props.row.service_type_id==1"
             v-on:click="addDocuments(props.row.id,auth.company_id ,'monthly')"
             type="warning"
@@ -142,7 +142,7 @@
             title="Subir documentos mensuales"
             circle
             plain
-          ></el-button>
+          ></el-button> -->
           <el-button
             v-if="auth.user_type_id == 1 || auth.company_id == props.row.branch_office.company.id"
             v-on:click="edit(props.row.id, tableData)"
@@ -156,7 +156,7 @@
             v-if="auth.user_type_id == 1 || auth.company_id == props.row.company.id"
             v-on:click="addEmployee(props.row.id)"
             type="success"
-            icon="el-icon-plus"
+            icon="el-icon-user"
             v-b-tooltip.hover
             title="Agregar Empleados"
             circle

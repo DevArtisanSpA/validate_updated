@@ -203,7 +203,7 @@ const copy = (x) => {
   return x;
 };
 export default {
-  props: ["documents", "auth", "service", "employee", "monthly","required"],
+  props: ["documents", "auth", "service", "employee", "monthly", "required"],
   data() {
     return {
       error: 0,
@@ -217,7 +217,7 @@ export default {
   },
   methods: {
     checkForm() {
-      this.errors=[];
+      this.errors = [];
       if (this.diference()) {
         this.$refs["modal-confirm"].show();
       } else {
@@ -247,7 +247,7 @@ export default {
       let url = `${window.location.origin}/documents/update`;
       let promises = [];
       this.send = true;
-      let urlBack = window.location.origin + "/review/";
+      let urlBack = window.location.origin + "/review/" + this.service.id + "/";
       urlBack = this.$truthty(this.employee)
         ? urlBack + "employees/"
         : (urlBack = urlBack + "companies/");
@@ -276,32 +276,29 @@ export default {
       } catch (e) {
         mail = false;
       }
-      
-      if (
-        mail &&
-        !this.$truthty(this.employee) &&
-        validar.length == 0 
-      ) {
+
+      if (mail && !this.$truthty(this.employee) && validar.length == 0) {
         promises.push(
           axios.post(`${window.location.origin}/mail/documents/response`, {
             documents: this.tableData,
             service_id: this.service.id,
             area: this.$truthty(this.employee) ? 1 : 2,
             temp: this.$truthty(this.monthly) ? 2 : 1,
-            month_year_registry: this.service.month_year_registry
+            month_year_registry: this.service.month_year_registry,
           })
         );
       }
 
-      Promise.all(promises).then((response) => {
-        // window.location.href = urlBack;
-        this.send = false;
-        this.hideModal();
-      })
-      .catch((error) => {
-        this.send = false;
-        this.hideModal();
-      });
+      Promise.all(promises)
+        .then((response) => {
+          window.location.href = urlBack;
+          // this.send = false;
+          // this.hideModal();
+        })
+        .catch((error) => {
+          this.send = false;
+          this.hideModal();
+        });
     },
   },
   mounted() {

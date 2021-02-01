@@ -114,7 +114,7 @@
         <p><br>
           Estimados, les informamos que los documentos base del servicio
           <strong>{{ strtoupper($service->description) }}</strong>
-          prestado por la empresa contratista <strong>{{ strtoupper($service->company->business_name) }},</strong>
+          prestado por la empresa contratista <strong>{{ strtoupper($service->company->business_name) }}</strong>,
           para la empresa principal <strong>
             {{ strtoupper($service->branchOffice->company->business_name) }}</strong>, sucursal <strong>
             {{ strtoupper($service->branchOffice->name) }}</strong> han sido revisados y actualizados en sus estados.

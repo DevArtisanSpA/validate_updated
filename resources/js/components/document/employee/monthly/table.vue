@@ -2,15 +2,16 @@
   <div>
     <b-row>
       <b-col sm="4">
-        <el-input v-model="search" placeholder="Buscar " clearable /> </b-col
-      ><b-col sm="4">
+        <el-input v-model="search" placeholder="Buscar " clearable />
+      </b-col>
+      <!-- <b-col sm="4">
         <b-form-input
           type="month"
           @input="filterSearch"
           :max="max"
           v-model="monthYear"
-        />
-      </b-col>
+        /> 
+      </b-col>-->
     </b-row>
     <b-overlay :show="loading" rounded="sm">
       <el-table
@@ -24,21 +25,14 @@
                 .toLowerCase()
                 .includes(search.toLowerCase()) ||
               data.name.toLowerCase().includes(search.toLowerCase()) ||
-              data.surname
-                .toLowerCase()
-                .includes(
-                  search.toLowerCase() ||
-                    data.service.description
-                      .toLowerCase()
-                      .includes(search.toLowerCase())
-                )
+              data.surname.toLowerCase().includes(search.toLowerCase())
           )
         "
         ref="multipleTable"
         class="w-100"
       >
         <!-- <el-table-column type="selection" width="30"> </el-table-column> -->
-        <el-table-column
+        <!-- <el-table-column
           prop="service.branch_office.company.business_name"
           label="Principal"
           sortable
@@ -51,18 +45,17 @@
           sortable
           :filters="valuesFilter(tableData, 'service.branch_office.name')"
           :filter-method="filterRow('service.branch_office.name')"
-        />
-        <el-table-column
+        /><el-table-column
           v-if="auth.user_type_id == 1"
           prop="service.company.business_name"
           sortable
           label="Contratista"
           :filters="valuesFilter(tableData, 'service.company.business_name')"
           :filter-method="filterRow('service.company.business_name')"
-        />
-        <el-table-column prop="service.description" label="Servicio" sortable />
+        /> -->
+        <!-- <el-table-column prop="service.description" label="Servicio" sortable /> -->
 
-        <el-table-column label="Nombre">
+        <el-table-column label="Nombre" width="220" sortable="surname">
           <template slot-scope="props">
             {{
               `${
@@ -83,13 +76,14 @@
           prop="identification_id"
           label="N° de identificación"
           sortable
+          width="220"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="service.service_type.name"
           label="Tipo"
           sortable
-        />
-        <el-table-column label="Documentos" min-width="230">
+        /> -->
+        <el-table-column label="Documentos">
           <template slot-scope="props">
             <div v-for="doc in props.row.service.documents" v-bind:key="doc.id">
               <p
@@ -124,16 +118,22 @@
         <el-table-column label="Acciones" width="120">
           <template slot-scope="scope">
             <el-button
-              v-if="auth.user_type_id == 1 || auth.company_id === scope.row.id"
+              v-if="
+                auth.user_type_id == 1 ||
+                auth.company_id === scope.row.service.company.id
+              "
               v-on:click="edit(scope.row.service.id, scope.row.id)"
               type="primary"
-              icon="el-icon-edit"
+              icon="el-icon-upload2"
               v-b-tooltip.hover
-              title="Editar"
+              title="Agregar documentos"
               circle
             ></el-button>
             <el-button
-              v-if="auth.user_type_id != 1 && auth.company_id !== scope.row.id"
+              v-if="
+                auth.user_type_id != 1 &&
+                auth.company_id !== scope.row.service.company.id
+              "
               type="warning"
               icon="el-icon-view"
               title="Verificar"
@@ -184,13 +184,13 @@ export default {
     };
   },
   methods: {
-     valuesFilter(tableData, e) {
+    valuesFilter(tableData, e) {
       let names = [];
-      let access=e.split('.');
+      let access = e.split(".");
       tableData.map((data) => {
-        let add=data;
-        access.map(x=>{
-          add=add[x];
+        let add = data;
+        access.map((x) => {
+          add = add[x];
         });
         names.push(add);
       });
@@ -204,9 +204,9 @@ export default {
     },
     filterRow(e) {
       return (value, row) => {
-        let add=row;
-        access.map(x=>{
-          add=add[x];
+        let add = row;
+        access.map((x) => {
+          add = add[x];
         });
         return add == value;
       };

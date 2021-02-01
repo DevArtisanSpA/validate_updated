@@ -101,6 +101,10 @@ Vue.component(
   require("./components/document/company/monthly/table.vue").default
 );
 Vue.component(
+  "document-pre-table-employee",
+  require("./components/document/employee/pretable.vue").default
+);
+Vue.component(
   "document-table-employee-base",
   require("./components/document/employee/base/table.vue").default
 );
@@ -109,6 +113,7 @@ Vue.component(
   require("./components/document/employee/monthly/table.vue").default
 );
 
+
 Vue.component(
   "review-table-company-base",
   require("./components/review/company/base/table.vue").default
@@ -116,6 +121,10 @@ Vue.component(
 Vue.component(
   "review-table-company-monthly",
   require("./components/review/company/monthly/table.vue").default
+);
+Vue.component(
+  "review-pre-table-employee",
+  require("./components/review/employee/pretable.vue").default
 );
 Vue.component(
   "review-table-employee-base",

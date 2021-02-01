@@ -44,9 +44,23 @@ class Service extends Model
     {
         return $this->belongsTo(BranchOffice::class);
     }
-    public function employees(){
-        return $this->belongsToMany(Employee::class,'documents')->distinct();
-      }
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'documents')->distinct();
+    }
+
+    // public function employeesBase()
+    // {
+    //     return $this->belongsToMany(Employee::class, 'documents')->distinct()->wherehas('documents.type', function ($query) {
+    //         return $query->where('area_id', 1);
+    //     });
+    // }
+    // public function employeesMonthly()
+    // {
+    //     return $this->belongsToMany(Employee::class, 'documents')->distinct()->wherehas('documents.type', function ($query) {
+    //         return $query->where('area_id', 2);
+    //     });
+    // }
     /**
      * Scope a query to only include pending (unaccepted) services.
      *
@@ -84,10 +98,10 @@ class Service extends Model
             'branchOffice.company:id,business_name,contact_email'
         ]);
     }
-    public function scopeCountDocuments($query, $area, $temp, $monthYear = null,$employee=null)
+    public function scopeCountDocuments($query, $area, $temp, $monthYear = null, $employee = null)
     {
         return $query->withCount([
-            'documents as pending' => function ($query) use ($area, $temp, $monthYear,$employee) {
+            'documents as pending' => function ($query) use ($area, $temp, $monthYear, $employee) {
                 $Q = $query->where('validation_state_id', 2)
                     ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
                         return $query->where('area_id', $area)->where('temporality_id', $temp);
@@ -99,7 +113,7 @@ class Service extends Model
                     $Q = $Q->where('employee_id', $employee);
                 }
                 return $Q;
-            }, 'documents as approved' => function ($query) use ($area, $temp, $monthYear,$employee) {
+            }, 'documents as approved' => function ($query) use ($area, $temp, $monthYear, $employee) {
                 $Q = $query->where('validation_state_id', 3)
                     ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
                         return $query->where('area_id', $area)->where('temporality_id', $temp);
@@ -111,7 +125,7 @@ class Service extends Model
                     $Q = $Q->where('employee_id', $employee);
                 }
                 return $Q;
-            }, 'documents as rejected' => function ($query) use ($area, $temp, $monthYear,$employee) {
+            }, 'documents as rejected' => function ($query) use ($area, $temp, $monthYear, $employee) {
                 $Q = $query->where('validation_state_id', 4)
                     ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
                         return $query->where('area_id', $area)->where('temporality_id', $temp);
