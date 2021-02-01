@@ -264,7 +264,6 @@ class ReviewController extends Controller
   {
 
     $input = $request->all();
-    \Debugbar::info($input);
     $service_id = $input['service_id'];
     $documents = $input['documents'];
     $service = Service::where('id', $service_id)->complete();
@@ -277,7 +276,6 @@ class ReviewController extends Controller
     }
     $wrong = false;
     if ($area == 1) { // empleados
-      \Debugbar::info($period);
       $service = $service->with(
         'employees',
         function ($query) use ($temp, $period) {

@@ -291,7 +291,6 @@ class DocumentController extends Controller
     $creacted = [];
     $updated = [];
     $input = $request->all();
-    \Debugbar::info($input);
     for ($i = 0; $i < count($input) / 2; $i++) {
       $inputDocument = (array) json_decode($input['data' . ($i + 1)]);
       $validationDocument = Document::validator($inputDocument);
