@@ -1,6 +1,15 @@
 <template>
   <div>
     <hr />
+    <div id="errors-div">
+      <b-alert variant="warning" show v-if="errors.length" id="errors-div">
+        <ul class="mb-0 mx-3">
+          <li v-for="(error, index) in errors" v-bind:key="index">
+            {{ error.message }}
+          </li>
+        </ul>
+      </b-alert>
+    </div>
     <div v-if="!$truthty(employee)">
       <b-row>
         <b-col md="6">
@@ -167,24 +176,22 @@
           </template>
         </el-table-column>
       </el-table>
-      <b-row>
-        <b-col class="d-flex justify-content-end">
-          <b-button
-            v-if="auth.user_type_id == 1"
-            class="my-4"
-            @click.prevent="discard"
-            variant="outline-secondary"
-            >Descartar</b-button
-          >
-          <b-button
-            v-if="auth.user_type_id == 1"
-            class="my-4"
-            type="submit"
-            variant="success"
-            >Guardar</b-button
-          >
-        </b-col></b-row
-      >
+      <b-col class="text-right">
+        <b-button
+          v-if="auth.user_type_id == 1"
+          class="my-4"
+          @click.prevent="discard"
+          variant="outline-secondary"
+          >Descartar</b-button
+        >
+        <b-button
+          v-if="auth.user_type_id == 1"
+          class="my-4"
+          type="submit"
+          variant="success"
+          >Guardar</b-button
+        >
+      </b-col>
     </form>
   </div>
 </template>
@@ -196,9 +203,11 @@ const copy = (x) => {
   return x;
 };
 export default {
-  props: ["documents", "auth", "service", "employee", "monthly"],
+  props: ["documents", "auth", "service", "employee", "monthly", "required"],
   data() {
     return {
+      error: 0,
+      errors: [],
       company: "",
       tableData: copy(this.documents),
       documentsPrev: copy(this.documents),
@@ -208,7 +217,14 @@ export default {
   },
   methods: {
     checkForm() {
-      this.$refs["modal-confirm"].show();
+      this.errors = [];
+      if (this.diference()) {
+        this.$refs["modal-confirm"].show();
+      } else {
+        this.errors.push({
+          message: `No existen cambios`,
+        });
+      }
     },
     hideModal() {
       this.$refs["modal-confirm"].hide();
@@ -217,22 +233,64 @@ export default {
       this.documents = copy(this.documentsPrev);
       this.observations = new Array(this.$props.data.length);
     },
+    diference() {
+      for (let i = 0; i < this.tableData.length; i++) {
+        const docNew = this.tableData[i];
+        const docOld = this.documentsPrev[i];
+        if (docNew.validation_state_id != docOld.validation_state_id) {
+          return true;
+        }
+      }
+      return false;
+    },
     submit() {
+      console.log(this.service.month_year_registry);
       let url = `${window.location.origin}/documents/update`;
       let promises = [];
       this.send = true;
-      let urlBack = window.location.origin + "/review/";
+      let urlBack = window.location.origin + "/review/" + this.service.id + "/";
       urlBack = this.$truthty(this.employee)
         ? urlBack + "employees/"
         : (urlBack = urlBack + "companies/");
       urlBack = this.$truthty(this.monthly)
-        ? urlBack + "monthly"
+        ? urlBack + "monthly/"+this.service.month_year_registry
         : (urlBack = urlBack + "base");
-      axios
-        .post(url, {
+      promises.push(
+        axios.post(url, {
           documents: this.tableData,
           observations: this.observations,
         })
+      );
+      let mail = true;
+      let validar = this.tableData.filter((doc) => {
+        return doc.validation_state_id == 2;
+      });
+      try {
+        this.required.forEach((x) => {
+          let exist = this.tableData.find((doc) => {
+            return doc.document_type_id == x;
+          });
+          if (!this.$truthty(exist)) {
+            throw BreakException;
+          }
+        });
+      } catch (e) {
+        mail = false;
+      }
+
+      if (mail && !this.$truthty(this.employee) && validar.length == 0) {
+        promises.push(
+          axios.post(`${window.location.origin}/mail/documents/response`, {
+            documents: this.tableData,
+            service_id: this.service.id,
+            area: this.$truthty(this.employee) ? 1 : 2,
+            temp: this.$truthty(this.monthly) ? 2 : 1,
+            month_year_registry: this.service.month_year_registry,
+          })
+        );
+      }
+
+      Promise.all(promises)
         .then((response) => {
           window.location.href = urlBack;
           // this.send = false;

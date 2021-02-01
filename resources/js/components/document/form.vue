@@ -188,36 +188,34 @@
           ></b-row>
         </div>
       </div>
-      <b-row>
-        <b-col class="d-flex justify-content-end">
-          <b-button
-            class="my-4"
-            @click.prevent="discard"
-            variant="outline-secondary"
-            :disabled="
-              !(
-                $truthty(formData.documents) ||
-                JSON.stringify(prevDocument) !==
-                  JSON.stringify(formData.documents)
-              )
-            "
-            >Descartar</b-button
-          >
-          <b-button
-            class="my-4"
-            type="submit"
-            variant="success"
-            :disabled="
-              !(
-                $truthty(formData.documents) ||
-                JSON.stringify(prevDocument) !==
-                  JSON.stringify(formData.documents)
-              )
-            "
-            >Guardar</b-button
-          >
-        </b-col></b-row
-      >
+      <b-col class="text-right">
+        <b-button
+          class="my-4"
+          @click.prevent="discard"
+          variant="outline-secondary"
+          :disabled="
+            !(
+              $truthty(formData.documents) ||
+              JSON.stringify(prevDocument) !==
+                JSON.stringify(formData.documents)
+            )
+          "
+          >Descartar</b-button
+        >
+        <b-button
+          class="my-4"
+          type="submit"
+          variant="success"
+          :disabled="
+            !(
+              $truthty(formData.documents) ||
+              JSON.stringify(prevDocument) !==
+                JSON.stringify(formData.documents)
+            )
+          "
+          >Guardar</b-button
+        >
+      </b-col>
     </form>
   </div>
 </template>
@@ -236,9 +234,17 @@ export default {
     "service",
     "employee",
     "monthly",
+    "required",
   ],
   data() {
+    let aux = window.location.pathname.split("/");
+console.log(this.$truthty(this.monthly)
+        ? aux[aux.length - 2]
+        : null);
     return {
+      month_year_registry: this.$truthty(this.monthly)
+        ? aux[aux.length - 2]
+        : null,
       send: false,
       texts: [],
       document_type: null,
@@ -485,22 +491,63 @@ export default {
       let config = { headers: { "Content-Type": "multipart/form-data" } };
       let promises = [];
       let formData = new FormData();
-      this.formData.documents.map((document, index) => {
+      let index=1;
+      this.formData.documents.map((document) => {
         if (!this.idsIgnore.includes(document.id)) {
-          formData.append("data" + (index + 1), JSON.stringify(document));
-          formData.append("file" + (index + 1), document.file);
+          formData.append("data" + (index), JSON.stringify(document));
+          formData.append("file" + (index), document.file);
+          index++;
         }
       });
+
       promises.push(axios.post(url, formData, config));
       promises.push(axios.post(url + "/delete", { ids: this.idsDelete }));
+
       this.send = true;
-      let urlBack = window.location.origin + "/documents/";
+      let urlBack = window.location.origin;
       urlBack = this.$truthty(this.employee)
-        ? urlBack + "employees/"
-        : (urlBack = urlBack + "companies/");
+        ? urlBack + "/services/"+this.service.id+"/documents/employees/"
+        : (urlBack = urlBack + "/documents/companies/");
       urlBack = this.$truthty(this.monthly)
         ? urlBack + "monthly"
         : (urlBack = urlBack + "base");
+
+      let mail = true;
+      let validarCheck = this.formData.documents.filter((doc) => {
+        return doc.validation_state_id == 3;
+      });
+      let validarWrong = this.formData.documents.filter((doc) => {
+        return doc.validation_state_id == 4;
+      });
+      try {
+        this.required.forEach((x) => {
+          let exist = this.formData.documents.find((doc) => {
+            return doc.document_type_id == x;
+          });
+          if (!this.$truthty(exist)) {
+            throw BreakException;
+          }
+        });
+      } catch (e) {
+        mail = false;
+      }
+      if (
+        mail &&
+        !this.$truthty(this.employee) &&
+        validarCheck.length != this.formData.documents.length &&
+        validarWrong.length != this.formData.documents.length
+      ) {
+        promises.push(
+          axios.post(`${window.location.origin}/mail/documents/load/`, {
+            documents: this.formData.documents,
+            service_id: this.service.id,
+            area: this.$truthty(this.employee) ? 1 : 2,
+            temp: this.$truthty(this.monthly) ? 2 : 1,
+            period: this.month_year_registry,
+          })
+        );
+      }
+
       Promise.all(promises)
         .then((values) => {
           window.location.href = urlBack;
@@ -531,6 +578,7 @@ export default {
   },
   mounted() {
     this.init();
+    console.log(this.$props);
   },
 };
 </script>

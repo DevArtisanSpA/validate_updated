@@ -97,7 +97,6 @@
         }}</b-form-invalid-feedback>
       </b-col>
     </b-row>
-    <b-row> </b-row>
     <b-row>
       <b-col md="6">
         <label for="input-contact">
@@ -282,7 +281,7 @@
         !is_update
       "
     >
-      <b-col class="d-flex justify-content-end">
+      <b-col class="text-right">
         <b-button class="m-3" type="submit" variant="success">{{
           !is_update ? "Crear" : "Actualizar"
         }}</b-button>

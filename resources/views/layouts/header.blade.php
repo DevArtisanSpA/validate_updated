@@ -87,7 +87,7 @@
                                 {{ __('Finiquitar Empleado') }}
                             </a>
                             <hr class="line">
-                            <a class="dropdown-item" href="{{ url('documents/employees/base') }}">
+                            <a class="dropdown-item" href="{{ url('services/documents/employees/base') }}">
                                 {{ __('Lista documentos bases de empleado') }}
                             </a>
                             <!-- @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)
@@ -97,7 +97,7 @@
                           @endif -->
                             <hr class="line">
 
-                            <a class="dropdown-item" href="{{ url('documents/employees/monthly') }}">
+                            <a class="dropdown-item" href="{{ url('services/documents/employees/monthly') }}">
                                 {{ __('Lista documentos mensuales de empleado') }}
                             </a>
                             <!-- @if (Auth::user()->user_type_id == 1 || Auth::user()->company_id != null)

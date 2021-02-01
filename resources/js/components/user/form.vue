@@ -90,11 +90,14 @@
         </b-form-select>
       </b-col>
     </b-row>
-    <b-row>
-      <b-button class="m-3" type="submit" variant="success">{{
-        this.$props.user === undefined ? "Crear" : "Actualizar"
-      }}</b-button>
-    </b-row>
+    <b-row >
+      <b-col class="text-right">
+      <b-button
+        class="m-3"
+        type="submit"
+        variant="success"
+      >{{this.$props.user === undefined ? 'Crear' : 'Actualizar'}}</b-button>
+    </b-col></b-row>
   </form>
 </template>
 

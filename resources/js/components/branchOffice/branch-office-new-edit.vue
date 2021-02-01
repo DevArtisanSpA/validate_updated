@@ -180,13 +180,13 @@
           }}</b-form-invalid-feedback>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col class="d-flex justify-content-end">
+      <b-row
+        ><b-col class="text-right">
           <b-button class="my-4" type="submit" variant="success">{{
             !is_update ? "Crear" : "Actualizar"
           }}</b-button>
-        </b-col>
-      </b-row>
+        </b-col></b-row
+      >
     </form>
   </div>
 </template>

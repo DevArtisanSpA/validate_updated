@@ -42,13 +42,13 @@
           v-model="rut_company"
           disabled
         />
-        <b-form-invalid-feedback id="input-live-feedback">{{
+        <!-- <b-form-invalid-feedback id="input-live-feedback">{{
           rut_message
-        }}</b-form-invalid-feedback>
+        }}</b-form-invalid-feedback> -->
       </b-col>
       <b-col md="3">
         <label for="input-company">
-          <span class="text-danger">*</span> Empresa que contrata</label
+          <span class="text-danger">*</span> Empresa principal</label
         >
         <b-form-select
           id="input-company"
@@ -176,7 +176,7 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col class="d-flex justify-content-end">
+      <b-col class="text-right">
         <b-button class="m-3" type="submit" variant="success">
           {{ isUpdate ? "Editar servicio" : "Asociar servicio" }}
         </b-button>
@@ -199,6 +199,7 @@ export default {
     const { rut_company, company_id, service_types, companies } = this.$props;
     const truthty = this.$truthty;
     return {
+      send:false,
       service: {
         company_id: company_id,
         branch_office_id: "",
@@ -308,6 +309,7 @@ export default {
     },
     submit(e) {
       e.preventDefault();
+      this.send = true;
       if (this.isUpdate) {
         const url = `${window.location.origin}/services/edit`;
         axios
@@ -319,12 +321,15 @@ export default {
               const { data } = response;
               this.errors = data;
             } else {
+              this.send = false;
               this.errors.push(
                 "Ha ocurrido un error procesando la operación. Inténtelo más tarde."
               );
             }
           })
           .catch((err) => {
+            this.send = false;
+
             this.errors.push(
               "Ha ocurrido un error procesando la operación. Inténtelo más tarde."
             );
@@ -340,12 +345,16 @@ export default {
               const { data } = response;
               this.errors = data;
             } else {
+              this.send = false;
+
               this.errors.push(
                 "Ha ocurrido un error procesando la operación. Inténtelo más tarde."
               );
             }
           })
           .catch((err) => {
+            this.send = false;
+
             this.errors.push(
               "Ha ocurrido un error procesando la operación. Inténtelo más tarde."
             );

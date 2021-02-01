@@ -7,7 +7,7 @@
         <h3>Agregar documentos base de empleado</h3>
 </div>
 
-<h5 class="text-secondary">Para el servicio
+<h5 class="text-secondary text-justify">Para el servicio
   <strong>{{ $service->description }}</strong> entregado por la empresa contratista
   <strong>{{ $service->company->business_name }}</strong> para la sucursal
   <strong>{{ $service->branchOffice->name }}</strong> de la empresa principal

@@ -96,9 +96,9 @@
               v-if="auth.user_type_id == 1 || auth.company_id === scope.row.id"
               v-on:click="edit(scope.row.service.id, scope.row.id)"
               type="primary"
-              icon="el-icon-edit"
+              icon="el-icon-upload2"
               v-b-tooltip.hover
-              title="Editar"
+              title="Agregar documentos"
               circle
             ></el-button>
             <el-button

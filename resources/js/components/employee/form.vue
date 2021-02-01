@@ -454,7 +454,7 @@
         </b-col>
       </b-row> -->
       <b-row>
-        <b-col class="d-flex justify-content-end">
+        <b-col class="text-right">
           <b-button class="button-create" type="submit" variant="success">{{
             !this.$truthty(this.$props.employee) ? "Crear" : "Actualizar"
           }}</b-button>

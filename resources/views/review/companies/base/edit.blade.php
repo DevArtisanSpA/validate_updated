@@ -14,6 +14,9 @@
   <strong>{{ $service->branchOffice->company->business_name }}</strong>
 </!--> 
 @csrf
-<review-form :auth="{{ $auth }}" :service="{{$service}}" :documents=" {{$documents}}" ></review-form>
+<review-form :auth="{{ $auth }}" 
+:service="{{$service}}" :documents=" {{$documents}}" 
+:required="{{$required}}"
+></review-form>
 </div>
 @endsection

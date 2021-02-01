@@ -14,18 +14,6 @@
         ref="multipleTable"
       >
         <!-- <el-table-column
-        v-if="this.$props.states.area == 0"
-        label="Empleado"
-        :sort-method="sortSecundario('surname')"
-        sortable
-        :filters="valuesFilterEmployee(tableData)"
-        :filter-method="filterEmployee"
-      >
-        <template slot-scope="props">{{
-          `${props.row.surname} ${props.row.second_surname}, ${props.row.name}`
-        }}</template>
-      </el-table-column> -->
-        <el-table-column
           v-if="auth.user_type_id == 1"
           prop="service.branch_office.company.business_name"
           label="Principal"
@@ -63,7 +51,7 @@
           sortable
           :sort-method="sortService"
           prop="service.description"
-        ></el-table-column>
+        ></el-table-column> -->
         <!-- <template slot-scope="props">
 {{`${props.row.service.description.toCamelCase()} tipo ${props.row.service.service_type.name}`}}
         </template> -->

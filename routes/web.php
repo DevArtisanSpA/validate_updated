@@ -62,11 +62,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('documents/companies/monthly/', function () {
         return redirect()->route('companyMonthly', ['monthYear' => Carbon::now()->format('Y-m')]);
     });
-    Route::get('documents/employees/base', [DocumentController::class, 'employeeBaseIndex']);
-    Route::get('documents/employees/monthly/{monthYear}', [DocumentController::class, 'employeeMonthlyIndex'])->name('employeeMonthly');
-    Route::get('documents/employees/monthly/', function () {
+    Route::get('services/{id_service}/documents/employees/base', [DocumentController::class, 'employeeBaseIndex']);
+    Route::get('services/{id_service}/documents/employees/monthly/{monthYear}', [DocumentController::class, 'employeeMonthlyIndex'])->name('employeeMonthly');
+    Route::get('services/{id_service}/documents/employees/monthly/', function () {
         return redirect()->route('employeeMonthly', ['monthYear' => Carbon::now()->format('Y-m')]);
     });
+    Route::get('services/documents/employees/base', [DocumentController::class, 'employeePreTable']);
+    Route::get('services/documents/employees/monthly/{monthYear}', [DocumentController::class, 'employeePreTable'])->name('docsReviewEmployeMonthly');
+    Route::get('services/documents/employees/monthly/', function(){
+        return redirect()->route('docsReviewEmployeMonthly', [
+            'monthYear' => Carbon::now()->format('Y-m')
+        ]);
+    });
+
     Route::get('services/{id_service}/documents/companies/{id}/base/edit', [DocumentController::class, 'createEdit']);
     Route::get('services/{id_service}/documents/companies/{id}/monthly/{monthYear}/edit', [DocumentController::class, 'createEdit'])->name('createEditCompanyMonthly');
     Route::get('services/{id_service}/documents/companies/{id}/monthly/edit', function ($id_service,$id) {
@@ -85,16 +93,20 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('documents/download/zip', [DocumentController::class, 'downloadZip']);
     Route::post('documents/delete', [DocumentController::class, 'destroy']);
 
-    Route::get('/review/employees/base', [ReviewController::class,'employeeBaseIndex']);
-    Route::get('/review/employees/monthly/', [ReviewController::class,'employeeMonthlyIndex'])->name('reviewEmployeeMonthly');
-    // Route::get('/review/employees/monthly', function () {
-    //     return redirect()->route('reviewEmployeeMonthly', ['monthYear' => Carbon::now()->format('Y-m')]);  
-    // });
-    Route::get('/review/companies/base', [ReviewController::class,'companyBaseIndex']);
-    Route::get('/review/companies/monthly/', [ReviewController::class,'companyMonthlyIndex'])->name('reviewCompanyMonthly');
-    // Route::get('/review/companies/monthly', function () {
-    //     return redirect()->route('reviewEmployeeMonthly', ['monthYear' => Carbon::now()->format('Y-m')]);  
-    // });
+    Route::get('review/employees/base', [ReviewController::class,'employeePreTable']);
+    Route::get('review/employees/monthly/{monthYear}', [ReviewController::class,'employeePreTable'])->name('reviewServiceEmployeeMonthly');
+    Route::get('review/employees/monthly/', function(){
+        return redirect()->route('reviewServiceEmployeeMonthly', [
+            'monthYear' => Carbon::now()->format('Y-m')
+        ]);
+    });
+    Route::get('review/{id_service}/employees/base', [ReviewController::class, 'employeeBaseIndex']);
+    Route::get('review/{id_service}/employees/monthly/{monthYear}', [ReviewController::class, 'employeeMonthlyIndex']);
+    // Route::get('services/review/employees/base', [DocumentController::class, 'employeePreTable']);
+    // Route::get('services/review/employees/monthly', [ReviewController::class, 'employeePreTable']);
+
+    Route::get('review/companies/base', [ReviewController::class,'companyBaseIndex']);
+    Route::get('review/companies/monthly', [ReviewController::class,'companyMonthlyIndex'])->name('reviewCompanyMonthly');
 
     Route::get('review/{id_service}/documents/companies/{id}/base', [ReviewController::class, 'edit']);
     Route::get('review/{id_service}/documents/companies/{id}/monthly/{monthYear}', [ReviewController::class, 'edit'])->name('reviewCompanyMonthly');
@@ -108,4 +120,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('review/{id_service}/documents/employees/{id}/monthly', function ($id_service,$id) {
         return redirect()->route('reviewEmployeeMonthly', [$id_service,$id, 'monthYear' => Carbon::now()->format('Y-m')]);
     });
+
+    Route::post('mail/documents/load',[DocumentController::class,'loadMail']);
+    Route::post('mail/documents/response',[ReviewController::class,'responseMail']);
 });

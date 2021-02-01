@@ -18,9 +18,11 @@ use Auth;
 use stdClass;
 use Illuminate\Http\Request;
 use App\Mail\CompanyAssociation;
+use App\Mail\ServiceAssociation;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ServiceController extends Controller
 {
@@ -44,8 +46,7 @@ class ServiceController extends Controller
                 'services' => $services,
                 'auth' => Auth::user()
             ]);
-        }
-        else {
+        } else {
             $myCompany = Company::find(Auth::user()->company_id);
             $pendingServices = $myCompany->services()->pending()->complete()->get();
             $activeServices = $myCompany->services()->active()->complete()->get();
@@ -102,7 +103,7 @@ class ServiceController extends Controller
     public function edit($id)
     {
         $service = Service::select([
-            'id', 'branch_office_id','service_type_id','company_id','description','active','start','finished'
+            'id', 'branch_office_id', 'service_type_id', 'company_id', 'description', 'active', 'start', 'finished'
         ])->with('branchOffice.company:id,business_name,rut')->find($id);
         $serviceCompany = Company::select(['id', 'rut', 'business_name'])->find($service->company_id);
         $serviceType = ServiceType::select(['id', 'name'])->find($service->service_type_id);
@@ -149,13 +150,16 @@ class ServiceController extends Controller
             }
             return response()->json($error_array, 201);
         } else {
-            $result = Service::create($request->all());
-            if ($result) {
-                return response()->json(["message" => "Servicio creado exitosamente", "service" => $result], 200);
-            }
-            else {
-                return response()->json(["message" => "Error al intentar crear servicio. Por favor intente nuevamente"], 400);
-            }
+            return DB::transaction(function () use ($request) {
+                $result = Service::create($request->all());
+                if ($result) {
+                    Mail::to([Constants::getAdmin()->email, $result->company->contact_email, $result->branchOffice->company->contact_email])
+                        ->send(new ServiceAssociation($result));
+                    return response()->json(["message" => "Servicio creado exitosamente", "service" => $result], 200);
+                } else {
+                    return response()->json(["message" => "Error al intentar crear servicio. Por favor intente nuevamente"], 400);
+                }
+            });
         }
         return true;
     }
@@ -190,8 +194,7 @@ class ServiceController extends Controller
             $result = $service->update($request->all());
             if ($result) {
                 return response()->json(["message" => "Servicio editado exitosamente", "service" => $result], 200);
-            }
-            else {
+            } else {
                 return response()->json(["message" => "Error al intentar editar servicio.Por favor intente nuevamente"], 400);
             }
         }
