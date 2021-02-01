@@ -252,7 +252,7 @@ export default {
         ? urlBack + "employees/"
         : (urlBack = urlBack + "companies/");
       urlBack = this.$truthty(this.monthly)
-        ? urlBack + "monthly"
+        ? urlBack + "monthly/"+this.service.month_year_registry
         : (urlBack = urlBack + "base");
       promises.push(
         axios.post(url, {
