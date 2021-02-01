@@ -218,7 +218,7 @@ class ReviewController extends Controller
       'auth' => $authData,
       'employees' => collect($employees2),
       'service' => $service,
-      // 'monthYear' => $monthYear
+      'monthYear' => $monthYear
     ]);
   }
   public function edit($id_service, $id, $monthYear = null)
@@ -231,8 +231,10 @@ class ReviewController extends Controller
       ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
         $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
         if (!is_null($monthYear)) {
-          $monthYear = explode("-",  $monthYear);
-          $Q = $Q->whereMonth('start', $monthYear[1])->whereYear('start', $monthYear[0]);
+          // $monthYear = explode("-",  $monthYear);
+          $Q=$Q->where('month_year_registry',$monthYear);
+          // $Q = $Q->whereMonth('start', $monthYear[1])->whereYear('start', $monthYear[0]);
+          // $Q = $Q->whereMonth('finish', $monthYear[1])->whereYear('finish', $monthYear[0]);
         }
         return $Q;
       });
@@ -282,7 +284,7 @@ class ReviewController extends Controller
           return $query->with(['documents' =>
           function ($query) use ($period, $temp) {
             return $query->where(function ($query) {
-              return  $query->where('validation_state_id', 3)->whereOr('validation_state_id', 4);
+              return  $query->where('validation_state_id', 3)->orWhere('validation_state_id', 4);
             })
               ->where('month_year_registry', $period)->wherehas('type', function ($query) use ($temp) {
                 return $query->where('temporality_id', $temp);
@@ -291,7 +293,7 @@ class ReviewController extends Controller
             ->wherehas('documents', function ($query) use ($period, $temp) {
               return $query
                 ->where(function ($query) {
-                  return  $query->where('validation_state_id', 3)->whereOr('validation_state_id', 4);
+                  return  $query->where('validation_state_id', 3)->orWhere('validation_state_id', 4);
                 })
                 ->where('month_year_registry', $period)
                 ->wherehas('type', function ($query) use ($temp) {

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="col-md-9">
-<a href="javascript:history.back()"><span>
+<a href="{{ url('/review/employees/base')}}"><span>
       << Volver</span> </a>
     <div class="d-flex justify-content-between">
         <h3>Revisión de documentos base de empleados</h3>
