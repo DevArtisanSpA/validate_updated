@@ -166,9 +166,8 @@
                   @endforeach
                 </tbody>
               </table>
-              @endforeach
             </ul>
-          </li>
+          </li>@endforeach
         </ul>
         </p>
 
