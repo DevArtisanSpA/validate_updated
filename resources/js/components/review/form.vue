@@ -244,6 +244,7 @@ export default {
       return false;
     },
     submit() {
+      console.log(this.service.month_year_registry);
       let url = `${window.location.origin}/documents/update`;
       let promises = [];
       this.send = true;
