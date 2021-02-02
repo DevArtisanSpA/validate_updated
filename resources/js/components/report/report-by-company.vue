@@ -24,12 +24,12 @@
       <b-row>
         <b-col md="6" class="my-3">
           <div class="card">
-            <h5 class="card-header">Documentación empresa fijo</h5>
+            <h5 class="card-header">Documentación empresa base</h5>
             <div class="card-body">
               <div v-if="percent_company > 0">
                 <pie-chart 
                   :data="data.principal_data" 
-                  :title="['% Documentación empresa fijo']" 
+                  :title="['% Documentación empresa base']" 
                   :styles="this.chartStyle"
                   :height="200"
                 ></pie-chart>
@@ -42,12 +42,12 @@
         </b-col>
         <b-col md="6" class="my-3">
           <div class="card">
-            <h5 class="card-header">Documentación empleados fijo</h5>
+            <h5 class="card-header">Documentación empleados base</h5>
             <div class="card-body">
               <div v-if="percent_employee > 0">
                 <pie-chart 
                   :data="data.employee_data" 
-                  :title="['% Documentación empresa fijo']" 
+                  :title="['% Documentación empresa base']" 
                   :styles="this.chartStyle"
                   :height="200"
                 ></pie-chart>

@@ -192,6 +192,9 @@ Vue.component(
   "pie-chart",
   require("./components/report/pie-chart.vue").default
 );
+Vue.component("generate-certificate",
+ require("./components/report/generate.vue").default)
+
 
 //Branch_offices
 Vue.component(

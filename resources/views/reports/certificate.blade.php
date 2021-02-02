@@ -3,5 +3,5 @@
 @section('content')
     <generate-certificate
         :data="{{$data}}"
-    ></-table>
+    ></generate-certificate>
 @endsection

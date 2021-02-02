@@ -55,22 +55,23 @@ class ReportController extends Controller
             $companies = $companies->merge($child_companies);
         }
         $company = Company::find($id);
-        $contractors=$company->services;
+        $contractors = $company->services;
         $contractors_data = [];
         $principal_data = [];
         $employee_data = [];
-        foreach($contractors as $child){
+        foreach ($contractors as $child) {
+            \Debugbar::info($child);
             $contractors_data[] = [
-                "business_name" => $child->business_name,
-                "resume" => Employee::getResumeByCompany($child->id)
+                "business_name" => $child->company->business_name,
+                "resume" => Employee::getResumeByCompany($child->company_id)
             ];
             $principal_data[] = [
-                "business_name" => $child->business_name,
-                "resume" => Document::getDocCompanyById($child->id)
+                "business_name" => $child->company->business_name,
+                "resume" => Document::getDocCompanyById($child->company_id)
             ];
             $employee_data[] = [
-                "business_name" => $child->business_name,
-                "resume" => Document::getDocEmployeeById($child->id)
+                "business_name" => $child->company->business_name,
+                "resume" => Document::getDocEmployeeById($child->company_id)
             ];
         }
 
@@ -83,6 +84,5 @@ class ReportController extends Controller
                 'selected' => $id
             ])
         ]);
-
     }
 }

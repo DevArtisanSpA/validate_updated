@@ -49,7 +49,44 @@ class Document extends Model
             // "start" => ['required_if:month_year_registry,==,null', 'date'],
             // "month_year_registry"=> ['required_if:start,==,null','date_format:Y-M'],
             "validation_state_id" => ['required', 'integer'],
-          ]);
-        
+        ]);
+    }
+    public static function getDocCompanyById($id_company)
+    {
+        $list = Document::wherehas('service.company', function ($query) use ($id_company) {
+            return $query->where('id', $id_company);
+        })->wherehas('type', function ($query) {
+            return $query->where('temporality_id', 1);
+        })->select('validation_state_id')->get();
+        $total = $list->count();
+        $complete = $list->filter(function ($value, $key) {
+            return $value->validation_state_id == 3;
+        })->count();
+        if ($complete == 0) {
+            $percent = round(0, 1);
+        } else {
+            $percent = round(($complete / $total) * 100, 1);
+        }
+        return ['total' => $total, 'complete' => $complete, 'percent' => $percent];
+    }
+    public static function getDocEmployeeById($id_company)
+    {
+        $list = Document::wherehas('employee')
+            ->wherehas('service.company', function ($query) use ($id_company) {
+                return $query->where('id', $id_company);
+            })
+            ->wherehas('type', function ($query) {
+                return $query->where('temporality_id', 1);
+            })->select('validation_state_id')->get();
+        $total = $list->count();
+        $complete = $list->filter(function ($value, $key) {
+            return $value->validation_state_id == 3;
+        })->count();
+        if ($complete == 0) {
+            $percent = round(0, 1);
+        } else {
+            $percent = round(($complete / $total) * 100, 1);
+        }
+        return ['total' => $total, 'complete' => $complete, 'percent' => $percent];
     }
 }

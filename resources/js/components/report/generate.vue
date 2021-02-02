@@ -5,7 +5,7 @@
         <b-form-select 
           v-model="selected" 
           class="w-25"
-          v-on:change="search($event)"
+          @change="search($event)"
         >
           <!-- This slot appears above the options from 'options' prop -->
           <template v-slot:first>
@@ -37,7 +37,9 @@ export default {
   },
   methods: {
     init() {
-    },
+    },search(value){
+      console.log(value);
+    }
   },
   mounted() {
     this.init();

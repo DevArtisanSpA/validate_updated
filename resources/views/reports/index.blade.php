@@ -3,5 +3,5 @@
 @section('content')
     <report-by-company 
         :data="{{$data}}"
-    ></-table>
+    ></report-by-company>
 @endsection
