@@ -206,7 +206,21 @@ Vue.component(
   require("./components/branchOffice/branch-office-new-edit.vue").default
 );
 
-
+//
+Vue.component(
+  "certificate-fixed",
+  require("./components/report/certificate-fixed.vue").default
+);Vue.component(
+  "certificate-eventual",
+  require("./components/report/certificate-eventual.vue").default
+);
+Vue.component(
+  "report-fixed",
+  require("./components/report/report-fixed.vue").default
+);Vue.component(
+  "report-eventual",
+  require("./components/report/report-eventual.vue").default
+);
 
 const app = new Vue({
   el: "#app",

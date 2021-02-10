@@ -9,6 +9,7 @@ use App\Http\Controllers\BranchOfficeController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ReviewController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
@@ -126,6 +127,15 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('mail/documents/response', [ReviewController::class, 'responseMail']);
 
     Route::get('/reports', [ReportController::class, 'index']);
-    Route::get('/certificate', [CertificateController::class, 'index']);
+    // Route::get('/certificate', [CertificateController::class, 'index']);
     Route::get('/reports/{id}', [ReportController::class, 'show']);
+
+    Route::get('/pdf/certificate/fixed', [PdfController::class, 'companyCertificate']);
+    Route::post('/pdf/download/certificate/fixed', [PdfController::class, 'companyCertificateDownload']);
+    Route::get('/pdf/certificate/eventual', [PdfController::class, 'companyCertificateEventual']);
+    Route::post('/pdf/download/certificate/eventual', [PdfController::class, 'companyCertificateEventualDownload']);
+    Route::get('/pdf/report/fixed', [PdfController::class, 'companyReport']);
+    Route::post('/pdf/download/report/fixed', [PdfController::class, 'companyReportDownload']);
+    Route::get('/pdf/report/eventual', [PdfController::class, 'companyReportEventual']);
+    Route::post('/pdf/download/report/eventual', [PdfController::class, 'companyReportEventualDownload']);
 });

@@ -7,7 +7,7 @@ use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Document;
 use App\Helper\Functions;
-
+use App\Models\Service;
 use Auth;
 
 class ReportController extends Controller
@@ -55,23 +55,26 @@ class ReportController extends Controller
             $companies = $companies->merge($child_companies);
         }
         $company = Company::find($id);
-        $contractors = $company->services;
+        $contractors = Service::wherehas('branchOffice.company', function ($query) use ($id) {
+                return $query->whereId($id);
+            })
+            ->with('company:id,business_name')
+            ->get();
         $contractors_data = [];
         $principal_data = [];
         $employee_data = [];
         foreach ($contractors as $child) {
-            \Debugbar::info($child);
             $contractors_data[] = [
-                "business_name" => $child->company->business_name,
-                "resume" => Employee::getResumeByCompany($child->company_id)
+                "business_name" => $child->description,
+                "resume" => Employee::getResumeByCompany($child->id)
             ];
             $principal_data[] = [
-                "business_name" => $child->company->business_name,
-                "resume" => Document::getDocCompanyById($child->company_id)
+                "business_name" => $child->description,
+                "resume" => Document::getDocCompanyById($child->id)
             ];
             $employee_data[] = [
-                "business_name" => $child->company->business_name,
-                "resume" => Document::getDocEmployeeById($child->company_id)
+                "business_name" => $child->description,
+                "resume" => Document::getDocEmployeeById($child->id)
             ];
         }
 

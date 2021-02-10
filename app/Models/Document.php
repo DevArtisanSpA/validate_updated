@@ -51,14 +51,19 @@ class Document extends Model
             "validation_state_id" => ['required', 'integer'],
         ]);
     }
-    public static function getDocCompanyById($id_company)
+    public static function getDocCompanyById($service_id)
     {
-        $list = Document::wherehas('service.company', function ($query) use ($id_company) {
-            return $query->where('id', $id_company);
+        \Debugbar::info($service_id);
+        $list = Document::wherehas('service', function ($query) use ($service_id) {
+            return $query->where('id', $service_id);
         })->wherehas('type', function ($query) {
-            return $query->where('temporality_id', 1);
-        })->select('validation_state_id')->get();
-        $total = $list->count();
+            return $query->where('temporality_id', 1)->where('area_id', 2)->where('optional', false);
+        })->select('validation_state_id', 'document_type_id')->distinct()->get();
+        $service = Service::find($service_id);
+        $documentType = DocumentType::where('area_id', 2)->where('temporality_id', 1)
+            ->where('optional', false)->where('service_type_id', $service->service_type_id)->get();
+        \Debugbar::info($list, $documentType);
+        $total = $documentType->count();
         $complete = $list->filter(function ($value, $key) {
             return $value->validation_state_id == 3;
         })->count();
@@ -69,16 +74,20 @@ class Document extends Model
         }
         return ['total' => $total, 'complete' => $complete, 'percent' => $percent];
     }
-    public static function getDocEmployeeById($id_company)
+    public static function getDocEmployeeById($service_id)
     {
         $list = Document::wherehas('employee')
-            ->wherehas('service.company', function ($query) use ($id_company) {
-                return $query->where('id', $id_company);
+            ->wherehas('service', function ($query) use ($service_id) {
+                return $query->where('id', $service_id);
             })
             ->wherehas('type', function ($query) {
-                return $query->where('temporality_id', 1);
+                return $query->where('temporality_id', 1)->where('area_id', 1)->where('optional', false);
             })->select('validation_state_id')->get();
-        $total = $list->count();
+        $service = Service::find($service_id);
+        $documentType = DocumentType::where('area_id', 1)->where('temporality_id', 1)
+            ->where('optional', false)->where('service_type_id', $service->service_type_id)->get();
+
+        $total = $documentType->count();
         $complete = $list->filter(function ($value, $key) {
             return $value->validation_state_id == 3;
         })->count();

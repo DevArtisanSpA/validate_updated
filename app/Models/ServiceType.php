@@ -13,11 +13,27 @@ class ServiceType extends Model
         "name"
     ];
 
-    public function services() {
+    public function services()
+    {
         return $this->hasMany(Service::class);
     }
 
-    public function documents() {
+    public function documents()
+    {
         return $this->hasMany(ServiceType::class);
+    }
+    public function requiredCompanyBase()
+    {
+        return $this->hasMany(DocumentType::class)
+            ->where('optional', false)
+            ->where('area_id', 2)
+            ->where('temporality_id', 1);
+    }
+    public function requiredEmployeeBase()
+    {
+        return $this->hasMany(DocumentType::class)
+            ->where('optional', false)
+            ->where('area_id', 1)
+            ->where('temporality_id', 1);
     }
 }

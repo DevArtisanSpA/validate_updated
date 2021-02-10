@@ -104,21 +104,16 @@ class Employee extends Model
     ]);
   }
 
-  public static function getResumeByCompany($id)
+  public static function getResumeByCompany($service_id)
   {
-    // wherehas('documents.service.branchOffice.company')
-    $total = Employee::wherehas('services', function ($query) use ($id) {
-      return $query
-        // ->where('finished', null)
-        ->wherehas('company', function ($query) use ($id) {
-          return $query->where('id', $id);
-        });
+    $total = Employee::wherehas('services', function ($query) use ($service_id) {
+      return $query->where('services.id', $service_id);
     })->get();
     $men = $total->where("gender", 1)->count();
     $women = $total->where("gender", 2)->count();
     $disability = $total->where("disability", "!=", NULL)->count();
     $ages = $total->map(function ($person) {
-      return ['age' => Carbon::parse($person->date_birth)->age];
+      return ['age' => Carbon::parse($person->birthday)->age];
     });
     $younger = $ages->whereBetween('age', [18, 40])->count();
     $older = $ages->whereBetween('age', [40, 80])->count();
