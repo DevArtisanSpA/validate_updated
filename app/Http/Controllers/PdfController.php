@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use PDF;
 
@@ -334,7 +335,7 @@ class PdfController extends Controller
         $form = (object) $input['form'];
         $principal = (object) $input['principal'];
         $contractor = (object) $input['contractor'];
-        $document = (object) $input['document'];
+        $document = $input['document'];
         view()->share('form', $form);
         view()->share('expirationDate', $input['expirationDate']);
         view()->share('today', $input['today']);
@@ -346,8 +347,9 @@ class PdfController extends Controller
         if (!file_exists(storage_path('app\\uploads'))) {
             File::makeDirectory(storage_path('app\\uploads'));
         }
-        $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
-        return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
+        // $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
+        return $this->saveAndDownload($document,$pdf);
+        // return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
     }
     public function companyCertificateEventualDownload(Request $request)
     {
@@ -356,6 +358,7 @@ class PdfController extends Controller
         $principal = (object) $input['principal'];
         $contractor = (object) $input['contractor'];
         $employees = (object) $input['employees'];
+        $document = $input['document'];
         view()->share('expirationDate', $input['expirationDate']);
         view()->share('today', $input['today']);
         view()->share('folio', $input['folio']);
@@ -367,8 +370,10 @@ class PdfController extends Controller
             File::makeDirectory(storage_path('app\\uploads'));
         }
 
-        $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
-        return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
+        return $this->saveAndDownload($document,$pdf);
+
+        // $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
+        // return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
     }
     public function companyReportDownload(Request $request)
     {
@@ -378,6 +383,7 @@ class PdfController extends Controller
         $principal = (object) $input['principal'];
         $contractor = (object) $input['contractor'];
         $employees = (object) $input['employees'];
+        $document = $input['document'];
         view()->share('form', $form);
         view()->share('expirationDate', $input['expirationDate']);
         view()->share('today', $input['today']);
@@ -393,8 +399,10 @@ class PdfController extends Controller
         if (!file_exists(storage_path('app\\uploads'))) {
             File::makeDirectory(storage_path('app\\uploads'));
         }
-        $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
-        return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
+        return $this->saveAndDownload($document,$pdf);
+
+        // $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
+        // return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
     }
     public function companyReportEventualDownload(Request $request)
     {
@@ -404,6 +412,7 @@ class PdfController extends Controller
         $principal = (object) $input['principal'];
         $contractor = (object) $input['contractor'];
         $employees = (object) $input['employees'];
+        $document = $input['document'];
         view()->share('expirationDate', $input['expirationDate']);
         view()->share('today', $input['today']);
         view()->share('folio', $input['folio']);
@@ -416,8 +425,24 @@ class PdfController extends Controller
         if (!file_exists(storage_path('app\\uploads'))) {
             File::makeDirectory(storage_path('app\\uploads'));
         }
+        return $this->saveAndDownload($document,$pdf);
 
-        $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
-        return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
+        // $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
+        // return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
+    }
+    public function saveAndDownload($document,$pdf){
+        $name = Carbon::now('America/Santiago')->timestamp;
+        $name = 'uploads/' . $name . '.pdf';
+
+        if (isset($document["path_data"])) {
+            array_push($document, ['path_data' => $name]);
+        } else {
+            $document["path_data"] = $name;
+        }
+        $documentCreate = Document::create($document);
+        \Debugbar::info($documentCreate);
+        Storage::disk('s3')->put($name, $pdf->output());
+
+        return Storage::disk('s3')->download($name);
     }
 }
