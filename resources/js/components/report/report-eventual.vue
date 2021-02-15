@@ -170,12 +170,13 @@
               <input
                 class="text-center w-100"
                 v-model="form.contract.stateValidity"
+                placeholder="Estado"
               />
             </td>
             <td>
               <input
                 class="text-center w-100"
-                v-model="form.contract.stateSpecific"
+                v-model="form.contract.stateSpecific" placeholder="Específico"
               />
             </td>
             <td>
@@ -201,12 +202,13 @@
               <input
                 class="text-center w-100"
                 v-model="form.affiliation.stateValidity"
+                placeholder="Estado"
               />
             </td>
             <td>
               <input
                 class="text-center w-100"
-                v-model="form.affiliation.stateSpecific"
+                v-model="form.affiliation.stateSpecific" placeholder="Específico"
               />
             </td>
             <td>
@@ -232,12 +234,13 @@
               <input
                 class="text-center w-100"
                 v-model="form.policy.stateValidity"
+                placeholder="Estado"
               />
             </td>
             <td>
               <input
                 class="text-center w-100"
-                v-model="form.policy.stateSpecific"
+                v-model="form.policy.stateSpecific" placeholder="Específico"
               />
             </td>
             <td>
@@ -260,12 +263,13 @@
               <input
                 class="text-center w-100"
                 v-model="form.regulation.stateValidity"
+                placeholder="Estado"
               />
             </td>
             <td>
               <input
                 class="text-center w-100"
-                v-model="form.regulation.stateSpecific"
+                v-model="form.regulation.stateSpecific" placeholder="Específico"
               />
             </td>
             <td>
@@ -291,12 +295,13 @@
               <input
                 class="text-center w-100"
                 v-model="form.emergency.stateValidity"
+                placeholder="Estado"
               />
             </td>
             <td>
               <input
                 class="text-center w-100"
-                v-model="form.emergency.stateSpecific"
+                v-model="form.emergency.stateSpecific" placeholder="Específico"
               />
             </td>
             <td>
@@ -322,12 +327,13 @@
               <input
                 class="text-center w-100"
                 v-model="form.training.stateValidity"
+                placeholder="Estado"
               />
             </td>
             <td>
               <input
                 class="text-center w-100"
-                v-model="form.training.stateSpecific"
+                v-model="form.training.stateSpecific" placeholder="Específico"
               />
             </td>
             <td>
@@ -382,9 +388,13 @@
             </td>
             <td>{{ employee.job_type.name }}</td>
             <td>{{ employee.identification_id }}</td>
-            <td><input class="w-100" v-model="employee.start" /></td>
-            <td><input class="w-100" v-model="employee.finish" /></td>
-            <td><input class="w-100" v-model="employee.ci" /></td>
+            <td>
+              <input class="w-100 text-center" v-model="employee.start" />
+            </td>
+            <td>
+              <input class="w-100 text-center" v-model="employee.finish" />
+            </td>
+            <td><input class="w-100 text-center" v-model="employee.ci" /></td>
           </tr>
         </tbody>
       </table>
@@ -411,10 +421,14 @@
               {{ employee.name }} {{ employee.surname }}
               {{ employee.second_surname }}
             </td>
-            <td><input class="w-100" v-model="employee.riohs" /></td>
-            <td><input class="w-100" v-model="employee.epp" /></td>
-            <td><input class="w-100" v-model="employee.das" /></td>
-            <td><input class="w-100" v-model="employee.other" /></td>
+            <td>
+              <input class="w-100 text-center" placeholder="RIOHS" v-model="employee.riohs" />
+            </td>
+            <td><input class="w-100 text-center" placeholder="EPP" v-model="employee.epp" /></td>
+            <td><input class="w-100 text-center" placeholder="DAS" v-model="employee.das" /></td>
+            <td>
+              <input class="w-100 text-center" placeholder="Otros" v-model="employee.other" />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -449,12 +463,12 @@
               {{ employee.name }} {{ employee.surname }}
               {{ employee.second_surname }}
             </td>
-            <td><input class="w-100" v-model="employee.basicState" /></td>
-            <td><input class="w-100" v-model="employee.basicValidity" /></td>
-            <td><input class="w-100" v-model="employee.confinedState" /></td>
-            <td><input class="w-100" v-model="employee.confinedValidity" /></td>
-            <td><input class="w-100" v-model="employee.heightState" /></td>
-            <td><input class="w-100" v-model="employee.heightValidity" /></td>
+            <td><input class="w-100 text-center" placeholder="Estado" v-model="employee.basicState" /></td>
+            <td><input class="w-100 text-center" placeholder="Fecha vigencia" v-model="employee.basicValidity" /></td>
+            <td><input class="w-100 text-center" placeholder="Estado" v-model="employee.confinedState" /></td>
+            <td><input class="w-100 text-center" placeholder="Fecha vigencia" v-model="employee.confinedValidity" /></td>
+            <td><input class="w-100 text-center" placeholder="Estado" v-model="employee.heightState" /></td>
+            <td><input class="w-100 text-center" placeholder="Fecha vigencia" v-model="employee.heightValidity" /></td>
           </tr>
         </tbody>
       </table>
@@ -485,9 +499,9 @@
               {{ employee.name }} {{ employee.surname }}
               {{ employee.second_surname }}
             </td>
-            <td><input class="w-100" v-model="employee.licenseState" /></td>
-            <td><input class="w-100" v-model="employee.licenseValidity" /></td>
-            <td><input class="w-100" v-model="employee.licenseOther" /></td>
+            <td><input class="w-100 text-center" placeholder="Estado" v-model="employee.licenseState" /></td>
+            <td><input class="w-100 text-center" placeholder="Fecha vigencia" v-model="employee.licenseValidity" /></td>
+            <td><input class="w-100 text-center" placeholder="Otros" v-model="employee.licenseOther" /></td>
           </tr>
         </tbody>
       </table>
@@ -534,31 +548,31 @@
           <tr>
             <td>F30</td>
             <td>
-              <input class="text-center w-100" v-model="form.F30.state" />
+              <input class="text-center w-100" placeholder="Estado" v-model="form.F30.state" />
             </td>
             <td>AL</td>
             <td>
-              <input class="text-right w-100" v-model="form.F30.obs" />
+              <input class="w-100" placeholder="Observaciones" v-model="form.F30.obs" />
             </td>
           </tr>
           <tr>
             <td>CERTIFICADO SINIESTRALIDAD</td>
             <td>
-              <input class="text-center w-100" v-model="form.accident.state" />
+              <input class="text-center w-100" placeholder="Estado" v-model="form.accident.state" />
             </td>
             <td>AL</td>
             <td>
-              <input class="text-right w-100" v-model="form.accident.obs" />
+              <input class="w-100" placeholder="Observaciones" v-model="form.accident.obs" />
             </td>
           </tr>
           <tr>
             <td>CONSULTA DE MULTAS DT</td>
             <td>
-              <input class="text-center w-100" v-model="form.query.state" />
+              <input class="text-center w-100" placeholder="Estado" v-model="form.query.state" />
             </td>
             <td>AL</td>
             <td>
-              <input class="text-right w-100" v-model="form.query.obs" />
+              <input class="w-100" placeholder="Observaciones" v-model="form.query.obs" />
             </td>
           </tr>
         </tbody>
@@ -586,10 +600,10 @@
               {{ employee.name }} {{ employee.surname }}
               {{ employee.second_surname }}
             </td>
-            <td><input class="w-100" v-model="employee.quotationAmount" /></td>
-            <td><input class="w-100" v-model="employee.quotationPeriod" /></td>
-            <td><input class="w-100" v-model="employee.quotationState" /></td>
-            <td><input class="w-100" v-model="employee.quotationObs" /></td>
+            <td><input class="w-100 text-center" placeholder="Monto" v-model="employee.quotationAmount" /></td>
+            <td><input class="w-100 text-center" placeholder="Periodo" v-model="employee.quotationPeriod" /></td>
+            <td><input class="w-100 text-center"  placeholder="Estado" v-model="employee.quotationState" /></td>
+            <td><input class="w-100" placeholder="Observaciones" v-model="employee.quotationObs" /></td>
           </tr>
         </tbody>
       </table>
@@ -646,13 +660,57 @@ export default {
       let k = moment().format("MMM-DD");
       let employees = [];
       this.data.employees.map((employee) => {
-        employee.riohs = "";
-        employee.epp = "";
-        employee.das = "";
+        let contract = employee.documents.find((x) => {
+          return x.type.name == "Contrato de Trabajo";
+        });
+        let ci = employee.documents.find((x) => {
+          return x.type.name == "Cédula de Identidad";
+        });
+        let epp = employee.documents.find((x) => {
+          return x.type.name == "Recepción de EPP";
+        });
+        let das = employee.documents.find((x) => {
+          return x.type.name == "DAS/ODIS/Políticas";
+        });
+        let riohs = employee.documents.find((x) => {
+          return x.type.name == "Toma de Conocimiento Reglamento Interno";
+        });
+        employee.riohs =
+          this.$truthty(riohs) && this.$truthty(riohs.finish)
+            ? moment().diff(ci.finish, "days") < 0
+              ? "vigente"
+              : "caducado"
+            : this.$truthty(riohs.start)
+            ? "del " + riohs.start
+            : "";
+        employee.epp =
+          this.$truthty(epp) && this.$truthty(epp.finish)
+            ? moment().diff(ci.finish, "days") < 0
+              ? "vigente"
+              : "caducado"
+            : this.$truthty(epp.start)
+            ? "del " + epp.start
+            : "";
+        employee.das =
+          this.$truthty(das) && this.$truthty(das.finish)
+            ? moment().diff(ci.finish, "days") < 0
+              ? "vigente"
+              : "caducado"
+            : this.$truthty(das.start)
+            ? "del " + das.start
+            : "";
         employee.other = "";
-        employee.ci = "";
-        employee.start = "";
-        employee.finish = "";
+        employee.ci = this.$truthty(ci)
+          ? moment().diff(ci.finish, "days") < 0
+            ? "vigente"
+            : "caducado"
+          : "";
+        employee.start = this.$truthty(contract) ? contract.start : "";
+        employee.finish = this.$truthty(contract)
+          ? this.$truthty(contract.finish)
+            ? contract.finish
+            : "Indefinido"
+          : "";
         employee.basicState = "";
         employee.basicValidity = "";
         employee.confinedState = "";
@@ -678,48 +736,59 @@ export default {
           },
           employees,
           contract: {
-            stateValidity:  this.$truthty(this.data.monthly.comercialContract)
-            ? (moment().diff(this.data.monthly.comercialContract.finish,'days')<0)?'vigente':'caducado'
-            : "",
+            stateValidity: this.$truthty(this.data.monthly.comercialContract)
+              ? moment().diff(
+                  this.data.monthly.comercialContract.finish,
+                  "days"
+                ) < 0
+                ? "vigente"
+                : "caducado"
+              : "",
             stateSpecific: "",
             stateObs: "",
             obs: "Del",
             obsFecha: this.$truthty(this.data.monthly.comercialContract)
-            ? this.data.monthly.comercialContract.start
-            : "",
+              ? this.data.monthly.comercialContract.start
+              : "",
           },
           affiliation: {
             stateValidity: this.$truthty(this.data.monthly.affiliation)
-            ? (moment().diff(this.data.monthly.affiliation.finish,'days')<0)?'vigente':'caducado'
-            : "",
+              ? moment().diff(this.data.monthly.affiliation.finish, "days") < 0
+                ? "vigente"
+                : "caducado"
+              : "",
             stateSpecific: "",
             stateObs: "",
             obs: "Del",
             obsFecha: this.$truthty(this.data.monthly.affiliation)
-            ? this.data.monthly.affiliation.start
-            : "",
+              ? this.data.monthly.affiliation.start
+              : "",
           },
           policy: {
             stateValidity: this.$truthty(this.data.monthly.politics)
-            ? (moment().diff(this.data.monthly.politics.finish,'days')<0)?'vigente':'caducado'
-            : "",
+              ? moment().diff(this.data.monthly.politics.finish, "days") < 0
+                ? "vigente"
+                : "caducado"
+              : "",
             stateSpecific: "",
             stateObs: "",
             obs: "Del",
             obsFecha: this.$truthty(this.data.monthly.politics)
-            ? this.data.monthly.politics.start
-            : "",
+              ? this.data.monthly.politics.start
+              : "",
           },
           regulation: {
             stateValidity: this.$truthty(this.data.monthly.regulation)
-            ? (moment().diff(this.data.monthly.regulation.finish,'days')<0)?'vigente':'caducado'
-            : "",
+              ? moment().diff(this.data.monthly.regulation.finish, "days") < 0
+                ? "vigente"
+                : "caducado"
+              : "",
             stateSpecific: "",
             stateObs: "",
             obs: "Del",
             obsFecha: this.$truthty(this.data.monthly.regulation)
-            ? this.data.monthly.regulation.start
-            : "",
+              ? this.data.monthly.regulation.start
+              : "",
           },
           emergency: {
             stateValidity: "",
@@ -754,7 +823,7 @@ export default {
         url: `${window.location.origin}/pdf/download/report/eventual`,
         method: "POST",
         data: {
-          document:documentlocal,
+          document: documentlocal,
           contractor: this.data.contractor,
           principal: this.data.principal,
           expirationDate: this.data.expirationDate,
@@ -787,11 +856,13 @@ export default {
       this.form[name].splice(index, 1);
     },
   },
-  mounted() {},
+  mounted() {
+    console.log(this.data);
+  },
   watch: {
     data(newValue, oldValue) {
-      this.folio=newValue.folio;
-      this.form=this.init().form;
+      this.folio = newValue.folio;
+      this.form = this.init().form;
     },
   },
 };

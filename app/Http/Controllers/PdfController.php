@@ -74,9 +74,9 @@ class PdfController extends Controller
             'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-CF'
         ]);
         return response()->json([
-            'service'=>(object)[
-                'id'=>$id,
-                'type_id'=>$document_type->id,
+            'service' => (object)[
+                'id' => $id,
+                'type_id' => $document_type->id,
             ],
             'principal' => $principal,
             'contractor' => $contractor,
@@ -144,9 +144,9 @@ class PdfController extends Controller
             'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-CE'
         ]);
         return response()->json([
-            'service'=>(object)[
-                'id'=>$id,
-                'type_id'=>$document_type->id,
+            'service' => (object)[
+                'id' => $id,
+                'type_id' => $document_type->id,
             ],
             'principal' => $principal,
             'contractor' => $contractor,
@@ -168,7 +168,7 @@ class PdfController extends Controller
             'company.commercialBusiness',
         ])->first();
         $document_type = DocumentType::whereName('Informe Validate')
-        ->where('service_type_id', $service->service_type_id)->first();
+            ->where('service_type_id', $service->service_type_id)->first();
         $principal = clone ($service->branchOffice->company);
         unset($service->branchOffice->company);
         $principal->branchOffice = $service->branchOffice;
@@ -182,7 +182,7 @@ class PdfController extends Controller
         $day = $today->day;
         $dayName = $today->locale('es')->dayName;
         $expirationDate = $today->addDays(25)->format('d-m-Y');
-        $documents = Document::where('service_id', $id)->with(['type:id,name', 'employee','validationState:id,name'])->wherehas('type', function ($query) {
+        $documents = Document::where('service_id', $id)->with(['type:id,name', 'employee', 'validationState:id,name'])->wherehas('type', function ($query) {
             return $query->whereName('Traslado')
                 ->orWhere('name', 'Licencia Medica')
                 ->orWhere('name', 'Finiquito')
@@ -194,7 +194,7 @@ class PdfController extends Controller
             return $query->where('month_year_registry', $yearMonth)->orWhere(function ($query) use ($yearMonth) {
                 return  $query->where('month_year_registry', null)->whereDate('start', '>=', $yearMonth . '-01');
             });
-        })->orderBy('updated_at','desc')->get()->groupBy('type.name');
+        })->orderBy('updated_at', 'desc')->get()->groupBy('type.name');
         $accident = isset($documents["Cert. Siniestralidad"]) ? $documents['Cert. Siniestralidad'][0] : null;
         $accident->observations = str_replace("\\n", " : ", explode("</div>", $accident->observations)[0]);
         $F30 = isset($documents["Formulario F30"]) ? $documents['Formulario F30'][0] : null;
@@ -221,9 +221,9 @@ class PdfController extends Controller
         ]);
 
         return response()->json([
-            'service'=>(object)[
-                'id'=>$id,
-                'type_id'=>$document_type->id,
+            'service' => (object)[
+                'id' => $id,
+                'type_id' => $document_type->id,
             ],
             'principal' => $principal,
             'contractor' => $contractor,
@@ -232,7 +232,7 @@ class PdfController extends Controller
             'expirationDate' => $expirationDate,
             'resumen' => $resumen,
             'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-RF',
-            'monthly'=>(object)[
+            'monthly' => (object)[
                 'accident' => $accident,
                 'F30' => $F30
             ]
@@ -247,7 +247,7 @@ class PdfController extends Controller
         $service = Service::whereId($id)->complete()->with([
             'company.branchOffices.commune.region',
             'branchOffice.commune.region',
-            'employees.jobType',
+            // 'employees.jobType',
             'company.commercialBusiness',
         ])->first();
         $document_type = DocumentType::whereName('Informe Validate')->where('service_type_id', $service->service_type_id)->first();
@@ -257,77 +257,73 @@ class PdfController extends Controller
         $contractor = $service->company;
         $contractor->branchOffice = $service->company->branchOffices[0];
         unset($service->company->branchOffices);
-        $employees = $service->employees;
+        $employees = Employee::with([
+            'jobType',
+            'documents' => function ($query) use ($id) {
+                return  $query->where('service_id', $id)->with('type')->where(function ($query) {
+                    return $query->wherehas('type', function ($query) {
+                        return $query->whereName('Contrato de Trabajo')
+                            ->orWhere('name', 'Cédula de Identidad')
+                            ->orWhere('name', 'Recepción de EPP')
+                            ->orWhere('name', 'DAS/ODIS/Políticas')
+                            ->orWhere('name', 'Toma de Conocimiento Reglamento Interno')
+                            ->orderBy('updated_at', 'desc');
+                    })
+                        // ->orWhere(function ($query) {
+                        //     $yearMonth = Carbon::now('America/Santiago')->format('Y-m');
+                        //     return $query->wherehas('type', function ($query) {
+                        //         return $query->whereName('Formulario F30')
+                        //             ->orWhere('name', 'Cert. Siniestralidad');
+                        //     })->where('month_year_registry', $yearMonth)->orWhere(function ($query) use ($yearMonth) {
+                        //         return  $query->where('month_year_registry', null)->whereDate('start', '>=', $yearMonth . '-01');
+                        //     });
+                        // })
+                    ;
+                });
+            }
+        ])->wherehas('services', function ($query) use ($id) {
+            return $query->where('services.id', $id);
+        })->get();
         $today = Carbon::now('America/Santiago');
         $year = $today->year;
         $month = $today->locale('es')->monthName;
         $day = $today->day;
         $dayName = $today->locale('es')->dayName;
         $expirationDate = $today->addDays(25)->format('d-m-Y');
-        $documents = Document::where('service_id', $id)->with(['type:id,name', 'employee'])->wherehas('type', function ($query) {
-            return $query->whereName('Traslado')
-                ->orWhere('name', 'Licencia Medica')
-                ->orWhere('name', 'Finiquito')
-                ->orWhere('name', 'Contrato de Trabajo')
-                ->orWhere('name', 'Orden de Compra')
-                ->orWhere('name', 'Contrato Comercial')
-                ->orWhere('name', 'Afiliación Mutualidad')
-                ->orWhere('name', 'Reg.Interno de Orden, Higiene y Seguridad')
-                ->orWhere('name', 'Políticas de Seguridad')
-                ->orWhere('name', 'Contrato Comercial');
-        })->where(function ($query) {
-            $yearMonth = Carbon::now('America/Santiago')->format('Y-m');
-            return $query->where('month_year_registry', $yearMonth)->orWhere(function ($query) use ($yearMonth) {
-                return  $query->where('month_year_registry', null)->whereDate('start', '>=', $yearMonth . '-01');
-            });
-        })->get()->groupBy('type.name');
-        $documentsParticular=Document::where('service_id', $id)->with(['type:id,name'])->wherehas('type', function ($query) {
+        $documentsParticular = Document::where('service_id', $id)->with(['type:id,name'])->wherehas('type', function ($query) {
             return $query->whereName('Contrato Comercial')
                 ->orWhere('name', 'Orden de Compra')
                 ->orWhere('name', 'Afiliación Mutualidad')
                 ->orWhere('name', 'Reg.Interno de Orden, Higiene y Seguridad')
                 ->orWhere('name', 'Políticas de Seguridad');
-        })->orderBy('updated_at','desc')->get()->groupBy('type.name');
+        })->orderBy('updated_at', 'desc')->get()->groupBy('type.name');
         \Debugbar::info($documentsParticular);
         $comercialContract = isset($documentsParticular["Contrato Comercial"]) ? $documentsParticular['Contrato Comercial'][0] : null;
         $affiliation = isset($documentsParticular["Afiliación Mutualidad"]) ? $documentsParticular['Afiliación Mutualidad'][0] : null;
         $regulation = isset($documentsParticular["Reg.Interno de Orden, Higiene y Seguridad"]) ? $documentsParticular['Reg.Interno de Orden, Higiene y Seguridad'][0] : null;
         $politics = isset($documentsParticular["Políticas de Seguridad"]) ? $documentsParticular['Políticas de Seguridad'][0] : null;
-        
-        $settlements = isset($documents["Finiquito"]) ? $documents['Finiquito'] : [];
-        $contracts = isset($documents["Contrato de Trabajo"]) ? $documents['Contrato de Trabajo'] : [];
-        $transfers = isset($documents["Traslado"]) ? $documents['Traslado'] : [];
-        $licenses = isset($documents["Licencia Medica"]) ? $documents['Licencia Medica'] : [];
-        $resumen = (object)[
-            'settlements' => $settlements,
-            'contracts' => $contracts,
-            'transfers' => $transfers,
-            'licenses' => $licenses,
-        ];
-        $monthly=(object)[
-            'comercialContract'=>$comercialContract,
-            'affiliation'=>$affiliation,
-            'regulation'=>$regulation,
-            'politics'=>$politics,
-        ];
-        \Debugbar::info($monthly);
 
+        $monthly = (object)[
+            'comercialContract' => $comercialContract,
+            'affiliation' => $affiliation,
+            'regulation' => $regulation,
+            'politics' => $politics,
+        ];
         return response()->json([
-            'service'=>(object)[
-                'id'=>$id,
-                'type_id'=>$document_type->id,
+            'service' => (object)[
+                'id' => $id,
+                'type_id' => $document_type->id,
             ],
             'principal' => $principal,
             'contractor' => $contractor,
             'employees' => $employees,
             'today' => $day . ' de ' . $month . ' de ' . $year,
             'expirationDate' => $expirationDate,
-            'resumen' => $resumen,
             'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-RE',
-            'monthly' =>$monthly
+            'monthly' => $monthly
         ], 200);
 
-        view()->share('dataList', $data);
+        // view()->share('dataList', $data);
         // Mail::to('alma@devartisan.cl')->send(new MailWelcome('123456789', $employee));
         // return $pdf->download('pdfview.pdf');
         return view('pdfs\reportEventual');

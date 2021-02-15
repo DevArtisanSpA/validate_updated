@@ -65,7 +65,10 @@ class ReviewController extends Controller
         if ($service->service_type_id == 1) {
           $GroupsDocument = Document::where('service_id', $service->id)
             ->whereHas('type', function (Builder $query) {
-              return $query->where('area_id', 2)->where('temporality_id', 2);
+              return $query->where('area_id', 2)->where('temporality_id', 2)
+              ->where('name', '!=', 'Certificado Validate')
+              ->where('name', '!=', 'Informe Validate')
+                ->where('name', '!=', 'Certificado Empleado');
             })->select('id', 'month_year_registry', 'start', 'finish', 'validation_state_id')->get()->groupBy('month_year_registry');
           foreach ($GroupsDocument as $key => $group) {
             $company = clone $companyLocal;
@@ -182,7 +185,10 @@ class ReviewController extends Controller
           $GroupsDocument = Document::where('service_id', $service->id)
             ->where('employee_id', $employeeLocal->id)
             ->whereHas('type', function (Builder $query) {
-              return $query->where('area_id', 1)->where('temporality_id', 2);
+              return $query->where('area_id', 1)->where('temporality_id', 2)
+              ->where('name', '!=', 'Certificado Validate')
+              ->where('name', '!=', 'Informe Validate')
+                ->where('name', '!=', 'Certificado Empleado');
             })->where('month_year_registry', $monthYear)
             ->select('id', 'month_year_registry', 'start', 'finish', 'validation_state_id')->get()->groupBy('validation_state_id');
           $employee = clone $employeeLocal;
@@ -229,10 +235,13 @@ class ReviewController extends Controller
     $service = Service::where('id', $id_service)->complete()->with('company.commercialBusiness:id,name')->first();
     $Q = Document::where('service_id', $id_service)->basic()
       ->whereHas('type', function (Builder $query) use ($area, $temp, $monthYear) {
-        $Q = $query->where('area_id', $area)->where('temporality_id', $temp);
+        $Q = $query->where('area_id', $area)->where('temporality_id', $temp)
+        ->where('name', '!=', 'Certificado Validate')
+        ->where('name', '!=', 'Informe Validate')
+          ->where('name', '!=', 'Certificado Empleado');
         if (!is_null($monthYear)) {
           // $monthYear = explode("-",  $monthYear);
-          $Q=$Q->where('month_year_registry',$monthYear);
+          $Q = $Q->where('month_year_registry', $monthYear);
           // $Q = $Q->whereMonth('start', $monthYear[1])->whereYear('start', $monthYear[0]);
           // $Q = $Q->whereMonth('finish', $monthYear[1])->whereYear('finish', $monthYear[0]);
         }

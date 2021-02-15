@@ -113,23 +113,24 @@ class DocumentTypeSeeder extends Seeder
       ['Formulario F30', 1, 2, 3, false],
       ['Cert. Siniestralidad', 1, 2, 2, false],
       ['Cert. Siniestralidad', 1, 2, 3, false],
-      ['Certificado Empresa', 1, 2, 1, true],
-      ['Certificado Empresa', 1, 2, 2, true],
-      ['Certificado Empresa', 1, 2, 3, true],
       // ['Conocimiento EC', 1, 2],
 
       ['Formulario F30', 2, 2, 1, false],
       ['Cert. Siniestralidad', 2, 2, 1, false],
       ['Formulario F30-1', 2, 2, 1, false],
       ['Libro de Remuneraciones', 2, 2, 1, false],
-      
+
       ['Certificado Validate', 2, 2, 1, true],
       ['Informe Validate', 2, 2, 1, true],
-      ['Certificado Validate', 2, 2, 2, true],
-      ['Informe Validate', 2, 2, 2, true],
-      ['Certificado Validate', 2, 2, 3, true],
-      ['Informe Validate', 2, 2, 3, true],
+      ['Certificado Validate', 1, 2, 2, true],
+      ['Informe Validate', 1, 2, 2, true],
+      ['Certificado Validate', 1, 2, 3, true],
+      ['Informe Validate', 1, 2, 3, true],
     ];
+
+    DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+    DB::table('document_types')->truncate();
+    DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
     foreach ($types as $index => $type) {
       try {
         DB::table('document_types')->updateOrInsert([

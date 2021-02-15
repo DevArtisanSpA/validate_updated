@@ -83,6 +83,13 @@
                 :id="'input-ini' + index"
                 type="date"
                 v-model="formData.documents[index].start"
+                @change="
+                  defaultFinish(
+                    formData.documents[index].start,
+                    index,
+                    formData.documents[index].type.id
+                  )
+                "
                 :max="max"
                 :formatter="(e) => formatter('date_init', index, e)"
                 :state="formData.states[index].date_init"
@@ -238,9 +245,7 @@ export default {
   ],
   data() {
     let aux = window.location.pathname.split("/");
-console.log(this.$truthty(this.monthly)
-        ? aux[aux.length - 2]
-        : null);
+    console.log(this.$truthty(this.monthly) ? aux[aux.length - 2] : null);
     return {
       month_year_registry: this.$truthty(this.monthly)
         ? aux[aux.length - 2]
@@ -473,6 +478,16 @@ console.log(this.$truthty(this.monthly)
       }
       return false;
     },
+    defaultFinish(value, index, type) {
+      let docOneYear = [10, 11, 12, 13, 14, 15, 16, 17, 18, 58, 59, 60];
+      if (
+        docOneYear.includes(type) 
+        // && !this.$truthty(this.formData.documents[index].finish)
+      ) {
+        let finish = moment(value).add(1, "year").format("YYYY-MM-DD");
+        this.formData.documents[index].finish = finish;
+      }
+    },
     formatter(label, index, value) {
       if (value.length < 3) {
         this.formData.states[index][label] = false;
@@ -491,11 +506,11 @@ console.log(this.$truthty(this.monthly)
       let config = { headers: { "Content-Type": "multipart/form-data" } };
       let promises = [];
       let formData = new FormData();
-      let index=1;
+      let index = 1;
       this.formData.documents.map((document) => {
         if (!this.idsIgnore.includes(document.id)) {
-          formData.append("data" + (index), JSON.stringify(document));
-          formData.append("file" + (index), document.file);
+          formData.append("data" + index, JSON.stringify(document));
+          formData.append("file" + index, document.file);
           index++;
         }
       });
@@ -506,7 +521,7 @@ console.log(this.$truthty(this.monthly)
       this.send = true;
       let urlBack = window.location.origin;
       urlBack = this.$truthty(this.employee)
-        ? urlBack + "/services/"+this.service.id+"/documents/employees/"
+        ? urlBack + "/services/" + this.service.id + "/documents/employees/"
         : (urlBack = urlBack + "/documents/companies/");
       urlBack = this.$truthty(this.monthly)
         ? urlBack + "monthly"

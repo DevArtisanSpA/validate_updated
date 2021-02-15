@@ -1064,7 +1064,7 @@ export default {
       this.form[name].splice(index, 1);
     },
     download() {
-      let document = {
+      let documentlocal = {
         document_type_id: this.data.service.type_id,
         service_id: this.data.service.id,
         start: moment().format("YYYY-MM-DD"),
@@ -1076,7 +1076,7 @@ export default {
         url: `${window.location.origin}/pdf/download/report/fixed`,
         method: "POST",
         data: {
-          document,
+          document:documentlocal,
           contractor: this.data.contractor,
           principal: this.data.principal,
           expirationDate: this.data.expirationDate,

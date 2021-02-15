@@ -258,7 +258,10 @@ class DocumentController extends Controller
     $authData = Auth::user();
     $document_types = DocumentType::with(['area:id,name', 'temporality:id,name'])
       ->where('area_id', $area)->where('temporality_id', $temp)
-      ->where('service_type_id', $service->service_type_id)->orderby('name')->get();
+      ->where('service_type_id', $service->service_type_id)
+      ->where('name', '!=', 'Certificado Validate')->where('name', '!=', 'Informe Validate')
+      ->where('name', '!=', 'Certificado Empleado')
+      ->orderby('name')->get();
     $required = DocumentType::where('area_id', $area)->where('temporality_id', $temp)->where('optional', false)
       ->where('service_type_id', $service->service_type_id)->get()->modelKeys();
     $Q = Document::where('service_id', $id_service)->basic()

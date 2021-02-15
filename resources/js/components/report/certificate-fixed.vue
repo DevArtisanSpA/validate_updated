@@ -435,7 +435,7 @@ export default {
     download() {
       console.log(this.form);
 
-      let document = {
+      let documentlocal = {
         document_type_id: this.data.service.type_id,
         service_id: this.data.service.id,
         start: moment().format("YYYY-MM-DD"),
@@ -447,7 +447,7 @@ export default {
         url: `${window.location.origin}/pdf/download/certificate/fixed`,
         method: "POST",
         data: {
-          document,
+          document:documentlocal,
           form: this.form,
           contractor: this.data.contractor,
           principal: this.data.principal,

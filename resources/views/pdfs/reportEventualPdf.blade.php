@@ -213,10 +213,10 @@
                             {{ $employee['second_surname'] }}
                         </td>
                         <td>{{ $employee['job_type']['name'] }}</td>
-                        <td>{{ $employee['identification_id'] }}</td>
-                        <td>{{ $employee['start'] }}</td>
-                        <td>{{ $employee['finish'] }}</td>
-                        <td>{{ $employee['ci'] }}</td>
+                        <td class="text-center">{{ $employee['identification_id'] }}</td>
+                        <td class="text-center">{{ $employee['start'] }}</td>
+                        <td class="text-center">{{ $employee['finish'] }}</td>
+                        <td class="text-center">{{ $employee['ci'] }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -240,10 +240,10 @@
                         <td>{{ $employee['name'] }} {{ $employee['surname'] }}
                             {{ $employee['second_surname'] }}
                         </td>
-                        <td>{{ $employee['riohs'] }}</td>
-                        <td>{{ $employee['epp'] }}</td>
-                        <td>{{ $employee['das'] }}</td>
-                        <td>{{ $employee['other'] }}</td>
+                        <td class="text-center">{{ $employee['riohs'] }}</td>
+                        <td class="text-center">{{ $employee['epp'] }}</td>
+                        <td class="text-center">{{ $employee['das'] }}</td>
+                        <td class="text-center">{{ $employee['other'] }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -276,12 +276,12 @@
                         <td>{{ $employee['name'] }} {{ $employee['surname'] }}
                             {{ $employee['second_surname'] }}
                         </td>
-                        <td>{{ $employee['basicState'] }}</td>
-                        <td>{{ $employee['basicValidity'] }}</td>
-                        <td>{{ $employee['confinedState'] }}</td>
-                        <td>{{ $employee['confinedValidity'] }}</td>
-                        <td>{{ $employee['heightState'] }}</td>
-                        <td>{{ $employee['heightValidity'] }}</td>
+                        <td class="text-center">{{ $employee['basicState'] }}</td>
+                        <td class="text-center">{{ $employee['basicValidity'] }}</td>
+                        <td class="text-center">{{ $employee['confinedState'] }}</td>
+                        <td class="text-center">{{ $employee['confinedValidity'] }}</td>
+                        <td class="text-center">{{ $employee['heightState'] }}</td>
+                        <td class="text-center">{{ $employee['heightValidity'] }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -309,9 +309,9 @@
                         <td>{{ $employee['name'] }} {{ $employee['surname'] }}
                             {{ $employee['second_surname'] }}
                         </td>
-                        <td>{{ $employee['licenseState'] }}</td>
-                        <td>{{ $employee['licenseValidity'] }}</td>
-                        <td>{{ $employee['licenseOther'] }}</td>
+                        <td class="text-center">{{ $employee['licenseState'] }}</td>
+                        <td class="text-center">{{ $employee['licenseValidity'] }}</td>
+                        <td class="text-center">{{ $employee['licenseOther'] }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -345,19 +345,19 @@
                 <tbody>
                     <tr>
                         <td>F30</td>
-                        <td class="text-right">{{ $form->F30['state'] }}</td>
+                        <td class="text-center">{{ $form->F30['state'] }}</td>
                         <td>AL</td>
                         <td class="text-right">{{ $form->F30['obs'] }}</td>
                     </tr>
                     <tr>
                         <td>CERTIFICADO SINIESTRALIDAD</td>
-                        <td class="text-right">{{ $form->accident['state'] }}</td>
+                        <td class="text-center">{{ $form->accident['state'] }}</td>
                         <td>AL</td>
                         <td class="text-right">{{ $form->accident['obs'] }}</td>
                     </tr>
                     <tr>
                         <td>CONSULTA DE MULTAS DT</td>
-                        <td class="text-right">{{ $form->query['state'] }}</td>
+                        <td class="text-center">{{ $form->query['state'] }}</td>
                         <td>AL</td>
                         <td class="text-right">{{ $form->query['obs'] }}</td>
                     </tr>
@@ -383,10 +383,10 @@
                         <td>{{ $employee['name'] }} {{ $employee['surname'] }}
                             {{ $employee['second_surname'] }}
                         </td>
-                        <td>{{ $employee['quotationAmount'] }}</td>
-                        <td>{{ $employee['quotationPeriod'] }}</td>
-                        <td>{{ $employee['quotationState'] }}</td>
-                        <td>{{ $employee['quotationObs'] }}</td>
+                        <td class="text-center">{{ $employee['quotationAmount'] }}</td>
+                        <td class="text-center">{{ $employee['quotationPeriod'] }}</td>
+                        <td class="text-center">{{ $employee['quotationState'] }}</td>
+                        <td class="text-center">{{ $employee['quotationObs'] }}</td>
                     </tr>
                     @endforeach
                 </tbody>
