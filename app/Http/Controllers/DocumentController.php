@@ -345,6 +345,9 @@ class DocumentController extends Controller
   public function download($id)
   {
     $document = Document::find($id);
+    if (is_null($document)) {
+      return;
+    }
     $company = $document->service->company;
     $employee = $document->employee;
     if (is_null($employee)) {

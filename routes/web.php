@@ -141,4 +141,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/report/eventual', [ReportController::class, 'reportEventual']);
     Route::get('/pdf/report/eventual/{id}', [PdfController::class, 'companyReportEventual']);
     Route::post('/pdf/download/report/eventual', [PdfController::class, 'companyReportEventualDownload']);
+    Route::post('/pdf/find', [PdfController::class, 'pdfFind']);
 });

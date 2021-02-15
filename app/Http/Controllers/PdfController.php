@@ -445,4 +445,17 @@ class PdfController extends Controller
 
         return Storage::disk('s3')->download($name);
     }
+
+    public function pdfFind(Request $request){
+        $input = $request->all();
+        $document=Document::whereService_id($input['service_id'])
+        ->whereMonth_year_registry($input['month_year_registry'])
+        ->whereFinish($input['finish'])
+        ->wherehas('type',function($query) use($input){
+            return $query->whereName($input['name']);
+        })
+        ->orderBy('updated_at', 'desc')
+        ->first();
+        return response()->json(['document'=>$document],200);
+    }
 }

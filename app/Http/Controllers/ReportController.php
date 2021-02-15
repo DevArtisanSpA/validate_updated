@@ -98,7 +98,8 @@ class ReportController extends Controller
             'services' => $services,
             'url' =>'/pdf/report/fixed/',
             'componentName'=>'report-fixed',
-            'text' =>"Informe de validación"
+            'text' =>"Informe de validación",
+            'name'=>'Informe Validate'
           ])
         ]);
     }
@@ -111,7 +112,8 @@ class ReportController extends Controller
             'services' => $services,
             'url' =>'/pdf/report/eventual/',
             'componentName'=>'report-eventual',
-            'text' =>"Informe de validación de trabajos eventuales"
+            'text' =>"Informe de validación de trabajos eventuales",
+            'name' =>'Informe Validate'
           ])
         ]);
     }
@@ -124,7 +126,8 @@ class ReportController extends Controller
             'services' => $services,
             'url' =>'/pdf/certificate/fixed/',
             'componentName'=>'certificate-fixed',
-            'text' =>"Certificado de validación"
+            'text' =>"Certificado de validación",
+            'name' =>'Certificado Validate'
           ])
         ]);
     }
@@ -137,7 +140,8 @@ class ReportController extends Controller
             'services' => $services,
             'url' =>'/pdf/certificate/eventual/',
             'componentName'=>'certificate-eventual',
-            'text' =>"Certificado de validación de trabajos eventuales"
+            'text' =>"Certificado de validación de trabajos eventuales",
+            'name' =>'Certificado Validate'
           ])
         ]);
     }
