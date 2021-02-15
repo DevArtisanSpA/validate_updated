@@ -14,11 +14,21 @@
         </div>
         <div class="col-md-6 pt-3 text-right">
           <b>FOLIO</b> Nº
-          <input placeholder="0" class="text-center" v-model="folio" />
+          <input
+            placeholder="0"
+            class="text-center"
+            v-model="data.folio"
+            disabled
+          />
         </div>
       </div>
       <h5 class="text-center mt-1 mb-3">
-        <u><b>INFORME DE VALIDACION EMPRESA TRABAJOS EVENTUALES </b></u>
+        <p>
+          <u><b>INFORME DE VALIDACION EMPRESA </b></u>
+        </p>
+        <p>
+          <u><b>TRABAJOS EVENTUALES</b></u>
+        </p>
       </h5>
       <table class="table table-sm" style="border-color: white">
         <thead>
@@ -137,10 +147,12 @@
         </tbody>
       </table>
       <p class="text-justify mt-3 mb-2 b">
-        1.- VALIDACIÓN DOCUMENTACIÓN MENSUAL EMPRESA
-        <text style="font-size: 0.9em">{{
-          data.contractor.business_name.toUpperCase()
-        }}</text>
+        <b>
+          1.- VALIDACIÓN DOCUMENTACIÓN MENSUAL EMPRESA
+          <text style="font-size: 0.9em">{{
+            data.contractor.business_name.toUpperCase()
+          }}</text></b
+        >
       </p>
       <table class="table table-sm table-bordered">
         <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -178,6 +190,7 @@
             <td>
               <input
                 class="text-center w-100"
+                type="date"
                 v-model="form.contract.obsFecha"
               />
             </td>
@@ -208,6 +221,7 @@
             <td>
               <input
                 class="text-center w-100"
+                type="date"
                 v-model="form.affiliation.obsFecha"
               />
             </td>
@@ -233,7 +247,11 @@
               <input class="text-center w-100" v-model="form.policy.obs" />
             </td>
             <td>
-              <input class="text-center w-100" v-model="form.policy.obsFecha" />
+              <input
+                class="text-center w-100"
+                v-model="form.policy.obsFecha"
+                type="date"
+              />
             </td>
           </tr>
           <tr>
@@ -262,6 +280,7 @@
             <td>
               <input
                 class="text-center w-100"
+                type="date"
                 v-model="form.regulation.obsFecha"
               />
             </td>
@@ -292,6 +311,7 @@
             <td>
               <input
                 class="text-center w-100"
+                type="date"
                 v-model="form.emergency.obsFecha"
               />
             </td>
@@ -322,6 +342,7 @@
             <td>
               <input
                 class="text-center w-100"
+                type="date"
                 v-model="form.training.obsFecha"
               />
             </td>
@@ -329,7 +350,7 @@
         </tbody>
       </table>
       <p class="text-justify mt-3 mb-2 b">
-        2.- VALIDACIÓN DOCUMENTACIÓN TRABAJADORES
+        <b>2.- VALIDACIÓN DOCUMENTACIÓN TRABAJADORES</b>
       </p>
       <table class="table table-sm table-bordered">
         <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -368,7 +389,7 @@
         </tbody>
       </table>
       <p class="text-justify mt-3 mb-2 b">
-        2.1.- VALIDACIÓN DOCUMENTACIÓN EHS TRABAJADORES
+        <b>2.1.- VALIDACIÓN DOCUMENTACIÓN EHS TRABAJADORES</b>
       </p>
       <table class="table table-sm table-bordered">
         <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -398,7 +419,7 @@
         </tbody>
       </table>
       <p class="text-justify mt-3 mb-2 b">
-        3.- VALIDACIÓN EXÁMENES OCUPACIONALES
+        <b>3.- VALIDACIÓN EXÁMENES OCUPACIONALES</b>
       </p>
       <table class="table table-sm table-bordered">
         <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -438,7 +459,7 @@
         </tbody>
       </table>
       <p class="text-justify mt-3 mb-2 b">
-        4.- VALIDACION LICENCIAS /ACREDITACIONES
+        <b>4.- VALIDACION LICENCIAS /ACREDITACIONES</b>
       </p>
       <table class="table table-sm table-bordered">
         <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -480,14 +501,14 @@
             <th>
               <b
                 ><input
-                  placeholder="0"
+                  placeholder="Periodo"
                   class="text-right"
                   v-model="form.end.periodo"
               /></b>
             </th>
             <th>
               <input
-                placeholder="0"
+                placeholder="Total"
                 class="text-right"
                 type="number"
                 v-model="form.end.total"
@@ -498,7 +519,7 @@
       </table>
 
       <p class="text-justify mt-3 mb-2 b">
-        5.- VALIDACION DOCUMENTOS MENSUALES EMPRESA
+        <b>5.- VALIDACION DOCUMENTOS MENSUALES EMPRESA</b>
       </p>
       <table class="table table-sm table-bordered">
         <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -543,7 +564,7 @@
         </tbody>
       </table>
       <p class="text-justify mt-3 mb-2 b">
-        6.- VALIDACIÓN DE COTIZACIONES PREVISIONALES
+        <b>6.- VALIDACIÓN DE COTIZACIONES PREVISIONALES</b>
       </p>
       <table class="table table-sm table-bordered">
         <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -578,7 +599,7 @@
         <thead>
           <tr class="table-primary text-center">
             <th>OBSERVACIONES</th>
-            <th style="width: 1em;">
+            <th style="width: 1em">
               <el-button
                 icon="el-icon-plus"
                 class="text-white bg-success p-1"
@@ -603,7 +624,10 @@
         </tbody>
       </table>
       <div class="d-flex justify-content-end pb-3">
-        <b-button @click="download" variant="primary"
+        <b-button
+          v-if="data.employees.length > 0"
+          @click="download"
+          variant="primary"
           >Descargar <i class="el-icon-download"
         /></b-button>
       </div>
@@ -615,104 +639,129 @@ import moment from "moment";
 export default {
   props: ["data"],
   data() {
-    let k = moment().format("MMM-DD");
-    let employees = [];
-    this.data.employees.map((employee) => {
-      employee.riohs = "";
-      employee.epp = "";
-      employee.das = "";
-      employee.other = "";
-      employee.ci = "";
-      employee.start = "";
-      employee.finish = "";
-      employee.basicState = "";
-      employee.basicValidity = "";
-      employee.confinedState = "";
-      employee.confinedValidity = "";
-      employee.heightState = "";
-      employee.heightValidity = "";
-      employee.licenseState = "";
-      employee.licenseValidity = "";
-      employee.licenseOther = "";
-      employee.quotationAmount = "";
-      employee.quotationPeriod = "";
-      employee.quotationState = "";
-      employee.quotationObs = "";
-      employees.push(employee);
-    });
-    return {
-      folio: "",
-      form: {
-        obs: [],
-        end: {
-          periodo: k,
-          total: employees.length,
-        },
-        employees,
-        contract: {
-          stateValidity: "",
-          stateSpecific: "",
-          stateObs: "",
-          obs: "",
-          obsFecha: "",
-        },
-        affiliation: {
-          stateValidity: "",
-          stateSpecific: "",
-          stateObs: "",
-          obs: "",
-          obsFecha: "",
-        },
-        policy: {
-          stateValidity: "",
-          stateSpecific: "",
-          stateObs: "",
-          obs: "",
-          obsFecha: "",
-        },
-        regulation: {
-          stateValidity: "",
-          stateSpecific: "",
-          stateObs: "",
-          obs: "",
-          obsFecha: "",
-        },
-        emergency: {
-          stateValidity: "",
-          stateSpecific: "",
-          stateObs: "",
-          obs: "",
-          obsFecha: "",
-        },
-        training: {
-          stateValidity: "",
-          stateSpecific: "",
-          stateObs: "",
-          obs: "",
-          obsFecha: "",
-        },
-        F30: { state: "", obs: "" },
-        accident: { state: "", obs: "" },
-        query: { state: "", obs: "" },
-      },
-    };
+    return this.init();
   },
   methods: {
     init() {
-      console.log(this.data);
+      let k = moment().format("MMM-DD");
+      let employees = [];
+      this.data.employees.map((employee) => {
+        employee.riohs = "";
+        employee.epp = "";
+        employee.das = "";
+        employee.other = "";
+        employee.ci = "";
+        employee.start = "";
+        employee.finish = "";
+        employee.basicState = "";
+        employee.basicValidity = "";
+        employee.confinedState = "";
+        employee.confinedValidity = "";
+        employee.heightState = "";
+        employee.heightValidity = "";
+        employee.licenseState = "";
+        employee.licenseValidity = "";
+        employee.licenseOther = "";
+        employee.quotationAmount = "";
+        employee.quotationPeriod = "";
+        employee.quotationState = "";
+        employee.quotationObs = "";
+        employees.push(employee);
+      });
+      return {
+        folio: this.data.folio,
+        form: {
+          obs: [],
+          end: {
+            periodo: k,
+            total: employees.length,
+          },
+          employees,
+          contract: {
+            stateValidity:  this.$truthty(this.data.monthly.comercialContract)
+            ? (moment().diff(this.data.monthly.comercialContract.finish,'days')<0)?'vigente':'caducado'
+            : "",
+            stateSpecific: "",
+            stateObs: "",
+            obs: "Del",
+            obsFecha: this.$truthty(this.data.monthly.comercialContract)
+            ? this.data.monthly.comercialContract.start
+            : "",
+          },
+          affiliation: {
+            stateValidity: this.$truthty(this.data.monthly.affiliation)
+            ? (moment().diff(this.data.monthly.affiliation.finish,'days')<0)?'vigente':'caducado'
+            : "",
+            stateSpecific: "",
+            stateObs: "",
+            obs: "Del",
+            obsFecha: this.$truthty(this.data.monthly.affiliation)
+            ? this.data.monthly.affiliation.start
+            : "",
+          },
+          policy: {
+            stateValidity: this.$truthty(this.data.monthly.politics)
+            ? (moment().diff(this.data.monthly.politics.finish,'days')<0)?'vigente':'caducado'
+            : "",
+            stateSpecific: "",
+            stateObs: "",
+            obs: "Del",
+            obsFecha: this.$truthty(this.data.monthly.politics)
+            ? this.data.monthly.politics.start
+            : "",
+          },
+          regulation: {
+            stateValidity: this.$truthty(this.data.monthly.regulation)
+            ? (moment().diff(this.data.monthly.regulation.finish,'days')<0)?'vigente':'caducado'
+            : "",
+            stateSpecific: "",
+            stateObs: "",
+            obs: "Del",
+            obsFecha: this.$truthty(this.data.monthly.regulation)
+            ? this.data.monthly.regulation.start
+            : "",
+          },
+          emergency: {
+            stateValidity: "",
+            stateSpecific: "",
+            stateObs: "",
+            obs: "Del",
+            obsFecha: "",
+          },
+          training: {
+            stateValidity: "",
+            stateSpecific: "",
+            stateObs: "",
+            obs: "Del",
+            obsFecha: "",
+          },
+          F30: { state: "", obs: "" },
+          accident: { state: "", obs: "" },
+          query: { state: "", obs: "" },
+        },
+      };
     },
     download() {
+      let documentlocal = {
+        document_type_id: this.data.service.type_id,
+        service_id: this.data.service.id,
+        start: moment().format("YYYY-MM-DD"),
+        finish: moment().clone().endOf("month").format("YYYY-MM-DD"),
+        month_year_registry: moment().format("YYYY-MM"),
+        validation_state_id: 3,
+      };
       axios({
         url: `${window.location.origin}/pdf/download/report/eventual`,
         method: "POST",
         data: {
+          document:documentlocal,
           contractor: this.data.contractor,
           principal: this.data.principal,
           expirationDate: this.data.expirationDate,
           today: this.data.today,
-          folio: this.folio,
+          folio: this.data.folio,
           employees: this.data.employees,
-          form:this.form,
+          form: this.form,
         },
         responseType: "blob",
       })
@@ -727,6 +776,7 @@ export default {
           fileLink.click();
         })
         .catch((error) => {
+          console.log(error);
           console.log(error.response);
         });
     },
@@ -737,8 +787,12 @@ export default {
       this.form[name].splice(index, 1);
     },
   },
-  mounted() {
-    this.init();
+  mounted() {},
+  watch: {
+    data(newValue, oldValue) {
+      this.folio=newValue.folio;
+      this.form=this.init().form;
+    },
   },
 };
 </script>

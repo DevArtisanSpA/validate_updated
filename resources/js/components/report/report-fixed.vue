@@ -14,7 +14,12 @@
         </div>
         <div class="col-md-6 pt-3 text-right">
           <b>FOLIO</b> Nº
-          <input placeholder="0" class="text-center" v-model="folio" />
+          <input
+            placeholder="0"
+            class="text-center"
+            v-model="data.folio"
+            disabled
+          />
         </div>
       </div>
       <h5 class="text-center mt-1 mb-3">
@@ -152,28 +157,52 @@
           <tr>
             <td>F30</td>
             <td>
-              <input class="text-center w-100" v-model="form.F30.state" />
+              <input
+                class="text-center w-100"
+                v-model="form.F30.state"
+                placeholder="Estado"
+              />
             </td>
             <td>
-              <input class="text-right w-100" v-model="form.F30.obs" />
+              <input
+                class="text-right w-100"
+                v-model="form.F30.obs"
+                placeholder="Observaciones"
+              />
             </td>
           </tr>
           <tr>
             <td>CONSULTA MULTAS DT</td>
             <td>
-              <input class="text-center w-100" v-model="form.query.state" />
+              <input
+                class="text-center w-100"
+                v-model="form.query.state"
+                placeholder="Estado"
+              />
             </td>
             <td>
-              <input class="text-right w-100" v-model="form.query.obs" />
+              <input
+                class="text-right w-100"
+                v-model="form.query.obs"
+                placeholder="Observaciones"
+              />
             </td>
           </tr>
           <tr>
             <td>CERTIFICADO SINIESTRALIDAD</td>
             <td>
-              <input class="text-center w-100" v-model="form.accident.state" />
+              <input
+                class="text-center w-100"
+                v-model="form.accident.state"
+                placeholder="Estado"
+              />
             </td>
             <td>
-              <input class="text-right w-100" v-model="form.accident.obs" />
+              <input
+                class="text-right w-100"
+                v-model="form.accident.obs"
+                placeholder="Observaciones"
+              />
             </td>
           </tr>
         </tbody>
@@ -197,7 +226,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(employee, index) in form.employees"
+            v-for="employee in form.employees"
             v-bind:key="employee.id + 'employee'"
           >
             <td>
@@ -206,6 +235,7 @@
             </td>
             <td>
               <input
+                placeholder="Días"
                 class="w-100 text-right"
                 type="number"
                 v-model="employee.days"
@@ -213,6 +243,7 @@
             </td>
             <td>
               <input
+                placeholder="HHEE"
                 class="w-100 text-right"
                 type="number"
                 v-model="employee.hhee"
@@ -220,6 +251,7 @@
             </td>
             <td>
               <input
+                placeholder="Sueldo Imponible"
                 class="w-100 text-right"
                 type="number"
                 @input="changePayment"
@@ -228,6 +260,7 @@
             </td>
             <td>
               <input
+                placeholder="AFP"
                 class="w-100 text-right"
                 type="number"
                 v-model="employee.afp"
@@ -235,6 +268,7 @@
             </td>
             <td>
               <input
+                placeholder="Salud"
                 class="w-100 text-right"
                 type="number"
                 v-model="employee.health"
@@ -242,6 +276,7 @@
             </td>
             <td>
               <input
+                placeholder="Préstamo"
                 class="w-100 text-right"
                 type="number"
                 v-model="employee.loan"
@@ -249,6 +284,7 @@
             </td>
             <td>
               <input
+                placeholder="Sueldo Liquido"
                 class="w-100 text-right"
                 type="number"
                 @input="changeLiquid"
@@ -412,16 +448,34 @@
         <tbody>
           <tr>
             <td>
-              <input class="text-center w-100" v-model="form.payment.period" />
+              <input
+                class="text-center w-100"
+                placeholder="Periodo"
+                v-model="form.payment.period"
+              />
             </td>
             <td>
-              <input class="text-center w-100" v-model="form.payment.adv" />
+              <input
+                class="text-center w-100"
+                placeholder="Adelanto"
+                v-model="form.payment.adv"
+              />
             </td>
             <td>
-              <input class="text-center w-100" v-model="form.payment.salary" />
+              <input
+                class="text-center w-100"
+                type="date"
+                placeholder="Fecha de sueldo"
+                v-model="form.payment.salary"
+              />
             </td>
             <td>
-              <input class="text-center w-100" v-model="form.payment.prev" />
+              <input
+                class="text-center w-100"
+                type="date"
+                placeholder="Fecha de cotizaciones"
+                v-model="form.payment.prev"
+              />
             </td>
           </tr>
         </tbody>
@@ -434,7 +488,7 @@
         <thead>
           <tr class="table-primary">
             <th>NOMBRE</th>
-            <th>N°FOLIO</th>
+            <th>N° FOLIO</th>
             <th>INASISTENCIA</th>
             <th>HHEE</th>
             <th>OBSERVACIONES</th>
@@ -442,7 +496,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(employee, index) in form.employees"
+            v-for="employee in form.employees"
             v-bind:key="employee.id + 'book'"
           >
             <td>
@@ -450,10 +504,15 @@
               {{ employee.second_surname }}
             </td>
             <td>
-              <input class="w-100 text-right" v-model="employee.nFolio" />
+              <input
+                class="w-100 text-right"
+                placeholder="Folio"
+                v-model="employee.nFolio"
+              />
             </td>
             <td>
               <input
+                placeholder="0"
                 class="w-100 text-right"
                 type="number"
                 v-model="employee.absence"
@@ -461,13 +520,18 @@
             </td>
             <td>
               <input
+                placeholder="0"
                 class="w-100 text-right"
                 type="number"
                 v-model="employee.hheeBook"
               />
             </td>
             <td>
-              <input class="w-100 text-right" v-model="employee.obs" />
+              <input
+                class="w-100 text-right"
+                v-model="employee.obs"
+                placeholder="Observaciones"
+              />
             </td>
           </tr>
         </tbody>
@@ -494,7 +558,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(settlement, index) in form.settlements"
+            v-for="settlement in form.settlements"
             v-bind:key="settlement.id + 'settlement'"
           >
             <td>
@@ -503,16 +567,32 @@
               {{ settlement.employee.second_surname }}
             </td>
             <td>
-              <input class="w-100 text-center" v-model="settlement.reason" />
+              <input
+                placeholder="Motivo"
+                class="w-100 text-center"
+                v-model="settlement.reason"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="settlement.letter" />
+              <input
+                placeholder="Fecha de notificación"
+                class="w-100 text-center"
+                v-model="settlement.letter"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="settlement.previred" />
+              <input
+                placeholder="Previred"
+                class="w-100 text-center"
+                v-model="settlement.previred"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="settlement.legalized" />
+              <input
+                placeholder="Fecha de legalizado"
+                class="w-100 text-center"
+                v-model="settlement.legalized"
+              />
             </td>
           </tr>
         </tbody>
@@ -544,7 +624,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(contract, index) in form.contracts"
+            v-for="contract in form.contracts"
             v-bind:key="contract.id + 'contract'"
           >
             <td>
@@ -555,19 +635,39 @@
             <td>{{ contract.start }}</td>
             <td>{{ contract.finish }}</td>
             <td>
-              <input class="w-100 text-center" v-model="contract.ci" />
+              <input
+                class="w-100 text-center"
+                v-model="contract.ci"
+                placeholder="CI"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="contract.ri" />
+              <input
+                class="w-100 text-center"
+                v-model="contract.ri"
+                placeholder="RI"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="contract.epp" />
+              <input
+                class="w-100 text-center"
+                v-model="contract.epp"
+                placeholder="EPP"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="contract.das" />
+              <input
+                class="w-100 text-center"
+                v-model="contract.das"
+                placeholder="DAS"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="contract.other" />
+              <input
+                class="w-100 text-center"
+                v-model="contract.other"
+                placeholder="Otros"
+              />
             </td>
           </tr>
         </tbody>
@@ -599,7 +699,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(transfer, index) in form.transfers"
+            v-for="transfer in form.transfers"
             v-bind:key="transfer.id + 'transfer'"
           >
             <td>
@@ -610,19 +710,39 @@
             <td>{{ transfer.start }}</td>
             <td>{{ transfer.finish }}</td>
             <td>
-              <input class="w-100 text-center" v-model="transfer.ci" />
+              <input
+                class="w-100 text-center"
+                v-model="transfer.ci"
+                placeholder="CI"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="transfer.ri" />
+              <input
+                class="w-100 text-center"
+                v-model="transfer.ri"
+                placeholder="RI"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="transfer.epp" />
+              <input
+                class="w-100 text-center"
+                v-model="transfer.epp"
+                placeholder="EPP"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="transfer.das" />
+              <input
+                class="w-100 text-center"
+                v-model="transfer.das"
+                placeholder="DAS"
+              />
             </td>
             <td>
-              <input class="w-100 text-center" v-model="transfer.other" />
+              <input
+                class="w-100 text-center"
+                v-model="transfer.other"
+                placeholder="Otros"
+              />
             </td>
           </tr>
         </tbody>
@@ -645,7 +765,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(license, index) in data.resumen.licenses"
+            v-for="license in data.resumen.licenses"
             v-bind:key="license.id + 'license'"
           >
             <td>
@@ -654,10 +774,15 @@
             </td>
             <td class="text-center">{{ license.start }}</td>
             <td>
-              <input class="w-100 text-center" v-model="license.license" />
+              <input
+                placeholder="Licencia"
+                class="w-100 text-center"
+                v-model="license.license"
+              />
             </td>
             <td>
               <input
+                placeholder="Días"
                 class="w-100 text-center"
                 type="number"
                 v-model="license.days"
@@ -706,14 +831,14 @@
             <th>
               <b
                 ><input
-                  placeholder="0"
+                  placeholder="Periodo"
                   class="text-right"
                   v-model="form.end.periodo"
               /></b>
             </th>
             <th>
               <input
-                placeholder="0"
+                placeholder="Total"
                 class="text-right"
                 type="number"
                 v-model="form.end.total"
@@ -744,7 +869,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(ob, index) in form.obs" v-bind:key="index">
+          <tr v-for="ob in form.obs" v-bind:key="ob.obs">
             <th><textarea class="w-100" v-model="ob.doc" /></th>
             <th><textarea class="w-100" v-model="ob.obs" /></th>
             <th><textarea class="w-100" v-model="ob.if" /></th>
@@ -753,7 +878,7 @@
                 icon="el-icon-minus"
                 class="text-white bg-danger p-1"
                 circle
-                @click="minus('obs', index)"
+                @click="minus('obs')"
               ></el-button>
             </th>
           </tr>
@@ -821,21 +946,30 @@ export default {
       license.days = 0;
       licenses.push(license);
     });
+
     return {
       folio: "",
       form: {
-        obs: [{ doc: "", obs: "", if: "" }],
+        obs: [],
         F30: {
-          state: "",
-          obs: "",
+          state: this.$truthty(this.data.monthly.F30)
+            ? this.data.monthly.F30.validation_state.name
+            : "",
+          obs: this.$truthty(this.data.monthly.F30)
+            ? this.data.monthly.F30.observations
+            : "",
         },
         query: {
           state: "",
           obs: "",
         },
         accident: {
-          state: "",
-          obs: "",
+          state: this.$truthty(this.data.monthly.accident)
+            ? this.data.monthly.accident.validation_state.name
+            : "",
+          obs: this.$truthty(this.data.monthly.accident)
+            ? this.data.monthly.accident.observations
+            : "",
         },
         F30_1: {
           workers: 0,
@@ -926,19 +1060,28 @@ export default {
     add(name, atributes) {
       this.form[name].push(atributes);
     },
-    minus(name, index) {
+    minus(name) {
       this.form[name].splice(index, 1);
     },
     download() {
+      let document = {
+        document_type_id: this.data.service.type_id,
+        service_id: this.data.service.id,
+        start: moment().format("YYYY-MM-DD"),
+        finish: moment().clone().endOf("month").format("YYYY-MM-DD"),
+        month_year_registry: moment().format("YYYY-MM"),
+        validation_state_id: 3,
+      };
       axios({
         url: `${window.location.origin}/pdf/download/report/fixed`,
         method: "POST",
         data: {
+          document,
           contractor: this.data.contractor,
           principal: this.data.principal,
           expirationDate: this.data.expirationDate,
           today: this.data.today,
-          folio: this.folio,
+          folio: this.data.folio,
           employees: this.form.employees,
           form: this.form,
         },

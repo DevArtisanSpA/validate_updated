@@ -13,11 +13,16 @@
         </div>
         <div class="col-md-6 pt-3 text-right">
           <b>FOLIO</b> Nº
-          <input placeholder="0" class="text-center" v-model="folio" />
+          <input
+            placeholder="0"
+            class="text-center"
+            v-model="data.folio"
+            disabled
+          />
         </div>
       </div>
       <h5 class="text-center mt-1 mb-3">
-        <u><b>CERTIFICADO VALIDACION EMPRESA CONTRATISTA TRABAJOS </b></u>
+        <u><b>CERTIFICADO VALIDACIÓN EMPRESA</b></u>
       </h5>
       <table class="table table-sm" style="border-color: white">
         <thead>
@@ -330,7 +335,7 @@
       <div class="row my-0 mt-2">
         <div class="col-12">
           <p class="mb-1">
-            CON FECHA: <b>{{ data.today.toUpperCase() }}</b>
+            CON FECHA: <b class="text-primary">{{ data.today }}</b>
           </p>
 
           <p class="my-0 text-justify">
@@ -346,7 +351,7 @@
           </p>
         </div>
       </div>
-      <div class="row">
+      <!-- <div class="row">
         <table class="table mb-0 ml-0 mt-2 table-end">
           <tbody>
             <tr>
@@ -357,7 +362,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> -->
       <div class="d-flex justify-content-center mt-5">
         <div class="text-center">
           <img
@@ -410,10 +415,10 @@ export default {
           total_end: 0,
         },
         summary: {
-          settlement: this.data.resumen.settlement,
-          contracts: this.data.resumen.contracts,
-          transfers: this.data.resumen.transfers,
-          licenses: this.data.resumen.licenses,
+          settlement: this.data.resumen.settlement.length,
+          contracts: this.data.resumen.contracts.length,
+          transfers: this.data.resumen.transfers.length,
+          licenses: this.data.resumen.licenses.length,
         },
         end: {
           periodo: k,
@@ -430,17 +435,25 @@ export default {
     download() {
       console.log(this.form);
 
+      let document = {
+        document_type_id: this.data.service.type_id,
+        service_id: this.data.service.id,
+        start: moment().format("YYYY-MM-DD"),
+        finish: moment().clone().endOf("month").format("YYYY-MM-DD"),
+        month_year_registry: moment().format("YYYY-MM"),
+        validation_state_id: 3,
+      };
       axios({
         url: `${window.location.origin}/pdf/download/certificate/fixed`,
         method: "POST",
         data: {
+          document,
           form: this.form,
           contractor: this.data.contractor,
           principal: this.data.principal,
           expirationDate: this.data.expirationDate,
           today: this.data.today,
-          folio: this.folio,
-        },
+          folio: this.data.folio,        },
         responseType: "blob",
       })
         .then((response) => {

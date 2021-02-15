@@ -6,6 +6,7 @@ use App\Helper\Functions;
 use App\Mail\MailWelcome;
 use App\Models\Company;
 use App\Models\Document;
+use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Service;
 use App\Models\User;
@@ -19,14 +20,15 @@ use PDF;
 
 class PdfController extends Controller
 {
-    public function companyCertificate()
+    public function companyCertificate($id)
     {
-        $service = Service::whereId(1)->complete()->with([
+        $service = Service::whereId($id)->complete()->with([
             'company.branchOffices.commune.region',
             'company.commercialBusiness',
             'branchOffice.commune.region',
             'employees'
         ])->first();
+        $document_type = DocumentType::whereName('Certificado Validate')->where('service_type_id', $service->service_type_id)->first();
         $principal = clone ($service->branchOffice->company);
         unset($service->branchOffice->company);
         $principal->branchOffice = $service->branchOffice;
@@ -41,71 +43,61 @@ class PdfController extends Controller
         $day = $today->day;
         $dayName = $today->locale('es')->dayName;
         $expirationDate = $today->addDays(25)->format('d-m-Y');
-        $documents = Document::where('service_id', 1)->with('type:id,name')->wherehas('type', function ($query) {
+        $documents = Document::where('service_id', $id)->with('type:id,name')->wherehas('type', function ($query) {
             return $query->whereName('Traslado')
                 ->orWhere('name', 'Licencia Medica')
                 ->orWhere('name', 'Finiquito')
                 ->orWhere('name', 'Contrato de Trabajo');
         })->where(function ($query) {
-            $yearMonth = Carbon::now()->format('Y-m');
+            $yearMonth = Carbon::now('America/Santiago')->format('Y-m');
             return $query->where('month_year_registry', $yearMonth)->orWhere(function ($query) use ($yearMonth) {
                 return  $query->where('month_year_registry', null)->whereDate('start', '>=', $yearMonth . '-01');
             });
         })->get()->groupBy('type.name');
-        try {
-            $settlement = count($documents['Finiquito']);
-        } catch (\Throwable $th) {
-            $settlement = 0;
-        }
-        try {
-            $contracts = count($documents['Contrato de Trabajo']);
-        } catch (\Throwable $th) {
-            $contracts = 0;
-        }
-        try {
-            $transfers = count($documents['Traslado']);
-        } catch (\Throwable $th) {
-            $transfers = 0;
-        }
-        try {
-            $licenses = count($documents['Licencia Medica']);
-        } catch (\Throwable $th) {
-            $licenses = 0;
-        }
+        $settlements = isset($documents["Finiquito"]) ? $documents['Finiquito'] : [];
+        $contracts = isset($documents["Contrato de Trabajo"]) ? $documents['Contrato de Trabajo'] : [];
+        $transfers = isset($documents["Traslado"]) ? $documents['Traslado'] : [];
+        $licenses = isset($documents["Licencia Medica"]) ? $documents['Licencia Medica'] : [];
         $resumen = (object)[
-            'settlement' => $settlement,
+            'settlement' => $settlements,
             'contracts' => $contracts,
             'transfers' => $transfers,
             'licenses' => $licenses,
         ];
-        $data = [
+        $data = json_encode([
             'principal' => $principal,
             'contractor' => $contractor,
             'employees' => $employees,
-            'today' => $day . ' de ' . $month . ' de ' . $year,
+            'today' => ucfirst($dayName) . ', ' . $day . ' de ' . $month . ' de ' . $year,
             'expirationDate' => $expirationDate,
-            'resumen' => $resumen
-        ];
-        return view('pdfs/certificate', [
-            'dataList' => json_encode([
-                'principal' => $principal,
-                'contractor' => $contractor,
-                'employees' => $employees,
-                'today' => ucfirst($dayName) . ', ' . $day . ' de ' . $month . ' de ' . $year,
-                'expirationDate' => $expirationDate,
-                'resumen' => $resumen
-            ]),
-
+            'resumen' => $resumen,
+            'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-CF'
         ]);
+        return response()->json([
+            'service'=>(object)[
+                'id'=>$id,
+                'type_id'=>$document_type->id,
+            ],
+            'principal' => $principal,
+            'contractor' => $contractor,
+            'employees' => $employees,
+            'today' => ucfirst($dayName) . ', ' . $day . ' de ' . $month . ' de ' . $year,
+            'expirationDate' => $expirationDate,
+            'resumen' => $resumen,
+            'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-CF'
+        ], 200);
+        view()->share('dataList', $data);
+        return view('pdfs/certificate');
     }
-    public function companyCertificateEventual()
+    public function companyCertificateEventual($id)
     {
-        $service = Service::whereId(1)->complete()->with([
+        $service = Service::whereId($id)->complete()->with([
             'company.branchOffices.commune.region',
             'branchOffice.commune.region',
             'employees.jobType',
             'company.commercialBusiness',
         ])->first();
+        $document_type = DocumentType::whereName('Certificado Validate')->where('service_type_id', $service->service_type_id)->first();
         $principal = clone ($service->branchOffice->company);
         unset($service->branchOffice->company);
         $principal->branchOffice = $service->branchOffice;
@@ -119,73 +111,64 @@ class PdfController extends Controller
         $day = $today->day;
         $dayName = $today->locale('es')->dayName;
         $expirationDate = $today->addDays(20)->format('d-m-Y');
-        $documents = Document::where('service_id', 1)->with('type:id,name')->wherehas('type', function ($query) {
+        $documents = Document::where('service_id', $id)->with('type:id,name')->wherehas('type', function ($query) {
             return $query->whereName('Traslado')
                 ->orWhere('name', 'Licencia Medica')
                 ->orWhere('name', 'Finiquito')
                 ->orWhere('name', 'Contrato de Trabajo');
         })->where(function ($query) {
-            $yearMonth = Carbon::now()->format('Y-m');
+            $yearMonth = Carbon::now('America/Santiago')->format('Y-m');
             return $query->where('month_year_registry', $yearMonth)->orWhere(function ($query) use ($yearMonth) {
                 return  $query->where('month_year_registry', null)->whereDate('start', '>=', $yearMonth . '-01');
             });
         })->get()->groupBy('type.name');
-        try {
-            $settlement = count($documents['Finiquito']);
-        } catch (\Throwable $th) {
-            $settlement = 0;
-        }
-        try {
-            $contracts = count($documents['Contrato de Trabajo']);
-        } catch (\Throwable $th) {
-            $contracts = 0;
-        }
-        try {
-            $transfers = count($documents['Traslado']);
-        } catch (\Throwable $th) {
-            $transfers = 0;
-        }
-        try {
-            $licenses = count($documents['Licencia Medica']);
-        } catch (\Throwable $th) {
-            $licenses = 0;
-        }
+        $settlements = isset($documents["Finiquito"]) ? $documents['Finiquito'] : [];
+        $contracts = isset($documents["Contrato de Trabajo"]) ? $documents['Contrato de Trabajo'] : [];
+        $transfers = isset($documents["Traslado"]) ? $documents['Traslado'] : [];
+        $licenses = isset($documents["Licencia Medica"]) ? $documents['Licencia Medica'] : [];
         $resumen = (object)[
-            'settlement' => $settlement,
+            'settlement' => $settlements,
             'contracts' => $contracts,
             'transfers' => $transfers,
             'licenses' => $licenses,
         ];
-        $data = [
+
+        // $pdf = PDF::loadView('pdfs\certificateEventual');
+        $data = json_encode([
             'principal' => $principal,
             'contractor' => $contractor,
             'employees' => $employees,
-            'today' => $day . ' de ' . $month . ' de ' . $year,
+            'today' => ucfirst($dayName) . ', ' . $day . ' de ' . $month . ' de ' . $year,
             'expirationDate' => $expirationDate,
-            'resumen' => $resumen
-        ];
-        \Debugbar::info($employees);
-        // view()->share('data', $data);
-        // $pdf = PDF::loadView('pdfs\certificateEventual');
-        return view('pdfs/certificateEventual', [
-            'dataList' => json_encode([
-                'principal' => $principal,
-                'contractor' => $contractor,
-                'employees' => $employees,
-                'today' => ucfirst($dayName) . ', ' . $day . ' de ' . $month . ' de ' . $year,
-                'expirationDate' => $expirationDate,
-                'resumen' => $resumen
-            ]),
+            'resumen' => $resumen,
+            'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-CE'
         ]);
+        return response()->json([
+            'service'=>(object)[
+                'id'=>$id,
+                'type_id'=>$document_type->id,
+            ],
+            'principal' => $principal,
+            'contractor' => $contractor,
+            'employees' => $employees,
+            'today' => ucfirst($dayName) . ', ' . $day . ' de ' . $month . ' de ' . $year,
+            'expirationDate' => $expirationDate,
+            'resumen' => $resumen,
+            'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-CE'
+        ], 200);
+        view()->share('dataList', $data);
+        return view('pdfs/certificateEventual');
     }
-    public function companyReport()
+    public function companyReport($id)
     {
-        $service = Service::whereId(1)->complete()->with([
+        $service = Service::whereId($id)->complete()->with([
             'company.branchOffices.commune.region',
             'branchOffice.commune.region',
             'employees.jobType',
             'company.commercialBusiness',
         ])->first();
+        $document_type = DocumentType::whereName('Informe Validate')
+        ->where('service_type_id', $service->service_type_id)->first();
         $principal = clone ($service->branchOffice->company);
         unset($service->branchOffice->company);
         $principal->branchOffice = $service->branchOffice;
@@ -199,38 +182,27 @@ class PdfController extends Controller
         $day = $today->day;
         $dayName = $today->locale('es')->dayName;
         $expirationDate = $today->addDays(25)->format('d-m-Y');
-        $documents = Document::where('service_id', 1)->with(['type:id,name', 'employee'])->wherehas('type', function ($query) {
+        $documents = Document::where('service_id', $id)->with(['type:id,name', 'employee','validationState:id,name'])->wherehas('type', function ($query) {
             return $query->whereName('Traslado')
                 ->orWhere('name', 'Licencia Medica')
                 ->orWhere('name', 'Finiquito')
-                ->orWhere('name', 'Contrato de Trabajo');
+                ->orWhere('name', 'Contrato de Trabajo')
+                ->orWhere('name', 'Cert. Siniestralidad')
+                ->orWhere('name', 'Formulario F30');
         })->where(function ($query) {
-            $yearMonth = Carbon::now()->format('Y-m');
+            $yearMonth = Carbon::now('America/Santiago')->format('Y-m');
             return $query->where('month_year_registry', $yearMonth)->orWhere(function ($query) use ($yearMonth) {
                 return  $query->where('month_year_registry', null)->whereDate('start', '>=', $yearMonth . '-01');
             });
-        })->get()->groupBy('type.name');
-
-        try {
-            $settlements = $documents['Finiquito'];
-        } catch (\Throwable $th) {
-            $settlements = [];
-        }
-        try {
-            $contracts = $documents['Contrato de Trabajo'];
-        } catch (\Throwable $th) {
-            $contracts = [];
-        }
-        try {
-            $transfers = $documents['Traslado'];
-        } catch (\Throwable $th) {
-            $transfers = [];
-        }
-        try {
-            $licenses = $documents['Licencia Medica'];
-        } catch (\Throwable $th) {
-            $licenses = [];
-        }
+        })->orderBy('updated_at','desc')->get()->groupBy('type.name');
+        $accident = isset($documents["Cert. Siniestralidad"]) ? $documents['Cert. Siniestralidad'][0] : null;
+        $accident->observations = str_replace("\\n", " : ", explode("</div>", $accident->observations)[0]);
+        $F30 = isset($documents["Formulario F30"]) ? $documents['Formulario F30'][0] : null;
+        $F30->observations = str_replace("\\n", " : ", explode("</div>", $F30->observations)[0]);
+        $settlements = isset($documents["Finiquito"]) ? $documents['Finiquito'] : [];
+        $contracts = isset($documents["Contrato de Trabajo"]) ? $documents['Contrato de Trabajo'] : [];
+        $transfers = isset($documents["Traslado"]) ? $documents['Traslado'] : [];
+        $licenses = isset($documents["Licencia Medica"]) ? $documents['Licencia Medica'] : [];
         $resumen = (object)[
             'settlements' => $settlements,
             'contracts' => $contracts,
@@ -243,21 +215,42 @@ class PdfController extends Controller
             'employees' => $employees,
             'today' => $day . ' de ' . $month . ' de ' . $year,
             'expirationDate' => $expirationDate,
-            'resumen' => $resumen
+            'resumen' => $resumen,
+            'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-RF'
+
         ]);
+
+        return response()->json([
+            'service'=>(object)[
+                'id'=>$id,
+                'type_id'=>$document_type->id,
+            ],
+            'principal' => $principal,
+            'contractor' => $contractor,
+            'employees' => $employees,
+            'today' => $day . ' de ' . $month . ' de ' . $year,
+            'expirationDate' => $expirationDate,
+            'resumen' => $resumen,
+            'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-RF',
+            'monthly'=>(object)[
+                'accident' => $accident,
+                'F30' => $F30
+            ]
+        ], 200);
         view()->share('dataList', $data);
         // Mail::to('alma@devartisan.cl')->send(new MailWelcome('123456789', $employee));
         // return $pdf->download('pdfview.pdf');
         return view('pdfs\report');
     }
-    public function companyReportEventual()
+    public function companyReportEventual($id)
     {
-        $service = Service::whereId(1)->complete()->with([
+        $service = Service::whereId($id)->complete()->with([
             'company.branchOffices.commune.region',
             'branchOffice.commune.region',
             'employees.jobType',
             'company.commercialBusiness',
         ])->first();
+        $document_type = DocumentType::whereName('Informe Validate')->where('service_type_id', $service->service_type_id)->first();
         $principal = clone ($service->branchOffice->company);
         unset($service->branchOffice->company);
         $principal->branchOffice = $service->branchOffice;
@@ -271,52 +264,69 @@ class PdfController extends Controller
         $day = $today->day;
         $dayName = $today->locale('es')->dayName;
         $expirationDate = $today->addDays(25)->format('d-m-Y');
-        $documents = Document::where('service_id', 1)->with(['type:id,name', 'employee'])->wherehas('type', function ($query) {
+        $documents = Document::where('service_id', $id)->with(['type:id,name', 'employee'])->wherehas('type', function ($query) {
             return $query->whereName('Traslado')
                 ->orWhere('name', 'Licencia Medica')
                 ->orWhere('name', 'Finiquito')
-                ->orWhere('name', 'Contrato de Trabajo');
+                ->orWhere('name', 'Contrato de Trabajo')
+                ->orWhere('name', 'Orden de Compra')
+                ->orWhere('name', 'Contrato Comercial')
+                ->orWhere('name', 'Afiliación Mutualidad')
+                ->orWhere('name', 'Reg.Interno de Orden, Higiene y Seguridad')
+                ->orWhere('name', 'Políticas de Seguridad')
+                ->orWhere('name', 'Contrato Comercial');
         })->where(function ($query) {
-            $yearMonth = Carbon::now()->format('Y-m');
+            $yearMonth = Carbon::now('America/Santiago')->format('Y-m');
             return $query->where('month_year_registry', $yearMonth)->orWhere(function ($query) use ($yearMonth) {
                 return  $query->where('month_year_registry', null)->whereDate('start', '>=', $yearMonth . '-01');
             });
         })->get()->groupBy('type.name');
-
-        try {
-            $settlements = $documents['Finiquito'];
-        } catch (\Throwable $th) {
-            $settlements = [];
-        }
-        try {
-            $contracts = $documents['Contrato de Trabajo'];
-        } catch (\Throwable $th) {
-            $contracts = [];
-        }
-        try {
-            $transfers = $documents['Traslado'];
-        } catch (\Throwable $th) {
-            $transfers = [];
-        }
-        try {
-            $licenses = $documents['Licencia Medica'];
-        } catch (\Throwable $th) {
-            $licenses = [];
-        }
+        $documentsParticular=Document::where('service_id', $id)->with(['type:id,name'])->wherehas('type', function ($query) {
+            return $query->whereName('Contrato Comercial')
+                ->orWhere('name', 'Orden de Compra')
+                ->orWhere('name', 'Afiliación Mutualidad')
+                ->orWhere('name', 'Reg.Interno de Orden, Higiene y Seguridad')
+                ->orWhere('name', 'Políticas de Seguridad');
+        })->orderBy('updated_at','desc')->get()->groupBy('type.name');
+        \Debugbar::info($documentsParticular);
+        $comercialContract = isset($documentsParticular["Contrato Comercial"]) ? $documentsParticular['Contrato Comercial'][0] : null;
+        $affiliation = isset($documentsParticular["Afiliación Mutualidad"]) ? $documentsParticular['Afiliación Mutualidad'][0] : null;
+        $regulation = isset($documentsParticular["Reg.Interno de Orden, Higiene y Seguridad"]) ? $documentsParticular['Reg.Interno de Orden, Higiene y Seguridad'][0] : null;
+        $politics = isset($documentsParticular["Políticas de Seguridad"]) ? $documentsParticular['Políticas de Seguridad'][0] : null;
+        
+        $settlements = isset($documents["Finiquito"]) ? $documents['Finiquito'] : [];
+        $contracts = isset($documents["Contrato de Trabajo"]) ? $documents['Contrato de Trabajo'] : [];
+        $transfers = isset($documents["Traslado"]) ? $documents['Traslado'] : [];
+        $licenses = isset($documents["Licencia Medica"]) ? $documents['Licencia Medica'] : [];
         $resumen = (object)[
             'settlements' => $settlements,
             'contracts' => $contracts,
             'transfers' => $transfers,
             'licenses' => $licenses,
         ];
-        $data = json_encode([
+        $monthly=(object)[
+            'comercialContract'=>$comercialContract,
+            'affiliation'=>$affiliation,
+            'regulation'=>$regulation,
+            'politics'=>$politics,
+        ];
+        \Debugbar::info($monthly);
+
+        return response()->json([
+            'service'=>(object)[
+                'id'=>$id,
+                'type_id'=>$document_type->id,
+            ],
             'principal' => $principal,
             'contractor' => $contractor,
             'employees' => $employees,
             'today' => $day . ' de ' . $month . ' de ' . $year,
             'expirationDate' => $expirationDate,
-            'resumen' => $resumen
-        ]);
+            'resumen' => $resumen,
+            'folio' =>  $id . '-' . Carbon::now('America/Santiago')->format('Ymd') . '-RE',
+            'monthly' =>$monthly
+        ], 200);
+
         view()->share('dataList', $data);
         // Mail::to('alma@devartisan.cl')->send(new MailWelcome('123456789', $employee));
         // return $pdf->download('pdfview.pdf');
@@ -325,24 +335,21 @@ class PdfController extends Controller
     public function companyCertificateDownload(Request $request)
     {
         $input = $request->all();
-
         $form = (object) $input['form'];
         $principal = (object) $input['principal'];
         $contractor = (object) $input['contractor'];
-        $employees = (object) $input['employees'];
+        $document = (object) $input['document'];
         view()->share('form', $form);
         view()->share('expirationDate', $input['expirationDate']);
         view()->share('today', $input['today']);
         view()->share('folio', $input['folio']);
         view()->share('principal', $principal);
         view()->share('contractor', $contractor);
-        view()->share('employees', $employees);
-        // return view('pdfs/certificatePdf');
+        \Debugbar::info($document);
         $pdf = PDF::loadView('pdfs\certificatePdf');
         if (!file_exists(storage_path('app\\uploads'))) {
             File::makeDirectory(storage_path('app\\uploads'));
         }
-
         $pdf->save(storage_path('app\\uploads\\') . 'archivo.pdf');
         return response()->download(storage_path('app\\uploads\\' . 'archivo.pdf'))->deleteFileAfterSend();
     }

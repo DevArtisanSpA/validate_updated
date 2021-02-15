@@ -33,8 +33,14 @@
                     <b>FOLIO</b> Nº {{$folio}}
                 </div>
             </div>
-            <h5 class="text-center mt-1 mb-3"><u><b>CERTIFICADO VALIDACION EMPRESA CONTRATISTA
-                        TRABAJOS EVENTUALES</b></u></h5>
+            <h5 class="text-center mt-1 mb-3">
+                <p>
+                    <u><b>CERTIFICADO VALIDACION EMPRESA CONTRATISTA</b></u>
+                </p>
+                <p>
+                    <u><b>TRABAJOS EVENTUALES</b></u>
+                </p>
+            </h5>
             <table class="table table-sm" style="border-color: white">
                 <thead>
                     <tr>

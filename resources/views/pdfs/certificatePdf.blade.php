@@ -33,7 +33,7 @@
                     <b>FOLIO</b> Nº {{$folio}}
                 </div>
             </div>
-            <h5 class="text-center mt-1 mb-3"><u><b>CERTIFICADO VALIDACION EMPRESA CONTRATISTA TRABAJOS
+            <h5 class="text-center mt-1 mb-3"><u><b>CERTIFICADO VALIDACIÓN EMPRESA
                     </b></u></h5>
             <table class="table table-sm" style="border-color: white">
                 <thead>
@@ -207,7 +207,7 @@
                     </p>
                 </div>
             </div>
-            <div class="row">
+            {{--<div class="row">
                 <table class="table mb-0 ml-0 mt-2 table-end">
                     <!-- FECHA DE EXPIRACIÓN -->
                     <tbody>
@@ -217,7 +217,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div>--}}
             <div class="d-flex justify-content-center mt-5">
                 <!-- FIRMA -->
                 <div class="text-center">

@@ -45,14 +45,14 @@
                             <a class="dropdown-item" href="{{ url('/services/associate') }}">
                                 {{ __('Asociar servicio') }}
                             </a>
-                            <hr class="line">
+                            <hr class="line my-1">
                             <a class="dropdown-item" href="{{ url('/branch_offices') }}">
                                 {{ __('Lista de sucursales') }}
                             </a>
                             <a class="dropdown-item" href="{{ url('/branch_offices/create') }}">
                                 {{ __('Agregar sucursal') }}
                             </a>
-                            <hr class="line">
+                            <hr class="line my-1">
                             <a class="dropdown-item" href="{{ url('documents/companies/base') }}">
                                 {{ __('Lista documentos bases de empresa') }}
                             </a>
@@ -61,7 +61,6 @@
                               {{ __('Agregar documentos bases de empresa') }}
                           </a> 
                           @endif-->
-                            <hr class="line">
                             <a class="dropdown-item" href="{{ url('documents/companies/monthly') }}">
                                 {{ __('Lista documentos mensuales de empresa') }}
                             </a>
@@ -86,7 +85,7 @@
                             <a class="dropdown-item" href="{{ url('/employee/terminate') }}">
                                 {{ __('Finiquitar Empleado') }}
                             </a>
-                            <hr class="line">
+                            <hr class="line my-1">
                             <a class="dropdown-item" href="{{ url('services/documents/employees/base') }}">
                                 {{ __('Lista documentos bases de empleado') }}
                             </a>
@@ -95,7 +94,6 @@
                               {{ __('Agregar documentos bases de empleado') }}
                           </a>
                           @endif -->
-                            <hr class="line">
 
                             <a class="dropdown-item" href="{{ url('services/documents/employees/monthly') }}">
                                 {{ __('Lista documentos mensuales de empleado') }}
@@ -120,7 +118,7 @@
                             <a class="dropdown-item" href="{{ url('/review/companies/monthly') }}">
                                 {{ __('Documentos mensuales de empresas') }}
                             </a>
-                            <hr class="line">
+                            <hr class="line my-1">
                             <a class="dropdown-item" href="{{ url('/review/employees/base') }}">
                                 {{ __('Documentos bases de empleados') }}
                             </a>
@@ -140,8 +138,19 @@
                                 {{ __('Reportes empresas') }}
                             </a>
                             @if (Auth::user()->user_type_id == 1)
-                            <a class="dropdown-item" href="{{ url('/certificate') }}">
-                                {{ __('Generar certificado') }}
+                            <hr class="line my-1">
+                            <a class="dropdown-item" href="{{ url('/certificate/fixed') }}">
+                                {{ __('Generar certificado empresa') }}
+                            </a>
+                            <a class="dropdown-item" href="{{ url('/report/fixed') }}">
+                                {{ __('Generar informe empresa ') }}
+                            </a>
+                            <hr class="line my-1">
+                            <a class="dropdown-item" href="{{ url('/certificate/eventual') }}">
+                                {{ __('Generar certificado eventual') }}
+                            </a>
+                            <a class="dropdown-item" href="{{ url('/report/eventual') }}">
+                                {{ __('Generar informe eventual') }}
                             </a>
                             @endif
                         </div>

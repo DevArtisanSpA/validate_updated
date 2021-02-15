@@ -88,4 +88,57 @@ class ReportController extends Controller
             ])
         ]);
     }
+
+    public function reportFixed(){
+        $services = Service::where('active', true)
+        ->complete()->where('service_type_id',1)
+        ->orderBy('description')->get();
+        return view('reports/certificate', [
+          "data" => json_encode([
+            'services' => $services,
+            'url' =>'/pdf/report/fixed/',
+            'componentName'=>'report-fixed',
+            'text' =>"Informe de validación"
+          ])
+        ]);
+    }
+    public function reportEventual(){
+        $services = Service::where('active', true)
+        ->complete()->where('service_type_id','!=',1)
+        ->orderBy('description')->get();
+        return view('reports/certificate', [
+          "data" => json_encode([
+            'services' => $services,
+            'url' =>'/pdf/report/eventual/',
+            'componentName'=>'report-eventual',
+            'text' =>"Informe de validación de trabajos eventuales"
+          ])
+        ]);
+    }
+    public function certificateFixed(){
+        $services = Service::where('active', true)
+        ->complete()->where('service_type_id',1)
+        ->orderBy('description')->get();
+        return view('reports/certificate', [
+          "data" => json_encode([
+            'services' => $services,
+            'url' =>'/pdf/certificate/fixed/',
+            'componentName'=>'certificate-fixed',
+            'text' =>"Certificado de validación"
+          ])
+        ]);
+    }
+    public function certificateEventual(){
+        $services = Service::where('active', true)
+        ->complete()->where('service_type_id','!=',1)
+        ->orderBy('description')->get();
+        return view('reports/certificate', [
+          "data" => json_encode([
+            'services' => $services,
+            'url' =>'/pdf/certificate/eventual/',
+            'componentName'=>'certificate-eventual',
+            'text' =>"Certificado de validación de trabajos eventuales"
+          ])
+        ]);
+    }
 }

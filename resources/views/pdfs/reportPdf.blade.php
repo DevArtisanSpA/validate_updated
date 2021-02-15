@@ -254,7 +254,7 @@
                 <thead>
                     <tr class="table-primary ">
                         <th>NOMBRE</th>
-                        <th>N°FOLIO</th>
+                        <th>N° FOLIO</th>
                         <th>INASISTENCIA</th>
                         <th>HHEE</th>
                         <th>OBSERVACIONES</th>
@@ -420,6 +420,7 @@
                     </tr>
                 </thead>
             </table>
+            @if (count($form->obs) > 0)
             <p class="text-justify mt-3 mb-2 b">8.- OBSERVACIONES DEL PERIODO</p>
             <table class="table table-sm table-bordered">
                 <!-- LISTA DE TRABAJADORES VALIDADOS -->
@@ -441,6 +442,7 @@
                     @endforeach
                 </tbody>
             </table> 
+            @endif
         </div>
     </div>
 </body>

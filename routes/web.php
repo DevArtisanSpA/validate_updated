@@ -127,15 +127,18 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('mail/documents/response', [ReviewController::class, 'responseMail']);
 
     Route::get('/reports', [ReportController::class, 'index']);
-    // Route::get('/certificate', [CertificateController::class, 'index']);
     Route::get('/reports/{id}', [ReportController::class, 'show']);
 
-    Route::get('/pdf/certificate/fixed', [PdfController::class, 'companyCertificate']);
+    Route::get('/certificate/fixed', [ReportController::class, 'certificateFixed']);
+    Route::get('/pdf/certificate/fixed/{id}', [PdfController::class, 'companyCertificate']);
     Route::post('/pdf/download/certificate/fixed', [PdfController::class, 'companyCertificateDownload']);
-    Route::get('/pdf/certificate/eventual', [PdfController::class, 'companyCertificateEventual']);
+    Route::get('/certificate/eventual', [ReportController::class, 'certificateEventual']);
+    Route::get('/pdf/certificate/eventual/{id}', [PdfController::class, 'companyCertificateEventual']);
     Route::post('/pdf/download/certificate/eventual', [PdfController::class, 'companyCertificateEventualDownload']);
-    Route::get('/pdf/report/fixed', [PdfController::class, 'companyReport']);
+    Route::get('/report/fixed', [ReportController::class, 'reportFixed']);
+    Route::get('/pdf/report/fixed/{id}', [PdfController::class, 'companyReport']);
     Route::post('/pdf/download/report/fixed', [PdfController::class, 'companyReportDownload']);
-    Route::get('/pdf/report/eventual', [PdfController::class, 'companyReportEventual']);
+    Route::get('/report/eventual', [ReportController::class, 'reportEventual']);
+    Route::get('/pdf/report/eventual/{id}', [PdfController::class, 'companyReportEventual']);
     Route::post('/pdf/download/report/eventual', [PdfController::class, 'companyReportEventualDownload']);
 });

@@ -28,11 +28,16 @@
                     </div>
                 </div>
                 <div class="col-md-6 pt-3 text-right">
-                    <b>FOLIO</b> Nº 123456789
+                    <b>FOLIO</b> Nº {{$folio}}
                 </div>
             </div>
-            <h5 class="text-center mt-1 mb-3"><u><b>INFORME DE VALIDACION EMPRESA TRABAJOS EVENTUALES
-                    </b></u></h5>
+            <h5 class="text-center mt-1 mb-3">
+                <p><u><b>INFORME DE VALIDACION EMPRESA
+                        </b></u></p>
+                <p>
+                    <u><b>TRABAJOS EVENTUALES</b></u>
+                </p>
+            </h5>
             <table class="table table-sm" style="border-color: white">
                 <thead>
                     <tr>
@@ -120,8 +125,7 @@
                 </tbody>
             </table>
             <p class="text-justify mt-3 mb-2 b">
-                1.- VALIDACIÓN DOCUMENTACIÓN MENSUAL EMPRESA <text
-                    style="font-size:0.9em">{{ strtoupper($contractor->business_name) }}</text></p>
+                1.- VALIDACIÓN DOCUMENTACIÓN MENSUAL EMPRESA <text style="font-size:0.9em">{{ strtoupper($contractor->business_name) }}</text></p>
             <table class="table table-sm table-bordered">
                 <!-- LISTA DE TRABAJADORES VALIDADOS -->
                 <thead class="text-center">
@@ -204,15 +208,16 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{ $employee['name'] }} {{ $employee['surname'] }}
-                                {{ $employee['second_surname'] }}</td>
-                            <td>{{ $employee['job_type']['name'] }}</td>
-                            <td>{{ $employee['identification_id'] }}</td>
-                            <td>{{ $employee['start'] }}</td>
-                            <td>{{ $employee['finish'] }}</td>
-                            <td>{{ $employee['ci'] }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ $employee['name'] }} {{ $employee['surname'] }}
+                            {{ $employee['second_surname'] }}
+                        </td>
+                        <td>{{ $employee['job_type']['name'] }}</td>
+                        <td>{{ $employee['identification_id'] }}</td>
+                        <td>{{ $employee['start'] }}</td>
+                        <td>{{ $employee['finish'] }}</td>
+                        <td>{{ $employee['ci'] }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -231,14 +236,15 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{ $employee['name'] }} {{ $employee['surname'] }}
-                                {{ $employee['second_surname'] }}</td>
-                            <td>{{ $employee['riohs'] }}</td>
-                            <td>{{ $employee['epp'] }}</td>
-                            <td>{{ $employee['das'] }}</td>
-                            <td>{{ $employee['other'] }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ $employee['name'] }} {{ $employee['surname'] }}
+                            {{ $employee['second_surname'] }}
+                        </td>
+                        <td>{{ $employee['riohs'] }}</td>
+                        <td>{{ $employee['epp'] }}</td>
+                        <td>{{ $employee['das'] }}</td>
+                        <td>{{ $employee['other'] }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -266,16 +272,17 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{ $employee['name'] }} {{ $employee['surname'] }}
-                                {{ $employee['second_surname'] }}</td>
-                            <td>{{ $employee['basicState'] }}</td>
-                            <td>{{ $employee['basicValidity'] }}</td>
-                            <td>{{ $employee['confinedState'] }}</td>
-                            <td>{{ $employee['confinedValidity'] }}</td>
-                            <td>{{ $employee['heightState'] }}</td>
-                            <td>{{ $employee['heightValidity'] }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ $employee['name'] }} {{ $employee['surname'] }}
+                            {{ $employee['second_surname'] }}
+                        </td>
+                        <td>{{ $employee['basicState'] }}</td>
+                        <td>{{ $employee['basicValidity'] }}</td>
+                        <td>{{ $employee['confinedState'] }}</td>
+                        <td>{{ $employee['confinedValidity'] }}</td>
+                        <td>{{ $employee['heightState'] }}</td>
+                        <td>{{ $employee['heightValidity'] }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -298,13 +305,14 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{ $employee['name'] }} {{ $employee['surname'] }}
-                                {{ $employee['second_surname'] }}</td>
-                            <td>{{ $employee['licenseState'] }}</td>
-                            <td>{{ $employee['licenseValidity'] }}</td>
-                            <td>{{ $employee['licenseOther'] }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ $employee['name'] }} {{ $employee['surname'] }}
+                            {{ $employee['second_surname'] }}
+                        </td>
+                        <td>{{ $employee['licenseState'] }}</td>
+                        <td>{{ $employee['licenseValidity'] }}</td>
+                        <td>{{ $employee['licenseOther'] }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -317,7 +325,8 @@
                             <b>{{ $form->end['periodo'] }}</b>
                         </th>
                         <th class="text-right">
-                            {{ $form->end['total'] }}</th>
+                            {{ $form->end['total'] }}
+                        </th>
                     </tr>
                 </thead>
 
@@ -370,35 +379,36 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                        <tr>
-                            <td>{{ $employee['name'] }} {{ $employee['surname'] }}
-                                {{ $employee['second_surname'] }}</td>
-                            <td>{{ $employee['quotationAmount'] }}</td>
-                            <td>{{ $employee['quotationPeriod'] }}</td>
-                            <td>{{ $employee['quotationState'] }}</td>
-                            <td>{{ $employee['quotationObs'] }}</td>
-                        </tr>
+                    <tr>
+                        <td>{{ $employee['name'] }} {{ $employee['surname'] }}
+                            {{ $employee['second_surname'] }}
+                        </td>
+                        <td>{{ $employee['quotationAmount'] }}</td>
+                        <td>{{ $employee['quotationPeriod'] }}</td>
+                        <td>{{ $employee['quotationState'] }}</td>
+                        <td>{{ $employee['quotationObs'] }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
             @if (count($form->obs) > 0)
-                 <p class="text-justify mt-3 mb-2 b">
-                    7.- OBSERVACIONES</p>
-                <table class="table table-sm table-bordered">
-                    <!-- LISTA DE TRABAJADORES VALIDADOS -->
-                    <thead>
-                        <tr class="table-primary text-center">
-                            <th>OBSERVACIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($form->obs as $obs)
-                            <tr class="text-justify">
-                                <td>{{ $obs['text'] }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <p class="text-justify mt-3 mb-2 b">
+                7.- OBSERVACIONES</p>
+            <table class="table table-sm table-bordered">
+                <!-- LISTA DE TRABAJADORES VALIDADOS -->
+                <thead>
+                    <tr class="table-primary text-center">
+                        <th>OBSERVACIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($form->obs as $obs)
+                    <tr class="text-justify">
+                        <td>{{ $obs['text'] }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
             @endif
         </div>
     </div>

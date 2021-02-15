@@ -14,15 +14,21 @@
         </div>
         <div class="col-md-6 pt-3 text-right">
           <b>FOLIO</b> Nº
-          <input placeholder="0" class="text-center" v-model="folio" />
+          <input
+            placeholder="0"
+            class="text-center"
+            v-model="data.folio"
+            disabled
+          />
         </div>
       </div>
       <h5 class="text-center mt-1 mb-3">
-        <u
-          ><b
-            >CERTIFICADO VALIDACION EMPRESA CONTRATISTA TRABAJOS EVENTUALES</b
-          ></u
-        >
+        <p>
+          <u><b>CERTIFICADO VALIDACION EMPRESA CONTRATISTA</b></u>
+        </p>
+        <p>
+          <u><b>TRABAJOS EVENTUALES</b></u>
+        </p>
       </h5>
       <table class="table table-sm" style="border-color: white">
         <thead>
@@ -219,7 +225,10 @@
         </div>
       </div>
       <div class="d-flex justify-content-end pb-3">
-        <b-button @click="download" variant="primary"
+        <b-button
+          v-if="data.employees.length > 0"
+          @click="download"
+          variant="primary"
           >Descargar <i class="el-icon-download"
         /></b-button>
       </div>
@@ -241,15 +250,24 @@ export default {
       console.log(this.data);
     },
     download() {
+      let document = {
+        document_type_id: this.data.service.type_id,
+        service_id: this.data.service.id,
+        start: moment().format("YYYY-MM-DD"),
+        finish: moment().clone().endOf("month").format("YYYY-MM-DD"),
+        month_year_registry: moment().format("YYYY-MM"),
+        validation_state_id: 3,
+      };
       axios({
         url: `${window.location.origin}/pdf/download/certificate/eventual`,
         method: "POST",
         data: {
+          document,
           contractor: this.data.contractor,
           principal: this.data.principal,
           expirationDate: this.data.expirationDate,
           today: this.data.today,
-          folio: this.folio,
+          folio: this.data.folio,
           employees: this.data.employees,
         },
         responseType: "blob",

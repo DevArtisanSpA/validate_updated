@@ -122,9 +122,13 @@ class DocumentTypeSeeder extends Seeder
       ['Cert. Siniestralidad', 2, 2, 1, false],
       ['Formulario F30-1', 2, 2, 1, false],
       ['Libro de Remuneraciones', 2, 2, 1, false],
+      
       ['Certificado Validate', 2, 2, 1, true],
-      ['Informe Validate', 2, 2, 1, true]
-
+      ['Informe Validate', 2, 2, 1, true],
+      ['Certificado Validate', 2, 2, 2, true],
+      ['Informe Validate', 2, 2, 2, true],
+      ['Certificado Validate', 2, 2, 3, true],
+      ['Informe Validate', 2, 2, 3, true],
     ];
     foreach ($types as $index => $type) {
       try {
